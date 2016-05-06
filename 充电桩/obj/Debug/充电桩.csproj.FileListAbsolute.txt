@@ -1,0 +1,17 @@
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\obj\Debug\Interop.Microsoft.Office.Core.dll
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\obj\Debug\充电桩.csproj.ResolveComReference.cache
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\obj\Debug\串口通信.exe
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\obj\Debug\串口通信.pdb
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\bin\Debug\串口通信.exe
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\bin\Debug\串口通信.pdb
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\bin\Debug\wyb7led.dll
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\obj\Debug\ResolveAssemblyReference.cache
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\obj\Debug\GenerateResource.read.1.tlog
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\obj\Debug\GenerateResource.write.1.tlog
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\obj\Debug\充电桩.MonitoringInterface.resources
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\obj\Debug\充电桩.Properties.Resources.resources
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\obj\Debug\充电桩.窗体文件.OnOffSet.resources
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\obj\Debug\充电桩.ParameterSet.resources
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\obj\Debug\充电桩.SetComPara.resources
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\obj\Debug\充电桩.窗体文件.UserInformChg.resources
+D:\充电桩\充电桩C#模拟程序\充电桩模拟器20160425-V0.0\充电桩\obj\Debug\充电桩.窗体文件.UserLoin.resources
