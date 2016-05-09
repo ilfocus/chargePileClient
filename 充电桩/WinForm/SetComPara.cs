@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO.Ports;          // 系统空间里面包含串口
 
-namespace ChargingPile
+namespace ChargingPile.WinForm
 {
     public partial class SetComPara : Form
     {
@@ -32,15 +32,11 @@ namespace ChargingPile
 
         private void SetComPara_Load(object sender, EventArgs e)
         {
-            try
-            {
-                string[] szPorts = SerialPort.GetPortNames(); //获取当前可用的串口列表
-                //这里得到的可用的串口，是指电脑里面可用的串口。
+            try {
+                string[] szPorts = SerialPort.GetPortNames();
                 combSerialPort.Items.AddRange(szPorts);
                 combSerialPort.SelectedIndex = 0;
-            }
-            catch (Win32Exception win32ex) //获取串口出错
-            {
+            } catch (Win32Exception win32ex)  {
                 MessageBox.Show(win32ex.ToString());
             }
             combBaudRate.Text = "9600";

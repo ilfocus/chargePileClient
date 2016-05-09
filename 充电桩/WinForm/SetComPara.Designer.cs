@@ -1,4 +1,4 @@
-﻿namespace ChargingPile
+﻿namespace ChargingPile.WinForm
 {
     partial class SetComPara
     {

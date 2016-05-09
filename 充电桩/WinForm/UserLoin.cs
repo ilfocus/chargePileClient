@@ -21,7 +21,7 @@ namespace ChargingPile.WinForm {
         public string strStatues    = null;
 
         public string Number = "2";
-        private bool checkflag = false;
+        //private bool checkflag = false;
 
         private string strAddress()
         {
@@ -101,14 +101,14 @@ namespace ChargingPile.WinForm {
 
             int i = Convert.ToInt16(Number);
             OleDbCommand cmd = new OleDbCommand("Select * From 记住密码 where ID>=@id", con);
-            cmd.Parameters.Add("@id", i);
+            //cmd.Parameters.Add("@id", i);
 
             OleDbDataReader reader = cmd.ExecuteReader();
             reader.Read();
             try {
                 cobUserName.Text = reader[0].ToString();
                 txtPassword.Text = reader[1].ToString();
-                checkflag = true;
+                //checkflag = true;
                 chbRemPassword.Checked = true;
             } catch { };
 

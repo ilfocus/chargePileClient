@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.btnExit = new System.Windows.Forms.Button();
-            this.btnQueckAdd = new System.Windows.Forms.Button();
             this.txtSlaveNum = new System.Windows.Forms.TextBox();
             this.txtCPNum = new System.Windows.Forms.TextBox();
             this.lblMasterNum = new System.Windows.Forms.Label();
@@ -37,12 +36,12 @@
             this.panel33 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.btnAdd = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.btnQueckAdd = new System.Windows.Forms.Button();
             this.panel33.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -57,16 +56,6 @@
             this.btnExit.Text = "取消";
             this.btnExit.UseVisualStyleBackColor = true;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
-            // 
-            // btnQueckAdd
-            // 
-            this.btnQueckAdd.Location = new System.Drawing.Point(166, 16);
-            this.btnQueckAdd.Name = "btnQueckAdd";
-            this.btnQueckAdd.Size = new System.Drawing.Size(82, 29);
-            this.btnQueckAdd.TabIndex = 518;
-            this.btnQueckAdd.Text = "快速添加";
-            this.btnQueckAdd.UseVisualStyleBackColor = true;
-            this.btnQueckAdd.Click += new System.EventHandler(this.btnQueckAdd_Click);
             // 
             // txtSlaveNum
             // 
@@ -106,7 +95,6 @@
             this.panel33.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel33.Controls.Add(this.panel1);
             this.panel33.Controls.Add(this.lblMasterNum);
-            this.panel33.Controls.Add(this.btnQueckAdd);
             this.panel33.Location = new System.Drawing.Point(12, 12);
             this.panel33.Name = "panel33";
             this.panel33.Size = new System.Drawing.Size(260, 59);
@@ -116,8 +104,8 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.White;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.btnQueckAdd);
             this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.button2);
             this.panel1.Location = new System.Drawing.Point(-1, -1);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(260, 59);
@@ -132,15 +120,6 @@
             this.label1.TabIndex = 510;
             this.label1.Text = "充电桩数量:";
             // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(166, 16);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(82, 29);
-            this.button2.TabIndex = 518;
-            this.button2.Text = "快速添加";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.White;
@@ -154,6 +133,22 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(260, 138);
             this.panel2.TabIndex = 525;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(93, 62);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(130, 21);
+            this.textBox1.TabIndex = 520;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(4, 65);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(83, 12);
+            this.label3.TabIndex = 519;
+            this.label3.Text = "充电桩IP地址:";
             // 
             // label2
             // 
@@ -173,21 +168,15 @@
             this.btnAdd.Text = "添加";
             this.btnAdd.UseVisualStyleBackColor = true;
             // 
-            // label3
+            // btnQueckAdd
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(4, 65);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(83, 12);
-            this.label3.TabIndex = 519;
-            this.label3.Text = "充电桩IP地址:";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(93, 62);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(130, 21);
-            this.textBox1.TabIndex = 520;
+            this.btnQueckAdd.Location = new System.Drawing.Point(166, 16);
+            this.btnQueckAdd.Name = "btnQueckAdd";
+            this.btnQueckAdd.Size = new System.Drawing.Size(82, 29);
+            this.btnQueckAdd.TabIndex = 523;
+            this.btnQueckAdd.Text = "快速添加";
+            this.btnQueckAdd.UseVisualStyleBackColor = true;
+            this.btnQueckAdd.Click += new System.EventHandler(this.btnQueckAdd_Click);
             // 
             // SetChargePile
             // 
@@ -201,7 +190,6 @@
             this.Controls.Add(this.panel33);
             this.Name = "SetChargePile";
             this.Text = "添加充电桩";
-            this.Load += new System.EventHandler(this.OnOffSet_Load);
             this.panel33.ResumeLayout(false);
             this.panel33.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -216,7 +204,6 @@
         #endregion
 
         private System.Windows.Forms.Button btnExit;
-        private System.Windows.Forms.Button btnQueckAdd;
         private System.Windows.Forms.TextBox txtSlaveNum;
         private System.Windows.Forms.TextBox txtCPNum;
         private System.Windows.Forms.Label lblMasterNum;
@@ -224,11 +211,11 @@
         private System.Windows.Forms.Panel panel33;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnQueckAdd;
     }
 }

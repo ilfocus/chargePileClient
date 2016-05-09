@@ -1,4 +1,4 @@
-﻿namespace ChargingPile
+﻿namespace ChargingPile.WinForm
 {
     partial class MonitoringInterface
     {
@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MonitoringInterface));
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("充电桩");
             this.btnOpenPort = new System.Windows.Forms.Button();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.zedGraphControl1 = new ZedGraph.ZedGraphControl();
@@ -55,6 +56,7 @@
             this.TSBtnExist = new System.Windows.Forms.ToolStripButton();
             this.TS_LableSystemTime = new System.Windows.Forms.ToolStripLabel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.labeltx = new System.Windows.Forms.Label();
             this.picBox1 = new System.Windows.Forms.PictureBox();
             this.TimeSendData = new System.Windows.Forms.Timer(this.components);
@@ -179,7 +181,7 @@
             // 
             // zedGraphControl1
             // 
-            this.zedGraphControl1.Location = new System.Drawing.Point(122, 362);
+            this.zedGraphControl1.Location = new System.Drawing.Point(154, 362);
             this.zedGraphControl1.Name = "zedGraphControl1";
             this.zedGraphControl1.ScrollGrace = 0D;
             this.zedGraphControl1.ScrollMaxX = 0D;
@@ -213,7 +215,7 @@
             this.TS_LableSystemTime});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1081, 67);
+            this.toolStrip1.Size = new System.Drawing.Size(1116, 72);
             this.toolStrip1.TabIndex = 31;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -227,27 +229,27 @@
             this.toolStripButton_Config.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton_Config.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Config.Name = "toolStripButton_Config";
-            this.toolStripButton_Config.Size = new System.Drawing.Size(66, 64);
+            this.toolStripButton_Config.Size = new System.Drawing.Size(69, 69);
             this.toolStripButton_Config.Text = "参数配置";
             this.toolStripButton_Config.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
             // tsmAddCP
             // 
             this.tsmAddCP.Name = "tsmAddCP";
-            this.tsmAddCP.Size = new System.Drawing.Size(142, 22);
+            this.tsmAddCP.Size = new System.Drawing.Size(148, 22);
             this.tsmAddCP.Text = "充电桩配置";
             this.tsmAddCP.Click += new System.EventHandler(this.tsmAddCP_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(142, 22);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(148, 22);
             this.toolStripMenuItem2.Text = "告警阈值配置";
             // 
             // 串口设置ToolStripMenuItem
             // 
             this.串口设置ToolStripMenuItem.Name = "串口设置ToolStripMenuItem";
-            this.串口设置ToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.串口设置ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.串口设置ToolStripMenuItem.Text = "串口设置";
             this.串口设置ToolStripMenuItem.Click += new System.EventHandler(this.串口设置ToolStripMenuItem_Click);
             // 
@@ -257,7 +259,7 @@
             this.toolStripButton_Look.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton_Look.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Look.Name = "toolStripButton_Look";
-            this.toolStripButton_Look.Size = new System.Drawing.Size(57, 64);
+            this.toolStripButton_Look.Size = new System.Drawing.Size(60, 69);
             this.toolStripButton_Look.Text = "查看事件";
             this.toolStripButton_Look.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
@@ -267,7 +269,7 @@
             this.toolStripButton_Alarm.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton_Alarm.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Alarm.Name = "toolStripButton_Alarm";
-            this.toolStripButton_Alarm.Size = new System.Drawing.Size(57, 64);
+            this.toolStripButton_Alarm.Size = new System.Drawing.Size(60, 69);
             this.toolStripButton_Alarm.Text = "音效告警";
             this.toolStripButton_Alarm.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
@@ -277,7 +279,7 @@
             this.toolStripButton_UpDown.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton_UpDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_UpDown.Name = "toolStripButton_UpDown";
-            this.toolStripButton_UpDown.Size = new System.Drawing.Size(57, 64);
+            this.toolStripButton_UpDown.Size = new System.Drawing.Size(60, 69);
             this.toolStripButton_UpDown.Text = "隐藏总览";
             this.toolStripButton_UpDown.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
@@ -287,7 +289,7 @@
             this.toolStripButton_SHTV.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton_SHTV.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_SHTV.Name = "toolStripButton_SHTV";
-            this.toolStripButton_SHTV.Size = new System.Drawing.Size(69, 64);
+            this.toolStripButton_SHTV.Size = new System.Drawing.Size(72, 69);
             this.toolStripButton_SHTV.Text = "隐藏树视图";
             this.toolStripButton_SHTV.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.toolStripButton_SHTV.Visible = false;
@@ -295,7 +297,7 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 67);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 72);
             // 
             // toolStripButton_Card
             // 
@@ -303,7 +305,7 @@
             this.toolStripButton_Card.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton_Card.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Card.Name = "toolStripButton_Card";
-            this.toolStripButton_Card.Size = new System.Drawing.Size(57, 64);
+            this.toolStripButton_Card.Size = new System.Drawing.Size(60, 69);
             this.toolStripButton_Card.Text = "开卡充值";
             this.toolStripButton_Card.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
@@ -313,7 +315,7 @@
             this.toolStripButton_FileMng.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton_FileMng.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_FileMng.Name = "toolStripButton_FileMng";
-            this.toolStripButton_FileMng.Size = new System.Drawing.Size(57, 64);
+            this.toolStripButton_FileMng.Size = new System.Drawing.Size(60, 69);
             this.toolStripButton_FileMng.Text = "档案管理";
             this.toolStripButton_FileMng.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
@@ -323,14 +325,14 @@
             this.toolStripButton_User.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton_User.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_User.Name = "toolStripButton_User";
-            this.toolStripButton_User.Size = new System.Drawing.Size(57, 64);
+            this.toolStripButton_User.Size = new System.Drawing.Size(60, 69);
             this.toolStripButton_User.Text = "用户管理";
             this.toolStripButton_User.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 67);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 72);
             // 
             // toolStripButton_Curve
             // 
@@ -338,7 +340,7 @@
             this.toolStripButton_Curve.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton_Curve.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Curve.Name = "toolStripButton_Curve";
-            this.toolStripButton_Curve.Size = new System.Drawing.Size(57, 64);
+            this.toolStripButton_Curve.Size = new System.Drawing.Size(60, 69);
             this.toolStripButton_Curve.Text = "曲线查看";
             this.toolStripButton_Curve.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
@@ -350,20 +352,20 @@
             this.toolStripButton_Report.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton_Report.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Report.Name = "toolStripButton_Report";
-            this.toolStripButton_Report.Size = new System.Drawing.Size(66, 64);
+            this.toolStripButton_Report.Size = new System.Drawing.Size(69, 69);
             this.toolStripButton_Report.Text = "报表浏览";
             this.toolStripButton_Report.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
             // tsmi_ChargeRecordReport
             // 
             this.tsmi_ChargeRecordReport.Name = "tsmi_ChargeRecordReport";
-            this.tsmi_ChargeRecordReport.Size = new System.Drawing.Size(142, 22);
+            this.tsmi_ChargeRecordReport.Size = new System.Drawing.Size(148, 22);
             this.tsmi_ChargeRecordReport.Text = "充电记录报表";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 67);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 72);
             // 
             // toolStripButton_About
             // 
@@ -371,7 +373,7 @@
             this.toolStripButton_About.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton_About.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_About.Name = "toolStripButton_About";
-            this.toolStripButton_About.Size = new System.Drawing.Size(57, 64);
+            this.toolStripButton_About.Size = new System.Drawing.Size(60, 69);
             this.toolStripButton_About.Text = "关于系统";
             this.toolStripButton_About.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             // 
@@ -381,7 +383,7 @@
             this.TSBtnExist.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.TSBtnExist.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.TSBtnExist.Name = "TSBtnExist";
-            this.TSBtnExist.Size = new System.Drawing.Size(57, 64);
+            this.TSBtnExist.Size = new System.Drawing.Size(60, 69);
             this.TSBtnExist.Text = "退出系统";
             this.TSBtnExist.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.TSBtnExist.Click += new System.EventHandler(this.TSBtnExist_Click);
@@ -396,12 +398,20 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.textBox1);
             this.panel1.Controls.Add(this.labeltx);
             this.panel1.Controls.Add(this.picBox1);
-            this.panel1.Location = new System.Drawing.Point(0, 580);
+            this.panel1.Location = new System.Drawing.Point(0, 582);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(959, 38);
+            this.panel1.Size = new System.Drawing.Size(1110, 38);
             this.panel1.TabIndex = 34;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(515, 6);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(222, 21);
+            this.textBox1.TabIndex = 468;
             // 
             // labeltx
             // 
@@ -466,7 +476,7 @@
             this.panel33.Controls.Add(this.txtChargePileTime);
             this.panel33.Controls.Add(this.label3);
             this.panel33.Controls.Add(this.btnSetTime);
-            this.panel33.Location = new System.Drawing.Point(122, 141);
+            this.panel33.Location = new System.Drawing.Point(154, 141);
             this.panel33.Name = "panel33";
             this.panel33.Size = new System.Drawing.Size(134, 215);
             this.panel33.TabIndex = 466;
@@ -628,7 +638,7 @@
             this.panel2.Controls.Add(this.label8);
             this.panel2.Controls.Add(this.label11);
             this.panel2.Controls.Add(this.btnSetRate);
-            this.panel2.Location = new System.Drawing.Point(256, 141);
+            this.panel2.Location = new System.Drawing.Point(288, 141);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(169, 215);
             this.panel2.TabIndex = 502;
@@ -724,7 +734,7 @@
             this.panel3.Controls.Add(this.label2);
             this.panel3.Controls.Add(this.btnGetData);
             this.panel3.Controls.Add(this.btnOpenPort);
-            this.panel3.Location = new System.Drawing.Point(122, 80);
+            this.panel3.Location = new System.Drawing.Point(154, 80);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(956, 55);
             this.panel3.TabIndex = 503;
@@ -784,7 +794,7 @@
             this.panel6.Controls.Add(this.btnSetData);
             this.panel6.Controls.Add(this.btnCPState);
             this.panel6.Controls.Add(this.label12);
-            this.panel6.Location = new System.Drawing.Point(425, 141);
+            this.panel6.Location = new System.Drawing.Point(457, 141);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(290, 215);
             this.panel6.TabIndex = 506;
@@ -1033,9 +1043,9 @@
             this.panel4.Controls.Add(this.label53);
             this.panel4.Controls.Add(this.label14);
             this.panel4.Controls.Add(this.btnCurInfo);
-            this.panel4.Location = new System.Drawing.Point(721, 141);
+            this.panel4.Location = new System.Drawing.Point(753, 141);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(353, 215);
+            this.panel4.Size = new System.Drawing.Size(357, 215);
             this.panel4.TabIndex = 504;
             // 
             // btnSetCurInfo
@@ -1310,15 +1320,20 @@
             // 
             this.tvChargePile.Location = new System.Drawing.Point(2, 75);
             this.tvChargePile.Name = "tvChargePile";
-            this.tvChargePile.Size = new System.Drawing.Size(114, 503);
+            treeNode1.Name = "chargePileGroup";
+            treeNode1.Text = "充电桩";
+            this.tvChargePile.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode1});
+            this.tvChargePile.Size = new System.Drawing.Size(146, 503);
             this.tvChargePile.TabIndex = 508;
+            this.tvChargePile.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvChargePile_AfterSelect);
             // 
             // MonitoringInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(1081, 619);
+            this.ClientSize = new System.Drawing.Size(1116, 619);
             this.Controls.Add(this.tvChargePile);
             this.Controls.Add(this.panel6);
             this.Controls.Add(this.panel33);
@@ -1476,7 +1491,8 @@
         private System.Windows.Forms.Timer closeheartTime;
         private System.Windows.Forms.Timer ChargeSocTime;
         private System.Windows.Forms.Timer ChargeTimeTimer;
-        private System.Windows.Forms.TreeView tvChargePile;
+        public System.Windows.Forms.TreeView tvChargePile;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 
