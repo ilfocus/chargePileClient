@@ -326,7 +326,7 @@ namespace ChargingPile
                 this.btnOpenPort.Text = "关闭串口";
                 //serialPort1.PortName = frmSetComPara.combSerialPort.Text;               //给出串口号，字符型
 
-                serialPort1.PortName = "COM3";
+                serialPort1.PortName = "COM1";
                 serialPort1.BaudRate = int.Parse(frmSetComPara.combBaudRate.Text);
                 serialPort1.DataBits = int.Parse(frmSetComPara.combDataBit.Text);
                 string szStopBits = frmSetComPara.combStopBits.SelectedItem.ToString();
@@ -537,21 +537,31 @@ namespace ChargingPile
         static Socket clientSocket;
         private static byte[] result = new byte[1024];
         private bool receiveDataThreadFlg = false;
+
+        static int count = 0;
+        static int count2 = 0;
         private void clientReceiveData(object clientSocket) {
             Socket myClientSocket = (Socket)clientSocket;
             while (receiveDataThreadFlg) {
                 try {
                     // 通过clientSocket接收数据
+                    Console.WriteLine("充电桩正在接收数据！");
+                    count2++;
                     int receiveNumber = myClientSocket.Receive(result);
+                    count++;
                     byte[] tempArray = new byte[receiveNumber];
-
+                    
                     for (int i = 0; i < receiveNumber; i++) {
                         tempArray[i] = result[i];
                     }
+                    Console.WriteLine("接收到数据并准备解析");
                     packageParser(tempArray, receiveNumber);
+                    Console.WriteLine("接收到数据并解析成功");
                    // Console.WriteLine("接收客户端{0}消息{1}", myClientSocket.RemoteEndPoint.ToString(), Encoding.ASCII.GetString(result, 0, receiveNumber));
                 } catch (Exception ex) {
                     Console.WriteLine(ex.Message);
+                    Console.WriteLine("未知错误");
+                    MessageBox.Show(ex.Message.ToString());
                     myClientSocket.Shutdown(SocketShutdown.Both);
                     myClientSocket.Close();
                     break;
@@ -619,7 +629,9 @@ namespace ChargingPile
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try {
                 clientSocket.Connect(new IPEndPoint(ip, 8885)); //配置服务器IP与端口
+                Console.WriteLine("成功连接服务器！");
             } catch {
+                Console.WriteLine("连接服务器失败！");
                 return;
             }
             //通过clientSocket接收数据
@@ -687,7 +699,9 @@ namespace ChargingPile
 
             CPDataCheck dataCheck = new CPDataCheck();
             UInt64 cpAddress = dataCheck.CHARGING_PILE_ADDRESS;
-
+            if (txtChargingPileAddress.Text != "") {
+                cpAddress = Convert.ToUInt64(txtChargingPileAddress.Text);
+            }
             for (int i = 0; i < QUERY_MSG_NUM; i++)
             {
                 bRequestCmd[i] = 0x00;
@@ -753,7 +767,9 @@ namespace ChargingPile
 
             CPDataCheck dataCheck = new CPDataCheck();
             UInt64 cpAddress = dataCheck.CHARGING_PILE_ADDRESS;
-
+            if (txtChargingPileAddress.Text != "") {
+                cpAddress = Convert.ToUInt64(txtChargingPileAddress.Text);
+            }
             for (int i = 0; i < QUERY_MSG_NUM; i++)
             {
                 bRequestCmd[i] = 0x00;
@@ -972,7 +988,9 @@ namespace ChargingPile
 
             CPDataCheck dataCheck = new CPDataCheck();
             UInt64 cpAddress = dataCheck.CHARGING_PILE_ADDRESS;
-
+            if (txtChargingPileAddress.Text != "") {
+                cpAddress = Convert.ToUInt64(txtChargingPileAddress.Text);
+            }
             for (int i = 0; i < QUERY_MSG_NUM; i++)
             {
                 bRequestCmd[i] = 0x00;
@@ -1023,7 +1041,9 @@ namespace ChargingPile
 
             CPDataCheck dataCheck = new CPDataCheck();
             UInt64 cpAddress = dataCheck.CHARGING_PILE_ADDRESS;
-
+            if (txtChargingPileAddress.Text != "") {
+                cpAddress = Convert.ToUInt64(txtChargingPileAddress.Text);
+            }
             for (int i = 0; i < QUERY_MSG_NUM; i++)
             {
                 bRequestCmd[i] = 0x00;
@@ -1461,6 +1481,8 @@ namespace ChargingPile
         }
         private void updateFrameTimer_Tick(object sender, EventArgs e) {
             Random ran = new Random();
+
+            label13.Text = count2.ToString() + "," + count.ToString();
         } 
         
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
