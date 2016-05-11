@@ -4,6 +4,13 @@ using ZedGraph;
 
 namespace ChargingPile
 {
+
+    public partial class portRecod {
+        public int port = 0;
+        public int count = 0;
+        public UInt64 address = 0;
+        public string arrString = "";
+    }
     public partial class SubDevice
     {
         private String name;

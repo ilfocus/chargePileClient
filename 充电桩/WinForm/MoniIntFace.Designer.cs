@@ -33,7 +33,6 @@
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("充电桩");
             this.btnOpenPort = new System.Windows.Forms.Button();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
-            this.zedGraphControl1 = new ZedGraph.ZedGraphControl();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton_Config = new System.Windows.Forms.ToolStripDropDownButton();
             this.tsmAddCP = new System.Windows.Forms.ToolStripMenuItem();
@@ -154,6 +153,8 @@
             this.ChargeSocTime = new System.Windows.Forms.Timer(this.components);
             this.ChargeTimeTimer = new System.Windows.Forms.Timer(this.components);
             this.tvChargePile = new System.Windows.Forms.TreeView();
+            this.tbDataTest = new System.Windows.Forms.TextBox();
+            this.tbSend = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picBox1)).BeginInit();
@@ -178,21 +179,6 @@
             // 
             this.serialPort1.ReadBufferSize = 100;
             this.serialPort1.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialPort1_DataReceived);
-            // 
-            // zedGraphControl1
-            // 
-            this.zedGraphControl1.Location = new System.Drawing.Point(154, 362);
-            this.zedGraphControl1.Name = "zedGraphControl1";
-            this.zedGraphControl1.ScrollGrace = 0D;
-            this.zedGraphControl1.ScrollMaxX = 0D;
-            this.zedGraphControl1.ScrollMaxY = 0D;
-            this.zedGraphControl1.ScrollMaxY2 = 0D;
-            this.zedGraphControl1.ScrollMinX = 0D;
-            this.zedGraphControl1.ScrollMinY = 0D;
-            this.zedGraphControl1.ScrollMinY2 = 0D;
-            this.zedGraphControl1.Size = new System.Drawing.Size(956, 216);
-            this.zedGraphControl1.TabIndex = 30;
-            this.zedGraphControl1.Load += new System.EventHandler(this.zedGraphControl1_Load);
             // 
             // toolStrip1
             // 
@@ -401,7 +387,7 @@
             this.panel1.Controls.Add(this.textBox1);
             this.panel1.Controls.Add(this.labeltx);
             this.panel1.Controls.Add(this.picBox1);
-            this.panel1.Location = new System.Drawing.Point(0, 582);
+            this.panel1.Location = new System.Drawing.Point(0, 669);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1110, 38);
             this.panel1.TabIndex = 34;
@@ -1324,16 +1310,34 @@
             treeNode1.Text = "充电桩";
             this.tvChargePile.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1});
-            this.tvChargePile.Size = new System.Drawing.Size(146, 503);
+            this.tvChargePile.Size = new System.Drawing.Size(146, 590);
             this.tvChargePile.TabIndex = 508;
             this.tvChargePile.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvChargePile_AfterSelect);
+            // 
+            // tbDataTest
+            // 
+            this.tbDataTest.Location = new System.Drawing.Point(154, 360);
+            this.tbDataTest.Multiline = true;
+            this.tbDataTest.Name = "tbDataTest";
+            this.tbDataTest.Size = new System.Drawing.Size(956, 133);
+            this.tbDataTest.TabIndex = 509;
+            // 
+            // tbSend
+            // 
+            this.tbSend.Location = new System.Drawing.Point(154, 499);
+            this.tbSend.Multiline = true;
+            this.tbSend.Name = "tbSend";
+            this.tbSend.Size = new System.Drawing.Size(956, 164);
+            this.tbSend.TabIndex = 510;
             // 
             // MonitoringInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(1116, 619);
+            this.ClientSize = new System.Drawing.Size(1116, 707);
+            this.Controls.Add(this.tbSend);
+            this.Controls.Add(this.tbDataTest);
             this.Controls.Add(this.tvChargePile);
             this.Controls.Add(this.panel6);
             this.Controls.Add(this.panel33);
@@ -1342,7 +1346,6 @@
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel4);
-            this.Controls.Add(this.zedGraphControl1);
             this.Name = "MonitoringInterface";
             this.RightToLeftLayout = true;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -1371,7 +1374,6 @@
         #endregion
 
         private System.Windows.Forms.Button btnOpenPort;
-        private ZedGraph.ZedGraphControl zedGraphControl1;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -1493,6 +1495,8 @@
         private System.Windows.Forms.Timer ChargeTimeTimer;
         public System.Windows.Forms.TreeView tvChargePile;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox tbDataTest;
+        private System.Windows.Forms.TextBox tbSend;
     }
 }
 

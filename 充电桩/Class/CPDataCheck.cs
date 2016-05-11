@@ -38,6 +38,9 @@ namespace ChargingPile.Class
               && (addressL == ((UInt32)LocalAddress))) return true;
             return false;
         }
+
+        //private UInt64[] addRessArray = 
+        private static List<UInt64> addressList = new List<UInt64>();
         public bool AddressCheck(byte[] array, UInt64 address) {
             // array[2] ~ array[9] 为充电桩地址
             UInt32 addressH = (UInt32)((array[2] << 24) | (array[3] << 16)
@@ -45,8 +48,25 @@ namespace ChargingPile.Class
             UInt32 addressL = (UInt32)((array[6] << 24) | (array[7] << 16)
                                     | (array[8] << 8) | (array[9]));
             UInt64 LocalAddress = address;
-            if ((addressH == (LocalAddress >> 32))
-              && (addressL == ((UInt32)LocalAddress))) return true;
+
+            if (false == addAddressToList(address)) {
+                addressList.Add(address);
+            }
+            Console.WriteLine("addressList:" + addressList.Count);
+            for (int i = 0; i < addressList.Count; i++) {
+                if ((addressH == (addressList[i] >> 32))
+                 && (addressL == ((UInt32)addressList[i]))) return true;
+            }
+
+            //if ((addressH == (LocalAddress >> 32))
+            //    && (addressL == ((UInt32)LocalAddress))) return true;
+            return false;
+        }
+
+        private bool addAddressToList(UInt64 address) {
+            for (int i = 0; i < addressList.Count; i++) {
+                if (address == addressList[i]) return true;
+            }
             return false;
         }
     }

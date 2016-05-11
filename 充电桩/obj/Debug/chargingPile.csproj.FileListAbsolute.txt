@@ -89,7 +89,6 @@ F:\chargePile_Project\ChargePile\chargePileClient\充电桩\obj\Debug\ChargeingP
 F:\chargePile_Project\ChargePile\chargePileClient\充电桩\obj\Debug\ChargeingPile.pdb
 E:\充电桩\ChargePile\chargePileClient\充电桩\obj\Debug\ChargeingPile.exe
 E:\充电桩\ChargePile\chargePileClient\充电桩\obj\Debug\ChargeingPile.pdb
-E:\充电桩\ChargePile\chargePileClient\充电桩\obj\Debug\ChargingPile.csprojResolveAssemblyReference.cache
 E:\充电桩\ChargePile\chargePileClient\充电桩\obj\Debug\ChargingPile.Properties.Resources.resources
 E:\充电桩\ChargePile\chargePileClient\充电桩\obj\Debug\ChargingPile.WinForm.SetChargePile.resources
 E:\充电桩\ChargePile\chargePileClient\充电桩\obj\Debug\ChargingPile.WinForm.UserInformChg.resources
