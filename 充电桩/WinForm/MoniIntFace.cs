@@ -94,6 +94,7 @@ namespace ChargingPile.WinForm
             cbMeterState.SelectedIndex = 0;
             cbChargePlug.SelectedIndex = 0;
             cbCurState.SelectedIndex = 0;
+            cbOpen.SelectedIndex = 1;
             picBox1.Image = Resources.grey32;
             // 加入这行,容许跨线程访问控件
             Control.CheckForIllegalCrossThreadCalls = false;
@@ -144,31 +145,35 @@ namespace ChargingPile.WinForm
                 blDataFlag = true;
             }
         }
-       
+
+        private void serialPortInit() {
+            serialPort1.PortName = "COM1";
+            serialPort1.BaudRate = int.Parse(frmSetComPara.combBaudRate.Text);
+            serialPort1.DataBits = int.Parse(frmSetComPara.combDataBit.Text);
+            string szStopBits = frmSetComPara.combStopBits.SelectedItem.ToString();
+            switch (szStopBits) {
+                case "1":
+                    serialPort1.StopBits = StopBits.One;
+                    break;
+                case "1.5":
+                    serialPort1.StopBits = StopBits.OnePointFive;
+                    break;
+                case "2":
+                    serialPort1.StopBits = StopBits.Two;
+                    break;
+                default:
+                    serialPort1.StopBits = StopBits.One;
+                    break;
+            }
+            serialPort1.Parity = (Parity)Enum.Parse(typeof(Parity), frmSetComPara.SerialParity.SelectedItem.ToString());
+            //此句要好好理解。Enum  提供一个指向枚举器（该枚举器可枚举复合名字对象的组件）的指针。
+            serialPort1.Open();
+        }
+
         private void btnOpenPort_Click(object sender, EventArgs e) {
             if (btnOpenPort.Text == "打开串口") {
                 this.btnOpenPort.Text = "关闭串口";
-                serialPort1.PortName = "COM1";
-                serialPort1.BaudRate = int.Parse(frmSetComPara.combBaudRate.Text);
-                serialPort1.DataBits = int.Parse(frmSetComPara.combDataBit.Text);
-                string szStopBits = frmSetComPara.combStopBits.SelectedItem.ToString();
-                switch (szStopBits) {
-                    case "1":
-                        serialPort1.StopBits = StopBits.One;
-                        break;
-                    case "1.5":
-                        serialPort1.StopBits = StopBits.OnePointFive;
-                        break;
-                    case "2":
-                        serialPort1.StopBits = StopBits.Two;
-                        break;
-                    default:
-                        serialPort1.StopBits = StopBits.One;
-                        break;
-                }
-                serialPort1.Parity = (Parity)Enum.Parse(typeof(Parity), frmSetComPara.SerialParity.SelectedItem.ToString());
-                //此句要好好理解。Enum  提供一个指向枚举器（该枚举器可枚举复合名字对象的组件）的指针。
-                serialPort1.Open();
+                serialPortInit();
                 return;
             }
             if (btnOpenPort.Text == "关闭串口") {
@@ -383,7 +388,8 @@ namespace ChargingPile.WinForm
                           // 帧尾
             bRequestCmd[14] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[15] = 0xed; 
-            if (btnGetData.Text == "关闭监听") {
+            //if (btnGetData.Text == "关闭监听") {
+            if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd,QUERY_MSG_NUM,0);
             }
             if (true == serialPort1.IsOpen) {
@@ -441,7 +447,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[14] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[15] = 0xed;
-            if (btnGetData.Text == "关闭监听") {
+            //if (btnGetData.Text == "关闭监听") {
+            if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
             }
             if (true == serialPort1.IsOpen) {
@@ -672,7 +679,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[49] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[50] = 0xed;
-            if (btnGetData.Text == "关闭监听") {
+            //if (btnGetData.Text == "关闭监听") {
+            if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
             }
             if (true == serialPort1.IsOpen) {
@@ -897,7 +905,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[49] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[50] = 0xed;
-            if (btnGetData.Text == "关闭监听") {
+            //if (btnGetData.Text == "关闭监听") {
+            if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
 
                 int port = ((System.Net.IPEndPoint)clientSocket.LocalEndPoint).Port;
@@ -927,21 +936,31 @@ namespace ChargingPile.WinForm
                 Console.WriteLine("---发送数据成功：---" + port);
 
                 strDisplay = str;
-                
-                tbSend.BeginInvoke(new Action(() => {
+
+                //tbDataTest.BeginInvoke(new Action(() => {
+                //    //tbDataTest.ForeColor = Color.Green;
+                //    for (int i = 0; i < iPortStore.Count; i++) {
+                //        tbDataTest.Text += string.Format("{0:0000}", iPortStore[i].address)
+                //                        + "-Send:"
+                //                        + iPortStore[i].arrString
+                //                        + "\r\n";
+                //    }
+                //}));
+                rtbDisplay.BeginInvoke(new Action(() => {
                     for (int i = 0; i < iPortStore.Count; i++) {
-                        tbSend.Text += "chargePileAddress:"
-                                        + string.Format("{0:0000}", iPortStore[i].address)
-                                        + " Send:"
+                        rtbDisplay.SelectedText += string.Format("{0:0000}", iPortStore[i].address)
+                                        + "-Send:"
                                         + iPortStore[i].arrString
                                         + "\r\n";
+                        rtbDisplay.SelectionColor = Color.Green;
+                        rtbDisplay.ScrollToCaret();
                     }
-                    //tbSend.Focus();//获取焦点
-                    tbSend.Select(tbSend.TextLength, 0);//光标定位到文本最后
-                    tbSend.ScrollToCaret();//滚动到光标处
+
                 }));
-                //tbDataTest.Text = str;
+
+
             }
+            
             if (true == serialPort1.IsOpen) {
                 serialPort1.Write(bRequestCmd, 0, QUERY_MSG_NUM);
             }
@@ -1000,7 +1019,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[15] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[16] = 0xed;
-            if (btnGetData.Text == "关闭监听") {
+            //if (btnGetData.Text == "关闭监听") {
+            if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
             }
             if (true == serialPort1.IsOpen) {
@@ -1051,7 +1071,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[15] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[16] = 0xed;
-            if (btnGetData.Text == "关闭监听") {
+            //if (btnGetData.Text == "关闭监听") {
+            if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
             }
             if (true == serialPort1.IsOpen) {
@@ -1284,7 +1305,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[70] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[71] = 0xed;
-            if (btnGetData.Text == "关闭监听") {
+            //if (btnGetData.Text == "关闭监听") {
+            if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
             }
             if (true == serialPort1.IsOpen) {
@@ -1515,7 +1537,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[70] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[71] = 0xed;
-            if (btnGetData.Text == "关闭监听") {
+            //if (btnGetData.Text == "关闭监听") {
+            if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
             }
             if (true == serialPort1.IsOpen) {
@@ -1845,18 +1868,28 @@ namespace ChargingPile.WinForm
                 portAddress.Add(temp1);
             }
             
-            tbDataTest.BeginInvoke(new Action(() => {
+            //tbDataTest.BeginInvoke(new Action(() => {
+            //    tbDataTest.ForeColor = Color.Red;
+            //    for (int i = 0; i < portAddress.Count; i++) {
+            //            tbDataTest.Text += string.Format("{0:0000}", portAddress[i].address)
+            //                                + "-Receive:"  
+            //                                + portAddress[i].arrString + "\r\n";
+                        
+            //    }
+            //    //tbDataTest.Focus();//获取焦点
+            //    tbDataTest.Select(tbDataTest.TextLength, 0);//光标定位到文本最后
+            //    tbDataTest.ScrollToCaret();//滚动到光标处
+            //}));
+
+            rtbDisplay.BeginInvoke(new Action(() => {
                 for (int i = 0; i < portAddress.Count; i++) {
-                        tbDataTest.Text += "chargePileAddress:"
-                                            + string.Format("{0:0000}", portAddress[i].address)
-                                            + " Receive:"  
+                    rtbDisplay.SelectedText += string.Format("{0:0000}", portAddress[i].address)
+                                            + "-Receive:"  
                                             + portAddress[i].arrString + "\r\n";
+                    rtbDisplay.SelectionColor = Color.Red;
+                    rtbDisplay.ScrollToCaret();    
                 }
-                //tbDataTest.Focus();//获取焦点
-                tbDataTest.Select(tbDataTest.TextLength, 0);//光标定位到文本最后
-                tbDataTest.ScrollToCaret();//滚动到光标处
             }));
-            //tbDataFlush(arr,clientSocket);
 
             if ((bccCheckData == arr[length - 2])
                && (0xED == arr[length - 1])) {   // 参数校验正确
@@ -2027,7 +2060,8 @@ namespace ChargingPile.WinForm
             txtChargingPileAddress.Text = String.Format("{0:0000}", tv.SelectedNode.Index);
 
             if (false == addNodeIndex(tv.SelectedNode.Index)) {
-                if (btnGetData.Text == "关闭监听") {
+                //if (btnGetData.Text == "关闭监听") {
+                if (cbOpen.SelectedIndex == 1) {
                     socketClient();
                 }
                 nodeIndex.Add(tv.SelectedNode.Index);
@@ -2324,6 +2358,24 @@ namespace ChargingPile.WinForm
         private void tsmAddCP_Click(object sender, EventArgs e) {
             SetChargePile frmOnOffSet = new SetChargePile(this);          //定义串口参数设置对象
             frmOnOffSet.Show();
+        }
+
+        private void cbOpen_SelectedIndexChanged(object sender, EventArgs e) {
+
+            if (cbOpen.SelectedIndex == 0) {
+                Console.WriteLine("打开串口");
+                // 在此打开串口
+                serialPortInit();
+                // 此下部分关闭网络
+                receiveDataThreadFlg = false;
+            } else if (cbOpen.SelectedIndex == 1) {
+                Console.WriteLine("初始化---打开网络");
+                receiveDataThreadFlg = true;//关闭监听
+            } else {
+                picBox1.Image = Resources.grey32;
+            }
+
+            
         }
 
     }

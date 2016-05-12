@@ -26,7 +26,7 @@ namespace ChargingPile.WinForm
             if (txtCPNum.Text != "") {
                 cpNum = Convert.ToInt32(txtCPNum.Text);
             }
-            for (int j = 0; j < cpNum; j++) {
+            for (int j = 1; j < cpNum; j++) {
                 string str = String.Format("{0:0000}",j) + "号充电桩";
                 TreeNode node2 = new TreeNode(str);
                 foreach (TreeNode node in interFace.tvChargePile.Nodes) {

@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MonitoringInterface));
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("充电桩");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("充电桩");
             this.btnOpenPort = new System.Windows.Forms.Button();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -55,7 +55,6 @@
             this.TSBtnExist = new System.Windows.Forms.ToolStripButton();
             this.TS_LableSystemTime = new System.Windows.Forms.ToolStripLabel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.labeltx = new System.Windows.Forms.Label();
             this.picBox1 = new System.Windows.Forms.PictureBox();
             this.TimeSendData = new System.Windows.Forms.Timer(this.components);
@@ -91,6 +90,7 @@
             this.txtRatePointPrice = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.cbOpen = new System.Windows.Forms.ComboBox();
             this.heartFrameLed = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txtChargingPileAddress = new System.Windows.Forms.TextBox();
@@ -153,8 +153,7 @@
             this.ChargeSocTime = new System.Windows.Forms.Timer(this.components);
             this.ChargeTimeTimer = new System.Windows.Forms.Timer(this.components);
             this.tvChargePile = new System.Windows.Forms.TreeView();
-            this.tbDataTest = new System.Windows.Forms.TextBox();
-            this.tbSend = new System.Windows.Forms.TextBox();
+            this.rtbDisplay = new System.Windows.Forms.RichTextBox();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picBox1)).BeginInit();
@@ -167,9 +166,9 @@
             // 
             // btnOpenPort
             // 
-            this.btnOpenPort.Location = new System.Drawing.Point(560, 8);
+            this.btnOpenPort.Location = new System.Drawing.Point(515, 8);
             this.btnOpenPort.Name = "btnOpenPort";
-            this.btnOpenPort.Size = new System.Drawing.Size(104, 27);
+            this.btnOpenPort.Size = new System.Drawing.Size(67, 27);
             this.btnOpenPort.TabIndex = 28;
             this.btnOpenPort.Text = "打开串口";
             this.btnOpenPort.UseVisualStyleBackColor = true;
@@ -384,20 +383,12 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.textBox1);
             this.panel1.Controls.Add(this.labeltx);
             this.panel1.Controls.Add(this.picBox1);
             this.panel1.Location = new System.Drawing.Point(0, 669);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1110, 38);
             this.panel1.TabIndex = 34;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(515, 6);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(222, 21);
-            this.textBox1.TabIndex = 468;
             // 
             // labeltx
             // 
@@ -428,7 +419,7 @@
             // 
             this.btnGetData.Location = new System.Drawing.Point(445, 8);
             this.btnGetData.Name = "btnGetData";
-            this.btnGetData.Size = new System.Drawing.Size(104, 27);
+            this.btnGetData.Size = new System.Drawing.Size(64, 27);
             this.btnGetData.TabIndex = 457;
             this.btnGetData.Text = "打开监听";
             this.btnGetData.UseVisualStyleBackColor = true;
@@ -710,6 +701,7 @@
             // 
             this.panel3.BackColor = System.Drawing.Color.White;
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Controls.Add(this.cbOpen);
             this.panel3.Controls.Add(this.heartFrameLed);
             this.panel3.Controls.Add(this.txtCPStartup);
             this.panel3.Controls.Add(this.label4);
@@ -724,6 +716,18 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(956, 55);
             this.panel3.TabIndex = 503;
+            // 
+            // cbOpen
+            // 
+            this.cbOpen.FormattingEnabled = true;
+            this.cbOpen.Items.AddRange(new object[] {
+            "打开串口",
+            "打开网络"});
+            this.cbOpen.Location = new System.Drawing.Point(588, 12);
+            this.cbOpen.Name = "cbOpen";
+            this.cbOpen.Size = new System.Drawing.Size(71, 20);
+            this.cbOpen.TabIndex = 546;
+            this.cbOpen.SelectedIndexChanged += new System.EventHandler(this.cbOpen_SelectedIndexChanged);
             // 
             // heartFrameLed
             // 
@@ -1306,29 +1310,21 @@
             // 
             this.tvChargePile.Location = new System.Drawing.Point(2, 75);
             this.tvChargePile.Name = "tvChargePile";
-            treeNode1.Name = "chargePileGroup";
-            treeNode1.Text = "充电桩";
+            treeNode3.Name = "chargePileGroup";
+            treeNode3.Text = "充电桩";
             this.tvChargePile.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1});
+            treeNode3});
             this.tvChargePile.Size = new System.Drawing.Size(146, 590);
             this.tvChargePile.TabIndex = 508;
             this.tvChargePile.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvChargePile_AfterSelect);
             // 
-            // tbDataTest
+            // rtbDisplay
             // 
-            this.tbDataTest.Location = new System.Drawing.Point(154, 360);
-            this.tbDataTest.Multiline = true;
-            this.tbDataTest.Name = "tbDataTest";
-            this.tbDataTest.Size = new System.Drawing.Size(956, 133);
-            this.tbDataTest.TabIndex = 509;
-            // 
-            // tbSend
-            // 
-            this.tbSend.Location = new System.Drawing.Point(154, 499);
-            this.tbSend.Multiline = true;
-            this.tbSend.Name = "tbSend";
-            this.tbSend.Size = new System.Drawing.Size(956, 164);
-            this.tbSend.TabIndex = 510;
+            this.rtbDisplay.Location = new System.Drawing.Point(154, 362);
+            this.rtbDisplay.Name = "rtbDisplay";
+            this.rtbDisplay.Size = new System.Drawing.Size(956, 303);
+            this.rtbDisplay.TabIndex = 548;
+            this.rtbDisplay.Text = "";
             // 
             // MonitoringInterface
             // 
@@ -1336,8 +1332,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1116, 707);
-            this.Controls.Add(this.tbSend);
-            this.Controls.Add(this.tbDataTest);
+            this.Controls.Add(this.rtbDisplay);
             this.Controls.Add(this.tvChargePile);
             this.Controls.Add(this.panel6);
             this.Controls.Add(this.panel33);
@@ -1494,9 +1489,8 @@
         private System.Windows.Forms.Timer ChargeSocTime;
         private System.Windows.Forms.Timer ChargeTimeTimer;
         public System.Windows.Forms.TreeView tvChargePile;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox tbDataTest;
-        private System.Windows.Forms.TextBox tbSend;
+        private System.Windows.Forms.ComboBox cbOpen;
+        private System.Windows.Forms.RichTextBox rtbDisplay;
     }
 }
 
