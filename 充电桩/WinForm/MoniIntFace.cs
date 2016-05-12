@@ -25,8 +25,8 @@ using ZedGraph;
 namespace ChargingPile.WinForm
 {
     
-    public partial class MonitoringInterface : Form
-    {
+    public partial class MonitoringInterface : Form {
+        #region 变量定义
         private const int NUM_OF_MAIN_DEVICE = 20;
         private const int NUM_OF_SUBDEVICE   = 6;
 
@@ -59,6 +59,27 @@ namespace ChargingPile.WinForm
         }
 
         static bool ledStateFlg = true;
+
+        static Socket clientSocket;
+        private static byte[] result = new byte[1024];
+        private bool receiveDataThreadFlg = false;
+
+        static int count = 0;
+        static int count2 = 0;
+
+        private byte bHeartFrameResponeState = 0x00;
+        private byte bSetTimeResponeState = 0x00;
+        private byte bSetRateResponeState = 0x00;
+        private byte bGetCPStateResponeState = 0x00;
+        private byte bCPStartupResponeState = 0x00;
+        private byte bCurInfoResponeState = 0x00;
+        private byte chargeSOC = 0;
+        private byte chargeTime = 0;
+        private byte chargeSurplusTime = 58;
+        private int[] iDataCnt = new int[100];
+        private List<portRecod> iPortStore = new List<portRecod>();
+        string strDisplay = "";
+        #endregion
         /// <summary>
         /// 对界面上故障点数据进行更新
         /// </summary>
@@ -69,38 +90,6 @@ namespace ChargingPile.WinForm
         *   修改内容：无
         */
         /*************************************************************************/
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            //加载皮肤 
-            skinEngine2.SkinFile = System.Windows.Forms.Application.StartupPath.Replace(@"\bin\Debug", "") + @"\skins\SteelBlue.ssk";
-            skinEngine2.SkinAllForm = true;
-           // //zedGraph 初始化
-           // zedGraphControl1.GraphPane.Title.Text = "充电桩实时曲线";
-           // zedGraphControl1.GraphPane.XAxis.Title.Text = "时间";
-           // zedGraphControl1.GraphPane.YAxis.Title.Text = "电流";
-           // zedGraphControl1.GraphPane.XAxis.Type = ZedGraph.AxisType.DateAsOrdinal;
-           // zedGraphControl1.GraphPane.XAxis.Scale.MaxAuto = true;
-           // curACurve = zedGraphControl1.GraphPane.AddCurve("电流A路", curAList, Color.DarkGreen, SymbolType.None);
-           // curBCurve = zedGraphControl1.GraphPane.AddCurve("电流A路", curBList, Color.DarkRed, SymbolType.None);
-           //// zedGraphControl1.
-           // this.zedGraphControl1.AxisChange();
-           // this.zedGraphControl1.Refresh();
-           // ZedGraphTest();
-            TimSysTime.Enabled = true;
-
-            // 设置winForm中的默认值
-            cbEmergencyBtn.SelectedIndex = 0;
-            cbMeterState.SelectedIndex = 0;
-            cbChargePlug.SelectedIndex = 0;
-            cbCurState.SelectedIndex = 0;
-            cbOpen.SelectedIndex = 1;
-            picBox1.Image = Resources.grey32;
-            // 加入这行,容许跨线程访问控件
-            Control.CheckForIllegalCrossThreadCalls = false;
-
-        }
-
         /* 充机桩模拟器
          * 1、充电桩与地锁通信
          *    1> 地锁：请求充电桩动作
@@ -131,6 +120,39 @@ namespace ChargingPile.WinForm
          *      BCC校验:1
          *      帧尾:1
          */
+        #region form加载
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            //加载皮肤 
+            skinEngine2.SkinFile = System.Windows.Forms.Application.StartupPath.Replace(@"\bin\Debug", "") + @"\skins\SteelBlue.ssk";
+            skinEngine2.SkinAllForm = true;
+           // //zedGraph 初始化
+           // zedGraphControl1.GraphPane.Title.Text = "充电桩实时曲线";
+           // zedGraphControl1.GraphPane.XAxis.Title.Text = "时间";
+           // zedGraphControl1.GraphPane.YAxis.Title.Text = "电流";
+           // zedGraphControl1.GraphPane.XAxis.Type = ZedGraph.AxisType.DateAsOrdinal;
+           // zedGraphControl1.GraphPane.XAxis.Scale.MaxAuto = true;
+           // curACurve = zedGraphControl1.GraphPane.AddCurve("电流A路", curAList, Color.DarkGreen, SymbolType.None);
+           // curBCurve = zedGraphControl1.GraphPane.AddCurve("电流A路", curBList, Color.DarkRed, SymbolType.None);
+           //// zedGraphControl1.
+           // this.zedGraphControl1.AxisChange();
+           // this.zedGraphControl1.Refresh();
+           // ZedGraphTest();
+            TimSysTime.Enabled = true;
+
+            // 设置winForm中的默认值
+            cbEmergencyBtn.SelectedIndex = 0;
+            cbMeterState.SelectedIndex = 0;
+            cbChargePlug.SelectedIndex = 0;
+            cbCurState1.SelectedIndex = 0;
+            cbOpen.SelectedIndex = 1;
+            picBox1.Image = Resources.grey32;
+            // 加入这行,容许跨线程访问控件
+            Control.CheckForIllegalCrossThreadCalls = false;
+
+        }
+        #endregion
+        #region 串口
         private void serialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             byte[] byteArray = new byte[serialPort1.ReadBufferSize]; // 创建串口接收数据数组
@@ -186,6 +208,8 @@ namespace ChargingPile.WinForm
                 MessageBox.Show("串口已关闭");
             }
         }
+        #endregion
+        #region toolStrip
         private void TS_BtnSetComPara_Click(object sender, EventArgs e)
         {
             SetComPara frmSetComParaDisply = new SetComPara();          //定义串口参数设置对象
@@ -195,21 +219,8 @@ namespace ChargingPile.WinForm
         {
             System.Windows.Forms.Application.Exit();
         }
-       
-        private void TimeSendData_Tick(object sender, EventArgs e)// 轮询向分机请求数据定时器任务
-        {
-            if (bQueryMsgFlg == false) {
-                //SendQueryMsg();
-                bQueryMsgFlg = true;
-            }
-            
-        }
-        static Socket clientSocket;
-        private static byte[] result = new byte[1024];
-        private bool receiveDataThreadFlg = false;
-
-        static int count = 0;
-        static int count2 = 0;
+        #endregion
+        #region socket通信
         private void clientReceiveData(object clientSocket) {
             Socket myClientSocket = (Socket)clientSocket;
             int port = ((System.Net.IPEndPoint)myClientSocket.LocalEndPoint).Port;
@@ -316,26 +327,9 @@ namespace ChargingPile.WinForm
             Thread myThread = new Thread(clientReceiveData);
             myThread.Start(clientSocket);
         }
+        #endregion
+        #region 通信响应
 
-        private void btnGetData_Click(object sender, EventArgs e)//轮询任务启动
-        {
-            if (btnGetData.Text == "打开监听") {
-                btnGetData.Text = "关闭监听";
-                // socketClient();
-                receiveDataThreadFlg = true;
-            } else {
-                btnGetData.Text = "打开监听";
-                picBox1.Image = Resources.grey32;
-                receiveDataThreadFlg = false;
-            }
-        }
-        
-        private byte bHeartFrameResponeState = 0x00;
-        private byte bSetTimeResponeState = 0x00;
-        private byte bSetRateResponeState = 0x00;
-        private byte bGetCPStateResponeState = 0x00;
-        private byte bCPStartupResponeState = 0x00;
-        private byte bCurInfoResponeState = 0x00;
         private void respondRequestCmd(byte cmdCode)
         {
             const int QUERY_MSG_NUM = 16;
@@ -456,14 +450,9 @@ namespace ChargingPile.WinForm
             }
 
         }
-        private byte chargeSOC = 0;
-        private byte chargeTime = 0;
-        private byte chargeSurplusTime = 58;
-
         private string chargeIntToString(UInt32 data) {
             return ((data / 100).ToString() + "." + (data % 100).ToString());
         }
-        
         private void respondCP_StateCmd(byte cmdCode)
         {
             const int QUERY_MSG_NUM = 51;
@@ -583,9 +572,9 @@ namespace ChargingPile.WinForm
                 }
 
                 if (currentState == 0) {
-                    cbCurState.SelectedIndex = 0;
+                    cbCurState1.SelectedIndex = 0;
                 } else {
-                    cbCurState.SelectedIndex = 1;
+                    cbCurState1.SelectedIndex = 1;
                 }
 
             } else {
@@ -614,7 +603,7 @@ namespace ChargingPile.WinForm
                     chargePlug = 0x01;
                 }
 
-                if (cbCurState.Text == "有输出") {
+                if (cbCurState1.Text == "有输出") {
                     currentState = 0x00;
                 } else {
                     currentState = 0x01;
@@ -687,12 +676,24 @@ namespace ChargingPile.WinForm
                 serialPort1.Write(bRequestCmd, 0, QUERY_MSG_NUM);
             }
         }
-        
-        private int[] iDataCnt = new int[100];
-        private List<portRecod> iPortStore = new List<portRecod>();
-        string strDisplay = "";
+
+        private int judgeByteIsZero(byte data) {
+            return (bool)(data==0) ? 0:1;
+        }
+        private byte judgeStringIsEqual(string str1,string str2) {
+            return (byte)((str1 == str2) ? 0x00 : 0x01);
+        }
+        private bool checkBoxFault(UInt16 data, int bit) {
+            return !((data & (1 << bit)) == 0);
+        }
+        private UInt16 boolleftShiftToUint16(bool blData,int bit) {
+            return (UInt16)(boolToUint16(blData) << bit);
+        }
+        private UInt16 boolToUint16(bool bl) {
+            return (UInt16)(bl ? 1 : 0);
+        }
         private void respondCP_StateCmd(byte cmdCode, Socket clientSocket) {
-            const int QUERY_MSG_NUM = 51;
+            const int QUERY_MSG_NUM = 55;
             byte[] bRequestCmd = new byte[QUERY_MSG_NUM];     // 设置数组，并进行初始化，保存发送数据数组
 
             CPDataCheck dataCheck = new CPDataCheck();
@@ -715,7 +716,7 @@ namespace ChargingPile.WinForm
             bRequestCmd[8] = (byte)(cpAddress >> 8); ;
             bRequestCmd[9] = (byte)(cpAddress);
             //
-            bRequestCmd[10] = 0x28;               // 帧长度
+            bRequestCmd[10] = 0x2c;               // 帧长度
             bRequestCmd[11] = cmdCode;            // 命令码
             bRequestCmd[12] = 0xAC;               // 响应帧标志
 
@@ -752,8 +753,12 @@ namespace ChargingPile.WinForm
             byte emergencyStopButton = 0;
             byte electMeter = 0;
             byte chargePlug = 0;
+            byte cpOutState = 0;
+            UInt16 faultState = 0;
+            byte faultStateH = 0;
+            byte faultStateL = 0;
             byte currentState = 0;
-
+            
 
             if (btnSetData.Text == "设置数据") {
                 Random ran = new Random();
@@ -773,47 +778,37 @@ namespace ChargingPile.WinForm
                 emergencyStopButton = (byte)ran.Next(0, 2);
                 electMeter = (byte)ran.Next(0, 2); ;
                 chargePlug = (byte)ran.Next(0, 2); ;
-                currentState = (byte)ran.Next(0, 2);
+                cpOutState = (byte)ran.Next(0, 2);
 
-                // 把随机数据显示在界面中
-                //lock (stateLock) {
-                    //Thread myThread = new Thread()
+                faultStateH = (byte)ran.Next(0,4);
+                faultStateL = (byte)ran.Next(0,256);
+                currentState = (byte)ran.Next(0,6);
+                faultState = (UInt16)(((UInt16)faultStateH) << 8 | faultStateL); 
+                txtValtage.BeginInvoke(new Action(() => {
                     txtValtage.Text = chargeIntToString(valtage);
-                    //ThreadCPState(chargeIntToString(valtage));
-                    txtCurrent.Text = chargeIntToString(current);
-
-                    txtTotalElect.Text = chargeIntToString(chargeTotalElect);
-
-                    txtPointElect.Text = chargeIntToString(chargePointElect);
-                    txtPeakElect.Text = chargeIntToString(chargePeakElect);
-                    txtFlatElect.Text = chargeIntToString(chargeFlatElect);
-                    txtValleyElect.Text = chargeIntToString(chargeValleyElect);
-
-                    if (emergencyStopButton == 0) {
-                        cbEmergencyBtn.SelectedIndex = 0;
-                    } else {
-                        cbEmergencyBtn.SelectedIndex = 1;
-                    }
-
-                    if (electMeter == 0) {
-                        cbMeterState.SelectedIndex = 0;
-                    } else {
-                        cbMeterState.SelectedIndex = 1;
-                    }
-
-                    if (chargePlug == 0) {
-                        cbChargePlug.SelectedIndex = 0;
-                    } else {
-                        cbChargePlug.SelectedIndex = 1;
-                    }
-
-                    if (currentState == 0) {
-                        cbCurState.SelectedIndex = 0;
-                    } else {
-                        cbCurState.SelectedIndex = 1;
-                    }
-               // }
-
+                }));
+                
+                txtTotalElect.Text = chargeIntToString(chargeTotalElect);
+                txtPointElect.Text = chargeIntToString(chargePointElect);
+                txtPeakElect.Text = chargeIntToString(chargePeakElect);
+                txtFlatElect.Text = chargeIntToString(chargeFlatElect);
+                txtValleyElect.Text = chargeIntToString(chargeValleyElect);
+                //(emergencyStopButton == 0) ? (cbEmergencyBtn.SelectedIndex = 0):(cbEmergencyBtn.SelectedIndex = 1);
+                cbEmergencyBtn.SelectedIndex = judgeByteIsZero(emergencyStopButton);
+                cbMeterState.SelectedIndex = judgeByteIsZero(electMeter);
+                cbChargePlug.SelectedIndex = judgeByteIsZero(chargePlug);
+                cbCurState1.SelectedIndex = judgeByteIsZero(currentState);
+                
+                cbInOverVol.Checked = checkBoxFault(faultState,9);
+                cbOutOverVol.Checked = checkBoxFault(faultState,8);
+                cbInUnderVol.Checked = checkBoxFault(faultState, 7);
+                cbOutUnderVol.Checked = checkBoxFault(faultState, 6);
+                cbInOverCur.Checked = checkBoxFault(faultState, 5);
+                cbOutOverCur.Checked = checkBoxFault(faultState, 4);
+                cbInUnderCur.Checked = checkBoxFault(faultState, 3);
+                cbOutUnderCur.Checked = checkBoxFault(faultState, 2);
+                cbTempHigh.Checked = checkBoxFault(faultState, 1);
+                cbOutShort.Checked = checkBoxFault(faultState, 0);
             } else {
                 valtage = Convert.ToUInt32(txtValtage.Text);
                 current = Convert.ToUInt32(txtCurrent.Text);
@@ -822,29 +817,21 @@ namespace ChargingPile.WinForm
                 chargeFlatElect = Convert.ToUInt32(txtFlatElect.Text);
                 chargeValleyElect = Convert.ToUInt32(txtValtage.Text);
 
-                if (cbEmergencyBtn.Text == "正常") {
-                    emergencyStopButton = 0x00;
-                } else {
-                    emergencyStopButton = 0x01;
-                }
+                emergencyStopButton = judgeStringIsEqual(cbEmergencyBtn.Text,"正常");
+                electMeter = judgeStringIsEqual(cbMeterState.Text,"通信正常");
+                chargePlug = judgeStringIsEqual(cbChargePlug.Text,"插好");
+                currentState = judgeStringIsEqual(cbCurState1.Text,"有输出");
 
-                if (cbMeterState.Text == "通信正常") {
-                    electMeter = 0x00;
-                } else {
-                    electMeter = 0x01;
-                }
-
-                if (cbChargePlug.Text == "插好") {
-                    chargePlug = 0x00;
-                } else {
-                    chargePlug = 0x01;
-                }
-
-                if (cbCurState.Text == "有输出") {
-                    currentState = 0x00;
-                } else {
-                    currentState = 0x01;
-                }
+                faultState = (UInt16)(boolleftShiftToUint16(cbInOverVol.Checked,9)
+                            | boolleftShiftToUint16(cbInOverVol.Checked,8)
+                            | boolleftShiftToUint16(cbInOverVol.Checked,7)
+                            | boolleftShiftToUint16(cbInOverVol.Checked,6)
+                            | boolleftShiftToUint16(cbInOverVol.Checked,5)
+                            | boolleftShiftToUint16(cbInOverVol.Checked,4)
+                            | boolleftShiftToUint16(cbInOverVol.Checked,3)
+                            | boolleftShiftToUint16(cbInOverVol.Checked,2)
+                            | boolleftShiftToUint16(cbInOverVol.Checked,1)
+                            | boolleftShiftToUint16(cbInOverVol.Checked,0));
 
             }
             bRequestCmd[14] = (byte)(valtage >> 24);               // 电压
@@ -900,11 +887,16 @@ namespace ChargingPile.WinForm
             bRequestCmd[46] = chargePlug;                                   // 充电插头
             // 备用
             bRequestCmd[47] = chargeSurplusTime;                           // 备用 --- 充电剩余时间
-            // 当前状态
-            bRequestCmd[48] = currentState;                                 // 当前状态
+            // 输出状态
+            bRequestCmd[48] = currentState;                                 // 输出状态
+
+            bRequestCmd[49] = 0xaa;                                 // 故障状态位
+            bRequestCmd[50] = 0x55;                                 // 故障状态位
+            bRequestCmd[51] = 0x00;                                 // 充电桩当前状态
+            bRequestCmd[52] = 0x00;                                 // 充电桩通信状态
             // 帧尾
-            bRequestCmd[49] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
-            bRequestCmd[50] = 0xed;
+            bRequestCmd[53] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
+            bRequestCmd[54] = 0xed;
             //if (btnGetData.Text == "关闭监听") {
             if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
@@ -965,14 +957,12 @@ namespace ChargingPile.WinForm
                 serialPort1.Write(bRequestCmd, 0, QUERY_MSG_NUM);
             }
         }
-
         private bool addPortToArray(int port) {
             for (int i = 0; i < iPortStore.Count; i++) {
                 if (port == iPortStore[i].port) return true; 
             }
             return false;
         }
-
         private void respondStartAndStopCmd(byte cmdCode,byte para)
         {
             const int QUERY_MSG_NUM = 17;
@@ -1545,9 +1535,8 @@ namespace ChargingPile.WinForm
                 serialPort1.Write(bRequestCmd, 0, QUERY_MSG_NUM);
             }
         }
-        /* 
-         * 接收数据处理
-         */
+        #endregion
+        #region 通信数据解析
         public byte ConvertBCDToInt(byte b) {
             // 高四位  
             byte b1 = (byte)((b >> 4) & 0xF);
@@ -1555,23 +1544,6 @@ namespace ChargingPile.WinForm
             byte b2 = (byte)(b & 0xF);
 
             return (byte)(b1 * 10 + b2);
-        }
-        private delegate void FlushClient(byte[] arr);//代理
-        private void ThreadData(byte[] arr) {
-            int yearInt = (int)(ConvertBCDToInt(arr[12]) * 100) + (int)ConvertBCDToInt(arr[13]);
-            string year = yearInt.ToString();
-            string month = ConvertBCDToInt(arr[14]).ToString();
-            string day = ConvertBCDToInt(arr[15]).ToString();
-            string hour = ConvertBCDToInt(arr[16]).ToString();
-            string minute = ConvertBCDToInt(arr[17]).ToString();
-            string second = ConvertBCDToInt(arr[18]).ToString();
-            if (this.txtChargePileTime.InvokeRequired)//等待异步
-            {
-                FlushClient fc = new FlushClient(ThreadData);
-                this.Invoke(fc);//通过代理调用刷新方法
-            } else {
-                txtChargePileTime.Text = year + "/" + month + "/" + day + " " + hour + ":" + minute + ":" + second;
-            }
         }
         private int  packageParser(byte[] arr, int length)
         {
@@ -1630,26 +1602,16 @@ namespace ChargingPile.WinForm
                         // 解析参数信息，设置时间
                         // 回送响应信息
                         respondRequestCmd(arr[11]);
-                        ThreadData(arr);
-                        //int yearInt = (int)(ConvertBCDToInt(arr[12]) * 100) + (int)ConvertBCDToInt(arr[13]);
-                        //string year = yearInt.ToString();
+                        //ThreadData(arr);
+                        int yearInt = (int)(ConvertBCDToInt(arr[12]) * 100) + (int)ConvertBCDToInt(arr[13]);
+                        string year = yearInt.ToString();
 
-                        //string month = ConvertBCDToInt(arr[14]).ToString();
-                        //string day = ConvertBCDToInt(arr[15]).ToString();
-                        //string hour = ConvertBCDToInt(arr[16]).ToString();
-                        //string minute = ConvertBCDToInt(arr[17]).ToString();
-                        //string second = ConvertBCDToInt(arr[18]).ToString();
-
-                        //private delegate void FlushClient();//代理
-                        //private void ThreadFunction() {
-                        //    if (this.txtChargePileTime.InvokeRequired)//等待异步
-                        //    {
-                        //        FlushClient fc = new FlushClient(ThreadFunction);
-                        //        this.Invoke(fc);//通过代理调用刷新方法
-                        //    } else {
-                        //        txtChargePileTime.Text = year + "/" + month + "/" + day + " " + hour + ":" + minute + ":" + second;
-                        //    }
-                        //}
+                        string month = ConvertBCDToInt(arr[14]).ToString();
+                        string day = ConvertBCDToInt(arr[15]).ToString();
+                        string hour = ConvertBCDToInt(arr[16]).ToString();
+                        string minute = ConvertBCDToInt(arr[17]).ToString();
+                        string second = ConvertBCDToInt(arr[18]).ToString();
+                        txtChargePileTime.Text = year + "/" + month + "/" + day + " " + hour + ":" + minute + ":" + second;
                         
                         break;
                     }
@@ -1774,61 +1736,7 @@ namespace ChargingPile.WinForm
                 return -1; 
             }
         }
-
-        private delegate void tbDataFlushDelegate(byte[] arr, Socket clientSocket);//代理
-        private void tbDataFlush(byte[] arr, Socket clientSocket) {
-            string str = string.Empty;
-            for (int i = 0; i < arr.Length; i++) {
-                str += Convert.ToString(arr[i], 16) + " ";
-            }
-            UInt32 addressH = (UInt32)((arr[2] << 24) | (arr[3] << 16)
-                                    | (arr[4] << 8) | (arr[5]));
-            UInt32 addressL = (UInt32)((arr[6] << 24) | (arr[7] << 16)
-                                | (arr[8] << 8) | (arr[9]));
-            UInt64 cpAddress = ((UInt64)addressH) << 32 | addressL;
-            int port = ((System.Net.IPEndPoint)clientSocket.LocalEndPoint).Port;
-
-            try {
-                if (this.tbDataTest.InvokeRequired)//等待异步
-                {
-                    tbDataFlushDelegate fc = new tbDataFlushDelegate(tbDataFlush);
-                    this.Invoke(fc);//通过代理调用刷新方法
-                } else {
-                    tbDataTest.Text = "chargePileAddress:" + cpAddress.ToString() + " Receive:" + str;
-                }
-            } catch (Exception ex) {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("给控件赋值出现异常");
-            }
-
-
-            
-        }
-        //public delegate void InvokeHandler();
-
-        //public static void SafeInvoke(this Control control, InvokeHandler handler) {
-        //    if (control.InvokeRequired) {
-        //        control.Invoke(handler);
-        //    } else {
-        //        handler();
-        //    }
-        //}
-
-        private List<portRecod> portAddress = new List<portRecod>();
-
-        private bool addPortAddress(UInt64 address) {
-            for (int i = 0; i < portAddress.Count; i++) {
-                if (address == portAddress[i].address) return true;
-            }
-            return false;
-        }
-        private bool addPortAddress(UInt64 address,List<portRecod> portAdd) {
-            for (int i = 0; i < portAdd.Count; i++) {
-                if (address == portAdd[i].address) return true;
-            }
-            return false;
-        }
-        private int packageParser(byte[] arr, int length,Socket clientSocket) {
+        private int packageParser(byte[] arr, int length, Socket clientSocket) {
             if (arr == null) return -1;
 
             CPDataCheck dataCheck = new CPDataCheck();
@@ -1867,36 +1775,17 @@ namespace ChargingPile.WinForm
             if (false == addPortAddress(cpAddress)) {
                 portAddress.Add(temp1);
             }
-            
-            //tbDataTest.BeginInvoke(new Action(() => {
-            //    tbDataTest.ForeColor = Color.Red;
-            //    for (int i = 0; i < portAddress.Count; i++) {
-            //            tbDataTest.Text += string.Format("{0:0000}", portAddress[i].address)
-            //                                + "-Receive:"  
-            //                                + portAddress[i].arrString + "\r\n";
-                        
-            //    }
-            //    //tbDataTest.Focus();//获取焦点
-            //    tbDataTest.Select(tbDataTest.TextLength, 0);//光标定位到文本最后
-            //    tbDataTest.ScrollToCaret();//滚动到光标处
-            //}));
-
             rtbDisplay.BeginInvoke(new Action(() => {
                 for (int i = 0; i < portAddress.Count; i++) {
                     rtbDisplay.SelectedText += string.Format("{0:0000}", portAddress[i].address)
-                                            + "-Receive:"  
+                                            + "-Receive:"
                                             + portAddress[i].arrString + "\r\n";
                     rtbDisplay.SelectionColor = Color.Red;
-                    rtbDisplay.ScrollToCaret();    
+                    rtbDisplay.ScrollToCaret();
                 }
             }));
 
-            if ((bccCheckData == arr[length - 2])
-               && (0xED == arr[length - 1])) {   // 参数校验正确
-                //Console.WriteLine("data check success!");
-                /*
-                 * 在这里处理数据 
-                 */
+            if ((bccCheckData == arr[length - 2]) && (0xED == arr[length - 1])) {
                 switch (arr[11]) {
                     case 0x11: {
                             respondRequestCmd(arr[11]);
@@ -1911,7 +1800,6 @@ namespace ChargingPile.WinForm
                             Console.WriteLine("心跳帧响应");
                             respondRequestCmd(arr[11], clientSocket);// 
                             // 响应状态00表示执行成功，01表示系统忙暂时不能执行
-
                             if (cpHeartFrameStateFlg) {
                                 heartLedTime.Enabled = true;
                             } else {
@@ -1919,40 +1807,30 @@ namespace ChargingPile.WinForm
                                 picBox1.Image = Resources.red;
                                 heartFrameLed.ForeColor = Color.Red;
                             }
-
-
-                            //closeheartTime.Enabled = true;
                             break;
                         }
                     case 0x21: {
                             // 解析参数信息，设置时间
                             // 回送响应信息
-                        respondRequestCmd(arr[11], clientSocket);
-                        ThreadData(arr);
-                            //int yearInt = (int)(ConvertBCDToInt(arr[12]) * 100) + (int)ConvertBCDToInt(arr[13]);
-                            //string year = yearInt.ToString();
+                            respondRequestCmd(arr[11], clientSocket);
+                            int yearInt = (int)(ConvertBCDToInt(arr[12]) * 100) + (int)ConvertBCDToInt(arr[13]);
+                            string year = yearInt.ToString();
 
-                            //string month = ConvertBCDToInt(arr[14]).ToString();
-                            //string day = ConvertBCDToInt(arr[15]).ToString();
-                            //string hour = ConvertBCDToInt(arr[16]).ToString();
-                            //string minute = ConvertBCDToInt(arr[17]).ToString();
-                            //string second = ConvertBCDToInt(arr[18]).ToString();
+                            string month = ConvertBCDToInt(arr[14]).ToString();
+                            string day = ConvertBCDToInt(arr[15]).ToString();
+                            string hour = ConvertBCDToInt(arr[16]).ToString();
+                            string minute = ConvertBCDToInt(arr[17]).ToString();
+                            string second = ConvertBCDToInt(arr[18]).ToString();
 
-                            //private delegate void FlushClient();//代理
-                            //private void ThreadFunction() {
-                            //    if (this.txtChargePileTime.InvokeRequired)//等待异步
-                            //    {
-                            //        FlushClient fc = new FlushClient(ThreadFunction);
-                            //        this.Invoke(fc);//通过代理调用刷新方法
-                            //    } else {
-                            //        txtChargePileTime.Text = year + "/" + month + "/" + day + " " + hour + ":" + minute + ":" + second;
-                            //    }
-                            //}
-
+                            txtChargePileTime.BeginInvoke(new Action(() => {
+                                txtChargePileTime.Text = year + "/" + month + "/" + day + " " 
+                                                        + hour + ":" + minute + ":" + second;
+                            }));
+                            
                             break;
                         }
                     case 0x22: {
-                        respondRequestCmd(arr[11], clientSocket);
+                            respondRequestCmd(arr[11], clientSocket);
 
                             UInt32 pointPrice = (UInt32)((arr[12] << 24) | (arr[13] << 16)
                                                        | (arr[14] << 8) | (arr[15]));
@@ -1970,13 +1848,13 @@ namespace ChargingPile.WinForm
                             break;
                         }
                     case 0x23: { // 获得充电桩状态命令
-                        respondCP_StateCmd(arr[11], clientSocket);
+                            respondCP_StateCmd(arr[11], clientSocket);
                             ChargeSocTime.Enabled = true;
                             ChargeTimeTimer.Enabled = true;
                             break;
                         }
                     case 0x24: {
-                        respondStartAndStopCmd(arr[11], arr[12], clientSocket);
+                            respondStartAndStopCmd(arr[11], arr[12], clientSocket);
                             if (bCPStartupResponeState == 0x01) {
                                 //txtCPStartup.Text = "charge pile busy";
                                 txtCPStartup.Text = "充电桩忙";
@@ -2014,7 +1892,7 @@ namespace ChargingPile.WinForm
                             break;
                         }
                     case 0x25: {
-                        respondChargeInfoCmd(arr[11], clientSocket);
+                            respondChargeInfoCmd(arr[11], clientSocket);
                             break;
                         }
                     case 0x26: {
@@ -2030,6 +1908,20 @@ namespace ChargingPile.WinForm
                 return -1;
             }
         }
+        private List<portRecod> portAddress = new List<portRecod>();
+        private bool addPortAddress(UInt64 address) {
+            for (int i = 0; i < portAddress.Count; i++) {
+                if (address == portAddress[i].address) return true;
+            }
+            return false;
+        }
+        private bool addPortAddress(UInt64 address,List<portRecod> portAdd) {
+            for (int i = 0; i < portAdd.Count; i++) {
+                if (address == portAdd[i].address) return true;
+            }
+            return false;
+        }
+        
         private void timeDealRevData_Tick(object sender, EventArgs e)   // 处理接收到的数据
         {
             if (true == blDataFlag) {   // 数据处理标志
@@ -2040,27 +1932,16 @@ namespace ChargingPile.WinForm
                     int status = packageParser(arr, arr.Length);
                 }
             }
-            //tbDataTest.Text = strDisplay;
         }
-        private void updateFrameTimer_Tick(object sender, EventArgs e) {
-            Random ran = new Random();
-
-            //label13.Text = count2.ToString() + "," + count.ToString();
-        }
-
-        private void tvChargePile_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
-
-        }
-        
+        #endregion
+        #region 界面按钮点击
         private List<int> nodeIndex = new List<int>();
         private void tvChargePile_AfterSelect(object sender, TreeViewEventArgs e)
         {
             TreeView tv = (TreeView)sender;
-            //Console.WriteLine("{0}",tv.SelectedNode.Index);
-            txtChargingPileAddress.Text = String.Format("{0:0000}", tv.SelectedNode.Index);
+            txtChargingPileAddress.Text = String.Format("{0:0000}", tv.SelectedNode.Index + 1);
 
             if (false == addNodeIndex(tv.SelectedNode.Index)) {
-                //if (btnGetData.Text == "关闭监听") {
                 if (cbOpen.SelectedIndex == 1) {
                     socketClient();
                 }
@@ -2073,25 +1954,6 @@ namespace ChargingPile.WinForm
                 if (index == nodeIndex[i]) return true;
             }
             return false;
-        }
-        private void zedGraphControl1_Load(object sender, EventArgs e) 
-        {
-
-        }
-        /// <summary>
-        /// ZedGraph动态曲线初始化函数1，定时器此时默认使能状态，调试用
-        /// </summary>
-        private void ZedGraphTest()
-        {
-            double y = 5;
-            double k = 5;
-            for (int i = 0; i <= 1000; i++) {
-                double x = (double)new XDate(DateTime.Now.AddSeconds(-(1000 - i)));
-                // double y = ran.NextDouble();
-                curAList.Add(x, (y++)%10);
-                curBList.Add(x, (k++)%15); 
-            }
-            DateTime dt = DateTime.Now;
         }
 
         private void TimSysTime_Tick(object sender, EventArgs e) {
@@ -2320,6 +2182,42 @@ namespace ChargingPile.WinForm
             }
         }
         
+        private void tsmAddCP_Click(object sender, EventArgs e) {
+            SetChargePile frmOnOffSet = new SetChargePile(this);          //定义串口参数设置对象
+            frmOnOffSet.Show();
+        }
+
+        private void cbOpen_SelectedIndexChanged(object sender, EventArgs e) {
+
+            if (cbOpen.SelectedIndex == 0) {
+                Console.WriteLine("打开串口");
+                // 在此打开串口
+                serialPortInit();
+                // 此下部分关闭网络
+                receiveDataThreadFlg = false;
+            } else if (cbOpen.SelectedIndex == 1) {
+                Console.WriteLine("初始化---打开网络");
+                receiveDataThreadFlg = true;//关闭监听
+            } else {
+                picBox1.Image = Resources.grey32;
+            }
+
+
+        }
+        private void btnGetData_Click(object sender, EventArgs e)//轮询任务启动
+        {
+            if (btnGetData.Text == "打开监听") {
+                btnGetData.Text = "关闭监听";
+                // socketClient();
+                receiveDataThreadFlg = true;
+            } else {
+                btnGetData.Text = "打开监听";
+                picBox1.Image = Resources.grey32;
+                receiveDataThreadFlg = false;
+            }
+        }
+        #endregion
+        #region 定时器
         private void heartLedTime_Tick(object sender, EventArgs e) {
             if (ledStateFlg) {
                 heartFrameLed.ForeColor = Color.Green;
@@ -2354,29 +2252,6 @@ namespace ChargingPile.WinForm
                 chargeSurplusTime = 58;
             }
         }
-
-        private void tsmAddCP_Click(object sender, EventArgs e) {
-            SetChargePile frmOnOffSet = new SetChargePile(this);          //定义串口参数设置对象
-            frmOnOffSet.Show();
-        }
-
-        private void cbOpen_SelectedIndexChanged(object sender, EventArgs e) {
-
-            if (cbOpen.SelectedIndex == 0) {
-                Console.WriteLine("打开串口");
-                // 在此打开串口
-                serialPortInit();
-                // 此下部分关闭网络
-                receiveDataThreadFlg = false;
-            } else if (cbOpen.SelectedIndex == 1) {
-                Console.WriteLine("初始化---打开网络");
-                receiveDataThreadFlg = true;//关闭监听
-            } else {
-                picBox1.Image = Resources.grey32;
-            }
-
-            
-        }
-
+        #endregion
     }
 }

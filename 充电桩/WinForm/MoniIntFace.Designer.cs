@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MonitoringInterface));
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("充电桩");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("充电桩");
             this.btnOpenPort = new System.Windows.Forms.Button();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -57,10 +57,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.labeltx = new System.Windows.Forms.Label();
             this.picBox1 = new System.Windows.Forms.PictureBox();
-            this.TimeSendData = new System.Windows.Forms.Timer(this.components);
             this.btnGetData = new System.Windows.Forms.Button();
             this.timeDealRevData = new System.Windows.Forms.Timer(this.components);
-            this.updateFrameTimer = new System.Windows.Forms.Timer(this.components);
             this.skinEngine2 = new Sunisoft.IrisSkin.SkinEngine();
             this.panel33 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
@@ -95,7 +93,17 @@
             this.label4 = new System.Windows.Forms.Label();
             this.txtChargingPileAddress = new System.Windows.Forms.TextBox();
             this.panel6 = new System.Windows.Forms.Panel();
-            this.cbCurState = new System.Windows.Forms.ComboBox();
+            this.cbInUnderVol = new System.Windows.Forms.CheckBox();
+            this.cbOutShort = new System.Windows.Forms.CheckBox();
+            this.cbOutOverVol = new System.Windows.Forms.CheckBox();
+            this.cbInOverVol = new System.Windows.Forms.CheckBox();
+            this.cbTempHigh = new System.Windows.Forms.CheckBox();
+            this.cbOutUnderCur = new System.Windows.Forms.CheckBox();
+            this.cbInUnderCur = new System.Windows.Forms.CheckBox();
+            this.cbOutOverCur = new System.Windows.Forms.CheckBox();
+            this.cbInOverCur = new System.Windows.Forms.CheckBox();
+            this.cbOutUnderVol = new System.Windows.Forms.CheckBox();
+            this.cbCurState1 = new System.Windows.Forms.ComboBox();
             this.cbChargePlug = new System.Windows.Forms.ComboBox();
             this.cbMeterState = new System.Windows.Forms.ComboBox();
             this.cbEmergencyBtn = new System.Windows.Forms.ComboBox();
@@ -154,6 +162,8 @@
             this.ChargeTimeTimer = new System.Windows.Forms.Timer(this.components);
             this.tvChargePile = new System.Windows.Forms.TreeView();
             this.rtbDisplay = new System.Windows.Forms.RichTextBox();
+            this.cbCurState = new System.Windows.Forms.ComboBox();
+            this.label19 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picBox1)).BeginInit();
@@ -410,18 +420,13 @@
             this.picBox1.TabIndex = 3;
             this.picBox1.TabStop = false;
             // 
-            // TimeSendData
-            // 
-            this.TimeSendData.Interval = 500;
-            this.TimeSendData.Tick += new System.EventHandler(this.TimeSendData_Tick);
-            // 
             // btnGetData
             // 
             this.btnGetData.Location = new System.Drawing.Point(445, 8);
             this.btnGetData.Name = "btnGetData";
             this.btnGetData.Size = new System.Drawing.Size(64, 27);
             this.btnGetData.TabIndex = 457;
-            this.btnGetData.Text = "打开监听";
+            this.btnGetData.Text = "打开连接";
             this.btnGetData.UseVisualStyleBackColor = true;
             this.btnGetData.Click += new System.EventHandler(this.btnGetData_Click);
             // 
@@ -429,12 +434,6 @@
             // 
             this.timeDealRevData.Enabled = true;
             this.timeDealRevData.Tick += new System.EventHandler(this.timeDealRevData_Tick);
-            // 
-            // updateFrameTimer
-            // 
-            this.updateFrameTimer.Enabled = true;
-            this.updateFrameTimer.Interval = 500;
-            this.updateFrameTimer.Tick += new System.EventHandler(this.updateFrameTimer_Tick);
             // 
             // skinEngine2
             // 
@@ -455,7 +454,7 @@
             this.panel33.Controls.Add(this.btnSetTime);
             this.panel33.Location = new System.Drawing.Point(154, 141);
             this.panel33.Name = "panel33";
-            this.panel33.Size = new System.Drawing.Size(134, 215);
+            this.panel33.Size = new System.Drawing.Size(134, 235);
             this.panel33.TabIndex = 466;
             // 
             // label1
@@ -576,7 +575,7 @@
             // 
             // btnCurInfo
             // 
-            this.btnCurInfo.Location = new System.Drawing.Point(111, 4);
+            this.btnCurInfo.Location = new System.Drawing.Point(110, 3);
             this.btnCurInfo.Name = "btnCurInfo";
             this.btnCurInfo.Size = new System.Drawing.Size(108, 27);
             this.btnCurInfo.TabIndex = 500;
@@ -587,7 +586,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(3, 10);
+            this.label14.Location = new System.Drawing.Point(7, 10);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(89, 12);
             this.label14.TabIndex = 499;
@@ -617,7 +616,7 @@
             this.panel2.Controls.Add(this.btnSetRate);
             this.panel2.Location = new System.Drawing.Point(288, 141);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(169, 215);
+            this.panel2.Size = new System.Drawing.Size(169, 235);
             this.panel2.TabIndex = 502;
             // 
             // label17
@@ -760,6 +759,18 @@
             this.panel6.BackColor = System.Drawing.Color.White;
             this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel6.Controls.Add(this.cbCurState);
+            this.panel6.Controls.Add(this.label19);
+            this.panel6.Controls.Add(this.cbInUnderVol);
+            this.panel6.Controls.Add(this.cbOutShort);
+            this.panel6.Controls.Add(this.cbOutOverVol);
+            this.panel6.Controls.Add(this.cbInOverVol);
+            this.panel6.Controls.Add(this.cbTempHigh);
+            this.panel6.Controls.Add(this.cbOutUnderCur);
+            this.panel6.Controls.Add(this.cbInUnderCur);
+            this.panel6.Controls.Add(this.cbOutOverCur);
+            this.panel6.Controls.Add(this.cbInOverCur);
+            this.panel6.Controls.Add(this.cbOutUnderVol);
+            this.panel6.Controls.Add(this.cbCurState1);
             this.panel6.Controls.Add(this.cbChargePlug);
             this.panel6.Controls.Add(this.cbMeterState);
             this.panel6.Controls.Add(this.cbEmergencyBtn);
@@ -786,19 +797,119 @@
             this.panel6.Controls.Add(this.label12);
             this.panel6.Location = new System.Drawing.Point(457, 141);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(290, 215);
+            this.panel6.Size = new System.Drawing.Size(357, 235);
             this.panel6.TabIndex = 506;
             // 
-            // cbCurState
+            // cbInUnderVol
             // 
-            this.cbCurState.FormattingEnabled = true;
-            this.cbCurState.Items.AddRange(new object[] {
+            this.cbInUnderVol.AutoSize = true;
+            this.cbInUnderVol.Location = new System.Drawing.Point(280, 24);
+            this.cbInUnderVol.Name = "cbInUnderVol";
+            this.cbInUnderVol.Size = new System.Drawing.Size(72, 16);
+            this.cbInUnderVol.TabIndex = 558;
+            this.cbInUnderVol.Text = "输入欠压";
+            this.cbInUnderVol.UseVisualStyleBackColor = true;
+            // 
+            // cbOutShort
+            // 
+            this.cbOutShort.AutoSize = true;
+            this.cbOutShort.Location = new System.Drawing.Point(280, 210);
+            this.cbOutShort.Name = "cbOutShort";
+            this.cbOutShort.Size = new System.Drawing.Size(72, 16);
+            this.cbOutShort.TabIndex = 557;
+            this.cbOutShort.Text = "输出短路";
+            this.cbOutShort.UseVisualStyleBackColor = true;
+            // 
+            // cbOutOverVol
+            // 
+            this.cbOutOverVol.AutoSize = true;
+            this.cbOutOverVol.Location = new System.Drawing.Point(142, 208);
+            this.cbOutOverVol.Name = "cbOutOverVol";
+            this.cbOutOverVol.Size = new System.Drawing.Size(72, 16);
+            this.cbOutOverVol.TabIndex = 556;
+            this.cbOutOverVol.Text = "输出过压";
+            this.cbOutOverVol.UseVisualStyleBackColor = true;
+            // 
+            // cbInOverVol
+            // 
+            this.cbInOverVol.AutoSize = true;
+            this.cbInOverVol.Location = new System.Drawing.Point(142, 180);
+            this.cbInOverVol.Name = "cbInOverVol";
+            this.cbInOverVol.Size = new System.Drawing.Size(72, 16);
+            this.cbInOverVol.TabIndex = 555;
+            this.cbInOverVol.Text = "输入过压";
+            this.cbInOverVol.UseVisualStyleBackColor = true;
+            // 
+            // cbTempHigh
+            // 
+            this.cbTempHigh.AutoSize = true;
+            this.cbTempHigh.Location = new System.Drawing.Point(280, 183);
+            this.cbTempHigh.Name = "cbTempHigh";
+            this.cbTempHigh.Size = new System.Drawing.Size(72, 16);
+            this.cbTempHigh.TabIndex = 554;
+            this.cbTempHigh.Text = "温度过高";
+            this.cbTempHigh.UseVisualStyleBackColor = true;
+            // 
+            // cbOutUnderCur
+            // 
+            this.cbOutUnderCur.AutoSize = true;
+            this.cbOutUnderCur.Location = new System.Drawing.Point(280, 156);
+            this.cbOutUnderCur.Name = "cbOutUnderCur";
+            this.cbOutUnderCur.Size = new System.Drawing.Size(72, 16);
+            this.cbOutUnderCur.TabIndex = 553;
+            this.cbOutUnderCur.Text = "输出欠流";
+            this.cbOutUnderCur.UseVisualStyleBackColor = true;
+            // 
+            // cbInUnderCur
+            // 
+            this.cbInUnderCur.AutoSize = true;
+            this.cbInUnderCur.Location = new System.Drawing.Point(280, 129);
+            this.cbInUnderCur.Name = "cbInUnderCur";
+            this.cbInUnderCur.Size = new System.Drawing.Size(72, 16);
+            this.cbInUnderCur.TabIndex = 552;
+            this.cbInUnderCur.Text = "输入欠流";
+            this.cbInUnderCur.UseVisualStyleBackColor = true;
+            // 
+            // cbOutOverCur
+            // 
+            this.cbOutOverCur.AutoSize = true;
+            this.cbOutOverCur.Location = new System.Drawing.Point(280, 99);
+            this.cbOutOverCur.Name = "cbOutOverCur";
+            this.cbOutOverCur.Size = new System.Drawing.Size(72, 16);
+            this.cbOutOverCur.TabIndex = 551;
+            this.cbOutOverCur.Text = "输出过流";
+            this.cbOutOverCur.UseVisualStyleBackColor = true;
+            // 
+            // cbInOverCur
+            // 
+            this.cbInOverCur.AutoSize = true;
+            this.cbInOverCur.Location = new System.Drawing.Point(280, 69);
+            this.cbInOverCur.Name = "cbInOverCur";
+            this.cbInOverCur.Size = new System.Drawing.Size(72, 16);
+            this.cbInOverCur.TabIndex = 550;
+            this.cbInOverCur.Text = "输入过流";
+            this.cbInOverCur.UseVisualStyleBackColor = true;
+            // 
+            // cbOutUnderVol
+            // 
+            this.cbOutUnderVol.AutoSize = true;
+            this.cbOutUnderVol.Location = new System.Drawing.Point(280, 46);
+            this.cbOutUnderVol.Name = "cbOutUnderVol";
+            this.cbOutUnderVol.Size = new System.Drawing.Size(72, 16);
+            this.cbOutUnderVol.TabIndex = 549;
+            this.cbOutUnderVol.Text = "输出欠压";
+            this.cbOutUnderVol.UseVisualStyleBackColor = true;
+            // 
+            // cbCurState1
+            // 
+            this.cbCurState1.FormattingEnabled = true;
+            this.cbCurState1.Items.AddRange(new object[] {
             "有输出",
             "无输出"});
-            this.cbCurState.Location = new System.Drawing.Point(135, 182);
-            this.cbCurState.Name = "cbCurState";
-            this.cbCurState.Size = new System.Drawing.Size(71, 20);
-            this.cbCurState.TabIndex = 547;
+            this.cbCurState1.Location = new System.Drawing.Point(197, 127);
+            this.cbCurState1.Name = "cbCurState1";
+            this.cbCurState1.Size = new System.Drawing.Size(71, 20);
+            this.cbCurState1.TabIndex = 547;
             // 
             // cbChargePlug
             // 
@@ -806,7 +917,7 @@
             this.cbChargePlug.Items.AddRange(new object[] {
             "插好",
             "没准备好"});
-            this.cbChargePlug.Location = new System.Drawing.Point(208, 157);
+            this.cbChargePlug.Location = new System.Drawing.Point(197, 100);
             this.cbChargePlug.Name = "cbChargePlug";
             this.cbChargePlug.Size = new System.Drawing.Size(71, 20);
             this.cbChargePlug.TabIndex = 546;
@@ -817,7 +928,7 @@
             this.cbMeterState.Items.AddRange(new object[] {
             "通信正常",
             "通信异常"});
-            this.cbMeterState.Location = new System.Drawing.Point(208, 127);
+            this.cbMeterState.Location = new System.Drawing.Point(197, 70);
             this.cbMeterState.Name = "cbMeterState";
             this.cbMeterState.Size = new System.Drawing.Size(71, 20);
             this.cbMeterState.TabIndex = 545;
@@ -828,7 +939,7 @@
             this.cbEmergencyBtn.Items.AddRange(new object[] {
             "正常",
             "按下"});
-            this.cbEmergencyBtn.Location = new System.Drawing.Point(208, 101);
+            this.cbEmergencyBtn.Location = new System.Drawing.Point(197, 44);
             this.cbEmergencyBtn.Name = "cbEmergencyBtn";
             this.cbEmergencyBtn.Size = new System.Drawing.Size(71, 20);
             this.cbEmergencyBtn.TabIndex = 544;
@@ -836,16 +947,16 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(77, 185);
+            this.label16.Location = new System.Drawing.Point(136, 131);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(59, 12);
             this.label16.TabIndex = 535;
-            this.label16.Text = "当前状态:";
+            this.label16.Text = "输出状态:";
             // 
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(147, 158);
+            this.label22.Location = new System.Drawing.Point(136, 101);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(59, 12);
             this.label22.TabIndex = 534;
@@ -854,7 +965,7 @@
             // label23
             // 
             this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(147, 132);
+            this.label23.Location = new System.Drawing.Point(136, 75);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(59, 12);
             this.label23.TabIndex = 533;
@@ -863,7 +974,7 @@
             // label24
             // 
             this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(147, 104);
+            this.label24.Location = new System.Drawing.Point(136, 47);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(59, 12);
             this.label24.TabIndex = 532;
@@ -871,16 +982,16 @@
             // 
             // txtValleyElect
             // 
-            this.txtValleyElect.Location = new System.Drawing.Point(197, 73);
+            this.txtValleyElect.Location = new System.Drawing.Point(57, 208);
             this.txtValleyElect.Name = "txtValleyElect";
-            this.txtValleyElect.Size = new System.Drawing.Size(82, 21);
+            this.txtValleyElect.Size = new System.Drawing.Size(73, 21);
             this.txtValleyElect.TabIndex = 531;
             this.txtValleyElect.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label25
             // 
             this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(147, 77);
+            this.label25.Location = new System.Drawing.Point(7, 212);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(47, 12);
             this.label25.TabIndex = 530;
@@ -888,16 +999,16 @@
             // 
             // txtFlatElect
             // 
-            this.txtFlatElect.Location = new System.Drawing.Point(197, 47);
+            this.txtFlatElect.Location = new System.Drawing.Point(58, 181);
             this.txtFlatElect.Name = "txtFlatElect";
-            this.txtFlatElect.Size = new System.Drawing.Size(82, 21);
+            this.txtFlatElect.Size = new System.Drawing.Size(72, 21);
             this.txtFlatElect.TabIndex = 529;
             this.txtFlatElect.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label26
             // 
             this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(147, 51);
+            this.label26.Location = new System.Drawing.Point(7, 184);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(47, 12);
             this.label26.TabIndex = 528;
@@ -907,7 +1018,7 @@
             // 
             this.txtPeakElect.Location = new System.Drawing.Point(57, 154);
             this.txtPeakElect.Name = "txtPeakElect";
-            this.txtPeakElect.Size = new System.Drawing.Size(82, 21);
+            this.txtPeakElect.Size = new System.Drawing.Size(73, 21);
             this.txtPeakElect.TabIndex = 527;
             this.txtPeakElect.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -924,7 +1035,7 @@
             // 
             this.txtPointElect.Location = new System.Drawing.Point(57, 128);
             this.txtPointElect.Name = "txtPointElect";
-            this.txtPointElect.Size = new System.Drawing.Size(82, 21);
+            this.txtPointElect.Size = new System.Drawing.Size(73, 21);
             this.txtPointElect.TabIndex = 525;
             this.txtPointElect.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -941,7 +1052,7 @@
             // 
             this.txtTotalElect.Location = new System.Drawing.Point(57, 100);
             this.txtTotalElect.Name = "txtTotalElect";
-            this.txtTotalElect.Size = new System.Drawing.Size(82, 21);
+            this.txtTotalElect.Size = new System.Drawing.Size(73, 21);
             this.txtTotalElect.TabIndex = 523;
             this.txtTotalElect.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -958,7 +1069,7 @@
             // 
             this.txtCurrent.Location = new System.Drawing.Point(57, 73);
             this.txtCurrent.Name = "txtCurrent";
-            this.txtCurrent.Size = new System.Drawing.Size(82, 21);
+            this.txtCurrent.Size = new System.Drawing.Size(73, 21);
             this.txtCurrent.TabIndex = 521;
             this.txtCurrent.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -975,7 +1086,7 @@
             // 
             this.txtValtage.Location = new System.Drawing.Point(57, 47);
             this.txtValtage.Name = "txtValtage";
-            this.txtValtage.Size = new System.Drawing.Size(82, 21);
+            this.txtValtage.Size = new System.Drawing.Size(73, 21);
             this.txtValtage.TabIndex = 519;
             this.txtValtage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1033,14 +1144,14 @@
             this.panel4.Controls.Add(this.label53);
             this.panel4.Controls.Add(this.label14);
             this.panel4.Controls.Add(this.btnCurInfo);
-            this.panel4.Location = new System.Drawing.Point(753, 141);
+            this.panel4.Location = new System.Drawing.Point(816, 141);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(357, 215);
+            this.panel4.Size = new System.Drawing.Size(294, 235);
             this.panel4.TabIndex = 504;
             // 
             // btnSetCurInfo
             // 
-            this.btnSetCurInfo.Location = new System.Drawing.Point(259, 4);
+            this.btnSetCurInfo.Location = new System.Drawing.Point(224, 4);
             this.btnSetCurInfo.Name = "btnSetCurInfo";
             this.btnSetCurInfo.Size = new System.Drawing.Size(62, 27);
             this.btnSetCurInfo.TabIndex = 553;
@@ -1050,7 +1161,7 @@
             // 
             // txtCurValleyCost
             // 
-            this.txtCurValleyCost.Location = new System.Drawing.Point(230, 185);
+            this.txtCurValleyCost.Location = new System.Drawing.Point(204, 185);
             this.txtCurValleyCost.Name = "txtCurValleyCost";
             this.txtCurValleyCost.Size = new System.Drawing.Size(82, 21);
             this.txtCurValleyCost.TabIndex = 552;
@@ -1059,7 +1170,7 @@
             // label37
             // 
             this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(180, 189);
+            this.label37.Location = new System.Drawing.Point(154, 189);
             this.label37.Name = "label37";
             this.label37.Size = new System.Drawing.Size(47, 12);
             this.label37.TabIndex = 551;
@@ -1067,7 +1178,7 @@
             // 
             // txtCurFlatCost
             // 
-            this.txtCurFlatCost.Location = new System.Drawing.Point(230, 160);
+            this.txtCurFlatCost.Location = new System.Drawing.Point(204, 160);
             this.txtCurFlatCost.Name = "txtCurFlatCost";
             this.txtCurFlatCost.Size = new System.Drawing.Size(82, 21);
             this.txtCurFlatCost.TabIndex = 550;
@@ -1076,7 +1187,7 @@
             // label38
             // 
             this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(180, 164);
+            this.label38.Location = new System.Drawing.Point(154, 164);
             this.label38.Name = "label38";
             this.label38.Size = new System.Drawing.Size(47, 12);
             this.label38.TabIndex = 549;
@@ -1084,7 +1195,7 @@
             // 
             // txtCurPeakCost
             // 
-            this.txtCurPeakCost.Location = new System.Drawing.Point(230, 136);
+            this.txtCurPeakCost.Location = new System.Drawing.Point(204, 136);
             this.txtCurPeakCost.Name = "txtCurPeakCost";
             this.txtCurPeakCost.Size = new System.Drawing.Size(82, 21);
             this.txtCurPeakCost.TabIndex = 548;
@@ -1093,7 +1204,7 @@
             // label39
             // 
             this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(180, 140);
+            this.label39.Location = new System.Drawing.Point(154, 140);
             this.label39.Name = "label39";
             this.label39.Size = new System.Drawing.Size(47, 12);
             this.label39.TabIndex = 547;
@@ -1101,7 +1212,7 @@
             // 
             // txtCurPointCost
             // 
-            this.txtCurPointCost.Location = new System.Drawing.Point(230, 112);
+            this.txtCurPointCost.Location = new System.Drawing.Point(204, 112);
             this.txtCurPointCost.Name = "txtCurPointCost";
             this.txtCurPointCost.Size = new System.Drawing.Size(82, 21);
             this.txtCurPointCost.TabIndex = 546;
@@ -1110,7 +1221,7 @@
             // label40
             // 
             this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(180, 116);
+            this.label40.Location = new System.Drawing.Point(154, 116);
             this.label40.Name = "label40";
             this.label40.Size = new System.Drawing.Size(47, 12);
             this.label40.TabIndex = 545;
@@ -1118,7 +1229,7 @@
             // 
             // txtCurValleyPrice
             // 
-            this.txtCurValleyPrice.Location = new System.Drawing.Point(230, 88);
+            this.txtCurValleyPrice.Location = new System.Drawing.Point(204, 88);
             this.txtCurValleyPrice.Name = "txtCurValleyPrice";
             this.txtCurValleyPrice.Size = new System.Drawing.Size(82, 21);
             this.txtCurValleyPrice.TabIndex = 544;
@@ -1127,7 +1238,7 @@
             // label41
             // 
             this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(180, 92);
+            this.label41.Location = new System.Drawing.Point(154, 92);
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(47, 12);
             this.label41.TabIndex = 543;
@@ -1135,7 +1246,7 @@
             // 
             // txtCurFlatPrice
             // 
-            this.txtCurFlatPrice.Location = new System.Drawing.Point(230, 65);
+            this.txtCurFlatPrice.Location = new System.Drawing.Point(204, 65);
             this.txtCurFlatPrice.Name = "txtCurFlatPrice";
             this.txtCurFlatPrice.Size = new System.Drawing.Size(82, 21);
             this.txtCurFlatPrice.TabIndex = 542;
@@ -1144,7 +1255,7 @@
             // label42
             // 
             this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(180, 69);
+            this.label42.Location = new System.Drawing.Point(154, 69);
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(47, 12);
             this.label42.TabIndex = 541;
@@ -1152,7 +1263,7 @@
             // 
             // txtCurPeakPrice
             // 
-            this.txtCurPeakPrice.Location = new System.Drawing.Point(230, 41);
+            this.txtCurPeakPrice.Location = new System.Drawing.Point(204, 41);
             this.txtCurPeakPrice.Name = "txtCurPeakPrice";
             this.txtCurPeakPrice.Size = new System.Drawing.Size(82, 21);
             this.txtCurPeakPrice.TabIndex = 540;
@@ -1161,7 +1272,7 @@
             // label43
             // 
             this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(180, 45);
+            this.label43.Location = new System.Drawing.Point(154, 45);
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(47, 12);
             this.label43.TabIndex = 539;
@@ -1169,7 +1280,7 @@
             // 
             // txtCurPointPrice
             // 
-            this.txtCurPointPrice.Location = new System.Drawing.Point(83, 185);
+            this.txtCurPointPrice.Location = new System.Drawing.Point(57, 185);
             this.txtCurPointPrice.Name = "txtCurPointPrice";
             this.txtCurPointPrice.Size = new System.Drawing.Size(82, 21);
             this.txtCurPointPrice.TabIndex = 538;
@@ -1178,7 +1289,7 @@
             // label35
             // 
             this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(33, 189);
+            this.label35.Location = new System.Drawing.Point(8, 189);
             this.label35.Name = "label35";
             this.label35.Size = new System.Drawing.Size(47, 12);
             this.label35.TabIndex = 537;
@@ -1186,7 +1297,7 @@
             // 
             // txtCurValleyElect
             // 
-            this.txtCurValleyElect.Location = new System.Drawing.Point(83, 160);
+            this.txtCurValleyElect.Location = new System.Drawing.Point(57, 160);
             this.txtCurValleyElect.Name = "txtCurValleyElect";
             this.txtCurValleyElect.Size = new System.Drawing.Size(82, 21);
             this.txtCurValleyElect.TabIndex = 536;
@@ -1195,7 +1306,7 @@
             // label36
             // 
             this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(33, 164);
+            this.label36.Location = new System.Drawing.Point(7, 164);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(47, 12);
             this.label36.TabIndex = 535;
@@ -1203,7 +1314,7 @@
             // 
             // txtCurFlatElect
             // 
-            this.txtCurFlatElect.Location = new System.Drawing.Point(83, 136);
+            this.txtCurFlatElect.Location = new System.Drawing.Point(57, 136);
             this.txtCurFlatElect.Name = "txtCurFlatElect";
             this.txtCurFlatElect.Size = new System.Drawing.Size(82, 21);
             this.txtCurFlatElect.TabIndex = 534;
@@ -1212,7 +1323,7 @@
             // label49
             // 
             this.label49.AutoSize = true;
-            this.label49.Location = new System.Drawing.Point(33, 140);
+            this.label49.Location = new System.Drawing.Point(7, 140);
             this.label49.Name = "label49";
             this.label49.Size = new System.Drawing.Size(47, 12);
             this.label49.TabIndex = 533;
@@ -1220,7 +1331,7 @@
             // 
             // txtCurPeakElect
             // 
-            this.txtCurPeakElect.Location = new System.Drawing.Point(83, 112);
+            this.txtCurPeakElect.Location = new System.Drawing.Point(57, 112);
             this.txtCurPeakElect.Name = "txtCurPeakElect";
             this.txtCurPeakElect.Size = new System.Drawing.Size(82, 21);
             this.txtCurPeakElect.TabIndex = 532;
@@ -1229,7 +1340,7 @@
             // label50
             // 
             this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(33, 116);
+            this.label50.Location = new System.Drawing.Point(7, 116);
             this.label50.Name = "label50";
             this.label50.Size = new System.Drawing.Size(47, 12);
             this.label50.TabIndex = 531;
@@ -1237,7 +1348,7 @@
             // 
             // txtCurPointElect
             // 
-            this.txtCurPointElect.Location = new System.Drawing.Point(83, 88);
+            this.txtCurPointElect.Location = new System.Drawing.Point(57, 88);
             this.txtCurPointElect.Name = "txtCurPointElect";
             this.txtCurPointElect.Size = new System.Drawing.Size(82, 21);
             this.txtCurPointElect.TabIndex = 530;
@@ -1246,7 +1357,7 @@
             // label51
             // 
             this.label51.AutoSize = true;
-            this.label51.Location = new System.Drawing.Point(33, 92);
+            this.label51.Location = new System.Drawing.Point(7, 92);
             this.label51.Name = "label51";
             this.label51.Size = new System.Drawing.Size(47, 12);
             this.label51.TabIndex = 529;
@@ -1254,7 +1365,7 @@
             // 
             // txtCurTotalCost
             // 
-            this.txtCurTotalCost.Location = new System.Drawing.Point(83, 65);
+            this.txtCurTotalCost.Location = new System.Drawing.Point(57, 65);
             this.txtCurTotalCost.Name = "txtCurTotalCost";
             this.txtCurTotalCost.Size = new System.Drawing.Size(82, 21);
             this.txtCurTotalCost.TabIndex = 528;
@@ -1263,7 +1374,7 @@
             // label52
             // 
             this.label52.AutoSize = true;
-            this.label52.Location = new System.Drawing.Point(33, 69);
+            this.label52.Location = new System.Drawing.Point(7, 69);
             this.label52.Name = "label52";
             this.label52.Size = new System.Drawing.Size(47, 12);
             this.label52.TabIndex = 527;
@@ -1271,7 +1382,7 @@
             // 
             // txtCurTotalElect
             // 
-            this.txtCurTotalElect.Location = new System.Drawing.Point(83, 41);
+            this.txtCurTotalElect.Location = new System.Drawing.Point(57, 41);
             this.txtCurTotalElect.Name = "txtCurTotalElect";
             this.txtCurTotalElect.Size = new System.Drawing.Size(82, 21);
             this.txtCurTotalElect.TabIndex = 526;
@@ -1280,7 +1391,7 @@
             // label53
             // 
             this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(33, 45);
+            this.label53.Location = new System.Drawing.Point(7, 45);
             this.label53.Name = "label53";
             this.label53.Size = new System.Drawing.Size(47, 12);
             this.label53.TabIndex = 525;
@@ -1310,21 +1421,45 @@
             // 
             this.tvChargePile.Location = new System.Drawing.Point(2, 75);
             this.tvChargePile.Name = "tvChargePile";
-            treeNode3.Name = "chargePileGroup";
-            treeNode3.Text = "充电桩";
+            treeNode4.Name = "chargePileGroup";
+            treeNode4.Text = "充电桩";
             this.tvChargePile.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3});
+            treeNode4});
             this.tvChargePile.Size = new System.Drawing.Size(146, 590);
             this.tvChargePile.TabIndex = 508;
             this.tvChargePile.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvChargePile_AfterSelect);
             // 
             // rtbDisplay
             // 
-            this.rtbDisplay.Location = new System.Drawing.Point(154, 362);
+            this.rtbDisplay.Location = new System.Drawing.Point(154, 382);
             this.rtbDisplay.Name = "rtbDisplay";
-            this.rtbDisplay.Size = new System.Drawing.Size(956, 303);
+            this.rtbDisplay.Size = new System.Drawing.Size(956, 283);
             this.rtbDisplay.TabIndex = 548;
             this.rtbDisplay.Text = "";
+            // 
+            // cbCurState
+            // 
+            this.cbCurState.FormattingEnabled = true;
+            this.cbCurState.Items.AddRange(new object[] {
+            "故障状态",
+            "空闲状态",
+            "充电状态",
+            "停车状态",
+            "预约状态",
+            "维护状态"});
+            this.cbCurState.Location = new System.Drawing.Point(197, 153);
+            this.cbCurState.Name = "cbCurState";
+            this.cbCurState.Size = new System.Drawing.Size(71, 20);
+            this.cbCurState.TabIndex = 560;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(136, 157);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(59, 12);
+            this.label19.TabIndex = 559;
+            this.label19.Text = "当前状态:";
             // 
             // MonitoringInterface
             // 
@@ -1373,12 +1508,10 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.Timer TimeSendData;
         private System.Windows.Forms.Button btnGetData;
         private System.Windows.Forms.Timer timeDealRevData;
         private Sunisoft.IrisSkin.SkinEngine skinEngine2;
         public System.IO.Ports.SerialPort serialPort1;
-        public System.Windows.Forms.Timer updateFrameTimer;
         private System.Windows.Forms.Panel panel33;
         private System.Windows.Forms.Label labeltx;
         private System.Windows.Forms.PictureBox picBox1;
@@ -1449,7 +1582,7 @@
         private System.Windows.Forms.TextBox txtValtage;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.ComboBox cbEmergencyBtn;
-        private System.Windows.Forms.ComboBox cbCurState;
+        private System.Windows.Forms.ComboBox cbCurState1;
         private System.Windows.Forms.ComboBox cbChargePlug;
         private System.Windows.Forms.ComboBox cbMeterState;
         private System.Windows.Forms.Label label17;
@@ -1491,6 +1624,18 @@
         public System.Windows.Forms.TreeView tvChargePile;
         private System.Windows.Forms.ComboBox cbOpen;
         private System.Windows.Forms.RichTextBox rtbDisplay;
+        private System.Windows.Forms.CheckBox cbInUnderVol;
+        private System.Windows.Forms.CheckBox cbOutShort;
+        private System.Windows.Forms.CheckBox cbOutOverVol;
+        private System.Windows.Forms.CheckBox cbInOverVol;
+        private System.Windows.Forms.CheckBox cbTempHigh;
+        private System.Windows.Forms.CheckBox cbOutUnderCur;
+        private System.Windows.Forms.CheckBox cbInUnderCur;
+        private System.Windows.Forms.CheckBox cbOutOverCur;
+        private System.Windows.Forms.CheckBox cbInOverCur;
+        private System.Windows.Forms.CheckBox cbOutUnderVol;
+        private System.Windows.Forms.ComboBox cbCurState;
+        private System.Windows.Forms.Label label19;
     }
 }
 
