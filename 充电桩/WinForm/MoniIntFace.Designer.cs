@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MonitoringInterface));
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("充电桩");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("充电桩");
             this.btnOpenPort = new System.Windows.Forms.Button();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -93,6 +93,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.txtChargingPileAddress = new System.Windows.Forms.TextBox();
             this.panel6 = new System.Windows.Forms.Panel();
+            this.cbCurState = new System.Windows.Forms.ComboBox();
+            this.label19 = new System.Windows.Forms.Label();
             this.cbInUnderVol = new System.Windows.Forms.CheckBox();
             this.cbOutShort = new System.Windows.Forms.CheckBox();
             this.cbOutOverVol = new System.Windows.Forms.CheckBox();
@@ -103,7 +105,7 @@
             this.cbOutOverCur = new System.Windows.Forms.CheckBox();
             this.cbInOverCur = new System.Windows.Forms.CheckBox();
             this.cbOutUnderVol = new System.Windows.Forms.CheckBox();
-            this.cbCurState1 = new System.Windows.Forms.ComboBox();
+            this.cbOutState = new System.Windows.Forms.ComboBox();
             this.cbChargePlug = new System.Windows.Forms.ComboBox();
             this.cbMeterState = new System.Windows.Forms.ComboBox();
             this.cbEmergencyBtn = new System.Windows.Forms.ComboBox();
@@ -162,8 +164,6 @@
             this.ChargeTimeTimer = new System.Windows.Forms.Timer(this.components);
             this.tvChargePile = new System.Windows.Forms.TreeView();
             this.rtbDisplay = new System.Windows.Forms.RichTextBox();
-            this.cbCurState = new System.Windows.Forms.ComboBox();
-            this.label19 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picBox1)).BeginInit();
@@ -770,7 +770,7 @@
             this.panel6.Controls.Add(this.cbOutOverCur);
             this.panel6.Controls.Add(this.cbInOverCur);
             this.panel6.Controls.Add(this.cbOutUnderVol);
-            this.panel6.Controls.Add(this.cbCurState1);
+            this.panel6.Controls.Add(this.cbOutState);
             this.panel6.Controls.Add(this.cbChargePlug);
             this.panel6.Controls.Add(this.cbMeterState);
             this.panel6.Controls.Add(this.cbEmergencyBtn);
@@ -799,6 +799,30 @@
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(357, 235);
             this.panel6.TabIndex = 506;
+            // 
+            // cbCurState
+            // 
+            this.cbCurState.FormattingEnabled = true;
+            this.cbCurState.Items.AddRange(new object[] {
+            "故障状态",
+            "空闲状态",
+            "充电状态",
+            "停车状态",
+            "预约状态",
+            "维护状态"});
+            this.cbCurState.Location = new System.Drawing.Point(197, 153);
+            this.cbCurState.Name = "cbCurState";
+            this.cbCurState.Size = new System.Drawing.Size(71, 20);
+            this.cbCurState.TabIndex = 560;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(136, 157);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(59, 12);
+            this.label19.TabIndex = 559;
+            this.label19.Text = "当前状态:";
             // 
             // cbInUnderVol
             // 
@@ -900,16 +924,16 @@
             this.cbOutUnderVol.Text = "输出欠压";
             this.cbOutUnderVol.UseVisualStyleBackColor = true;
             // 
-            // cbCurState1
+            // cbOutState
             // 
-            this.cbCurState1.FormattingEnabled = true;
-            this.cbCurState1.Items.AddRange(new object[] {
+            this.cbOutState.FormattingEnabled = true;
+            this.cbOutState.Items.AddRange(new object[] {
             "有输出",
             "无输出"});
-            this.cbCurState1.Location = new System.Drawing.Point(197, 127);
-            this.cbCurState1.Name = "cbCurState1";
-            this.cbCurState1.Size = new System.Drawing.Size(71, 20);
-            this.cbCurState1.TabIndex = 547;
+            this.cbOutState.Location = new System.Drawing.Point(197, 127);
+            this.cbOutState.Name = "cbOutState";
+            this.cbOutState.Size = new System.Drawing.Size(71, 20);
+            this.cbOutState.TabIndex = 547;
             // 
             // cbChargePlug
             // 
@@ -1409,22 +1433,22 @@
             // 
             // ChargeSocTime
             // 
-            this.ChargeSocTime.Interval = 5000;
+            this.ChargeSocTime.Interval = 60000;
             this.ChargeSocTime.Tick += new System.EventHandler(this.ChargeSocTime_Tick);
             // 
             // ChargeTimeTimer
             // 
-            this.ChargeTimeTimer.Interval = 10000;
+            this.ChargeTimeTimer.Interval = 60000;
             this.ChargeTimeTimer.Tick += new System.EventHandler(this.ChargeTimeTimer_Tick);
             // 
             // tvChargePile
             // 
             this.tvChargePile.Location = new System.Drawing.Point(2, 75);
             this.tvChargePile.Name = "tvChargePile";
-            treeNode4.Name = "chargePileGroup";
-            treeNode4.Text = "充电桩";
+            treeNode2.Name = "chargePileGroup";
+            treeNode2.Text = "充电桩";
             this.tvChargePile.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode4});
+            treeNode2});
             this.tvChargePile.Size = new System.Drawing.Size(146, 590);
             this.tvChargePile.TabIndex = 508;
             this.tvChargePile.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvChargePile_AfterSelect);
@@ -1436,30 +1460,6 @@
             this.rtbDisplay.Size = new System.Drawing.Size(956, 283);
             this.rtbDisplay.TabIndex = 548;
             this.rtbDisplay.Text = "";
-            // 
-            // cbCurState
-            // 
-            this.cbCurState.FormattingEnabled = true;
-            this.cbCurState.Items.AddRange(new object[] {
-            "故障状态",
-            "空闲状态",
-            "充电状态",
-            "停车状态",
-            "预约状态",
-            "维护状态"});
-            this.cbCurState.Location = new System.Drawing.Point(197, 153);
-            this.cbCurState.Name = "cbCurState";
-            this.cbCurState.Size = new System.Drawing.Size(71, 20);
-            this.cbCurState.TabIndex = 560;
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(136, 157);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(59, 12);
-            this.label19.TabIndex = 559;
-            this.label19.Text = "当前状态:";
             // 
             // MonitoringInterface
             // 
@@ -1582,7 +1582,7 @@
         private System.Windows.Forms.TextBox txtValtage;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.ComboBox cbEmergencyBtn;
-        private System.Windows.Forms.ComboBox cbCurState1;
+        private System.Windows.Forms.ComboBox cbOutState;
         private System.Windows.Forms.ComboBox cbChargePlug;
         private System.Windows.Forms.ComboBox cbMeterState;
         private System.Windows.Forms.Label label17;
