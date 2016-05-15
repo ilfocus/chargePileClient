@@ -362,6 +362,13 @@ namespace ChargingPile.WinForm
             }
             return false;
         }
+        private string byteArrayToString(byte[] arr) {
+            StringBuilder strB = new StringBuilder();
+            for (int i = 0; i < arr.Length; i++) {
+                strB.Append(arr[i].ToString("X2") + " ");
+            }
+            return strB.ToString();
+        }
         private void respondRequestCmd(byte cmdCode)
         {
             const int QUERY_MSG_NUM = 16;
@@ -1274,9 +1281,11 @@ namespace ChargingPile.WinForm
                 temp.address = cpAddress;
                 string str = "";
                 string str1 = string.Empty;
-                for (int i = 0; i < bRequestCmd.Length; i++) {
-                    str1 += Convert.ToString(bRequestCmd[i], 16) + " ";
-                }
+//                 for (int i = 0; i < bRequestCmd.Length; i++) {
+//                     str1 += Convert.ToString(bRequestCmd[i], 16) + " ";
+//                 }
+                // 把数组转成字符串（大写，带空格）
+                str1 += byteArrayToString(bRequestCmd);
                 temp.arrString = str1;
 
                 if (false == addPortAddress(cpAddress, iPortStore)) {
@@ -2558,7 +2567,8 @@ namespace ChargingPile.WinForm
 
         private void TimSysTime_Tick(object sender, EventArgs e) {
             DateTime dt = DateTime.Now;
-            TS_LableSystemTime.Text = dt.ToString();
+            //TS_LableSystemTime.Text = dt.ToString();
+            lblSystemTime.Text = dt.ToString();
         }
         static bool cpHeartFrameStateFlg = true;
         private void btnPileNormal_Click(object sender, EventArgs e) {
@@ -2850,5 +2860,17 @@ namespace ChargingPile.WinForm
             }
         }
         #endregion
+
+        private void btnClear_Click(object sender, EventArgs e) {
+            rtbDisplay.Text = "";
+        }
+
+        private void btnPause_Click(object sender, EventArgs e) {
+            if (btnPause.Text == "暂停") {
+                btnPause.Text = "恢复";
+            } else {
+                btnPause.Text = "暂停";
+            }
+        }
     }
 }

@@ -30,30 +30,16 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MonitoringInterface));
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("充电桩");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("充电桩");
             this.btnOpenPort = new System.Windows.Forms.Button();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton_Config = new System.Windows.Forms.ToolStripDropDownButton();
             this.tsmAddCP = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.串口设置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripButton_Look = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton_Alarm = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton_UpDown = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton_SHTV = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton_Card = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton_FileMng = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton_User = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton_Curve = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton_Report = new System.Windows.Forms.ToolStripDropDownButton();
-            this.tsmi_ChargeRecordReport = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton_About = new System.Windows.Forms.ToolStripButton();
             this.TSBtnExist = new System.Windows.Forms.ToolStripButton();
-            this.TS_LableSystemTime = new System.Windows.Forms.ToolStripLabel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.labeltx = new System.Windows.Forms.Label();
             this.picBox1 = new System.Windows.Forms.PictureBox();
@@ -164,6 +150,11 @@
             this.ChargeTimeTimer = new System.Windows.Forms.Timer(this.components);
             this.tvChargePile = new System.Windows.Forms.TreeView();
             this.rtbDisplay = new System.Windows.Forms.RichTextBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.lblSystemTime = new System.Windows.Forms.Label();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.btnPause = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picBox1)).BeginInit();
@@ -172,6 +163,7 @@
             this.panel3.SuspendLayout();
             this.panel6.SuspendLayout();
             this.panel4.SuspendLayout();
+            this.panel5.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnOpenPort
@@ -193,21 +185,9 @@
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButton_Config,
-            this.toolStripButton_Look,
-            this.toolStripButton_Alarm,
-            this.toolStripButton_UpDown,
-            this.toolStripButton_SHTV,
             this.toolStripSeparator1,
-            this.toolStripButton_Card,
-            this.toolStripButton_FileMng,
-            this.toolStripButton_User,
-            this.toolStripSeparator2,
-            this.toolStripButton_Curve,
-            this.toolStripButton_Report,
-            this.toolStripSeparator3,
             this.toolStripButton_About,
-            this.TSBtnExist,
-            this.TS_LableSystemTime});
+            this.TSBtnExist});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1116, 72);
@@ -218,7 +198,6 @@
             // 
             this.toolStripButton_Config.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmAddCP,
-            this.toolStripMenuItem2,
             this.串口设置ToolStripMenuItem});
             this.toolStripButton_Config.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Config.Image")));
             this.toolStripButton_Config.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
@@ -231,136 +210,21 @@
             // tsmAddCP
             // 
             this.tsmAddCP.Name = "tsmAddCP";
-            this.tsmAddCP.Size = new System.Drawing.Size(148, 22);
+            this.tsmAddCP.Size = new System.Drawing.Size(152, 22);
             this.tsmAddCP.Text = "充电桩配置";
             this.tsmAddCP.Click += new System.EventHandler(this.tsmAddCP_Click);
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(148, 22);
-            this.toolStripMenuItem2.Text = "告警阈值配置";
             // 
             // 串口设置ToolStripMenuItem
             // 
             this.串口设置ToolStripMenuItem.Name = "串口设置ToolStripMenuItem";
-            this.串口设置ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.串口设置ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.串口设置ToolStripMenuItem.Text = "串口设置";
             this.串口设置ToolStripMenuItem.Click += new System.EventHandler(this.串口设置ToolStripMenuItem_Click);
-            // 
-            // toolStripButton_Look
-            // 
-            this.toolStripButton_Look.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Look.Image")));
-            this.toolStripButton_Look.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButton_Look.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_Look.Name = "toolStripButton_Look";
-            this.toolStripButton_Look.Size = new System.Drawing.Size(60, 69);
-            this.toolStripButton_Look.Text = "查看事件";
-            this.toolStripButton_Look.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            // 
-            // toolStripButton_Alarm
-            // 
-            this.toolStripButton_Alarm.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Alarm.Image")));
-            this.toolStripButton_Alarm.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButton_Alarm.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_Alarm.Name = "toolStripButton_Alarm";
-            this.toolStripButton_Alarm.Size = new System.Drawing.Size(60, 69);
-            this.toolStripButton_Alarm.Text = "音效告警";
-            this.toolStripButton_Alarm.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            // 
-            // toolStripButton_UpDown
-            // 
-            this.toolStripButton_UpDown.Image = global::ChargingPile.Properties.Resources.hideup;
-            this.toolStripButton_UpDown.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButton_UpDown.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_UpDown.Name = "toolStripButton_UpDown";
-            this.toolStripButton_UpDown.Size = new System.Drawing.Size(60, 69);
-            this.toolStripButton_UpDown.Text = "隐藏总览";
-            this.toolStripButton_UpDown.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            // 
-            // toolStripButton_SHTV
-            // 
-            this.toolStripButton_SHTV.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_SHTV.Image")));
-            this.toolStripButton_SHTV.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButton_SHTV.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_SHTV.Name = "toolStripButton_SHTV";
-            this.toolStripButton_SHTV.Size = new System.Drawing.Size(72, 69);
-            this.toolStripButton_SHTV.Text = "隐藏树视图";
-            this.toolStripButton_SHTV.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.toolStripButton_SHTV.Visible = false;
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 72);
-            // 
-            // toolStripButton_Card
-            // 
-            this.toolStripButton_Card.Image = global::ChargingPile.Properties.Resources.card;
-            this.toolStripButton_Card.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButton_Card.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_Card.Name = "toolStripButton_Card";
-            this.toolStripButton_Card.Size = new System.Drawing.Size(60, 69);
-            this.toolStripButton_Card.Text = "开卡充值";
-            this.toolStripButton_Card.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            // 
-            // toolStripButton_FileMng
-            // 
-            this.toolStripButton_FileMng.Image = global::ChargingPile.Properties.Resources.files48;
-            this.toolStripButton_FileMng.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButton_FileMng.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_FileMng.Name = "toolStripButton_FileMng";
-            this.toolStripButton_FileMng.Size = new System.Drawing.Size(60, 69);
-            this.toolStripButton_FileMng.Text = "档案管理";
-            this.toolStripButton_FileMng.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            // 
-            // toolStripButton_User
-            // 
-            this.toolStripButton_User.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_User.Image")));
-            this.toolStripButton_User.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButton_User.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_User.Name = "toolStripButton_User";
-            this.toolStripButton_User.Size = new System.Drawing.Size(60, 69);
-            this.toolStripButton_User.Text = "用户管理";
-            this.toolStripButton_User.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 72);
-            // 
-            // toolStripButton_Curve
-            // 
-            this.toolStripButton_Curve.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Curve.Image")));
-            this.toolStripButton_Curve.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButton_Curve.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_Curve.Name = "toolStripButton_Curve";
-            this.toolStripButton_Curve.Size = new System.Drawing.Size(60, 69);
-            this.toolStripButton_Curve.Text = "曲线查看";
-            this.toolStripButton_Curve.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            // 
-            // toolStripButton_Report
-            // 
-            this.toolStripButton_Report.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmi_ChargeRecordReport});
-            this.toolStripButton_Report.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_Report.Image")));
-            this.toolStripButton_Report.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripButton_Report.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton_Report.Name = "toolStripButton_Report";
-            this.toolStripButton_Report.Size = new System.Drawing.Size(69, 69);
-            this.toolStripButton_Report.Text = "报表浏览";
-            this.toolStripButton_Report.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            // 
-            // tsmi_ChargeRecordReport
-            // 
-            this.tsmi_ChargeRecordReport.Name = "tsmi_ChargeRecordReport";
-            this.tsmi_ChargeRecordReport.Size = new System.Drawing.Size(148, 22);
-            this.tsmi_ChargeRecordReport.Text = "充电记录报表";
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 72);
             // 
             // toolStripButton_About
             // 
@@ -383,16 +247,10 @@
             this.TSBtnExist.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.TSBtnExist.Click += new System.EventHandler(this.TSBtnExist_Click);
             // 
-            // TS_LableSystemTime
-            // 
-            this.TS_LableSystemTime.AutoSize = false;
-            this.TS_LableSystemTime.Font = new System.Drawing.Font("幼圆", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.TS_LableSystemTime.Name = "TS_LableSystemTime";
-            this.TS_LableSystemTime.Size = new System.Drawing.Size(230, 56);
-            this.TS_LableSystemTime.Text = "toolStripLabel1";
-            // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btnPause);
+            this.panel1.Controls.Add(this.btnClear);
             this.panel1.Controls.Add(this.labeltx);
             this.panel1.Controls.Add(this.picBox1);
             this.panel1.Location = new System.Drawing.Point(0, 669);
@@ -760,16 +618,8 @@
             this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel6.Controls.Add(this.cbCurState);
             this.panel6.Controls.Add(this.label19);
-            this.panel6.Controls.Add(this.cbInUnderVol);
             this.panel6.Controls.Add(this.cbOutShort);
-            this.panel6.Controls.Add(this.cbOutOverVol);
-            this.panel6.Controls.Add(this.cbInOverVol);
             this.panel6.Controls.Add(this.cbTempHigh);
-            this.panel6.Controls.Add(this.cbOutUnderCur);
-            this.panel6.Controls.Add(this.cbInUnderCur);
-            this.panel6.Controls.Add(this.cbOutOverCur);
-            this.panel6.Controls.Add(this.cbInOverCur);
-            this.panel6.Controls.Add(this.cbOutUnderVol);
             this.panel6.Controls.Add(this.cbOutState);
             this.panel6.Controls.Add(this.cbChargePlug);
             this.panel6.Controls.Add(this.cbMeterState);
@@ -795,6 +645,7 @@
             this.panel6.Controls.Add(this.btnSetData);
             this.panel6.Controls.Add(this.btnCPState);
             this.panel6.Controls.Add(this.label12);
+            this.panel6.Controls.Add(this.panel5);
             this.panel6.Location = new System.Drawing.Point(457, 141);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(357, 235);
@@ -827,7 +678,7 @@
             // cbInUnderVol
             // 
             this.cbInUnderVol.AutoSize = true;
-            this.cbInUnderVol.Location = new System.Drawing.Point(280, 24);
+            this.cbInUnderVol.Location = new System.Drawing.Point(5, 65);
             this.cbInUnderVol.Name = "cbInUnderVol";
             this.cbInUnderVol.Size = new System.Drawing.Size(72, 16);
             this.cbInUnderVol.TabIndex = 558;
@@ -837,7 +688,7 @@
             // cbOutShort
             // 
             this.cbOutShort.AutoSize = true;
-            this.cbOutShort.Location = new System.Drawing.Point(280, 210);
+            this.cbOutShort.Location = new System.Drawing.Point(280, 215);
             this.cbOutShort.Name = "cbOutShort";
             this.cbOutShort.Size = new System.Drawing.Size(72, 16);
             this.cbOutShort.TabIndex = 557;
@@ -847,7 +698,7 @@
             // cbOutOverVol
             // 
             this.cbOutOverVol.AutoSize = true;
-            this.cbOutOverVol.Location = new System.Drawing.Point(142, 208);
+            this.cbOutOverVol.Location = new System.Drawing.Point(5, 40);
             this.cbOutOverVol.Name = "cbOutOverVol";
             this.cbOutOverVol.Size = new System.Drawing.Size(72, 16);
             this.cbOutOverVol.TabIndex = 556;
@@ -857,7 +708,7 @@
             // cbInOverVol
             // 
             this.cbInOverVol.AutoSize = true;
-            this.cbInOverVol.Location = new System.Drawing.Point(142, 180);
+            this.cbInOverVol.Location = new System.Drawing.Point(5, 22);
             this.cbInOverVol.Name = "cbInOverVol";
             this.cbInOverVol.Size = new System.Drawing.Size(72, 16);
             this.cbInOverVol.TabIndex = 555;
@@ -867,7 +718,7 @@
             // cbTempHigh
             // 
             this.cbTempHigh.AutoSize = true;
-            this.cbTempHigh.Location = new System.Drawing.Point(280, 183);
+            this.cbTempHigh.Location = new System.Drawing.Point(280, 197);
             this.cbTempHigh.Name = "cbTempHigh";
             this.cbTempHigh.Size = new System.Drawing.Size(72, 16);
             this.cbTempHigh.TabIndex = 554;
@@ -877,7 +728,7 @@
             // cbOutUnderCur
             // 
             this.cbOutUnderCur.AutoSize = true;
-            this.cbOutUnderCur.Location = new System.Drawing.Point(280, 156);
+            this.cbOutUnderCur.Location = new System.Drawing.Point(5, 172);
             this.cbOutUnderCur.Name = "cbOutUnderCur";
             this.cbOutUnderCur.Size = new System.Drawing.Size(72, 16);
             this.cbOutUnderCur.TabIndex = 553;
@@ -887,7 +738,7 @@
             // cbInUnderCur
             // 
             this.cbInUnderCur.AutoSize = true;
-            this.cbInUnderCur.Location = new System.Drawing.Point(280, 129);
+            this.cbInUnderCur.Location = new System.Drawing.Point(5, 154);
             this.cbInUnderCur.Name = "cbInUnderCur";
             this.cbInUnderCur.Size = new System.Drawing.Size(72, 16);
             this.cbInUnderCur.TabIndex = 552;
@@ -897,7 +748,7 @@
             // cbOutOverCur
             // 
             this.cbOutOverCur.AutoSize = true;
-            this.cbOutOverCur.Location = new System.Drawing.Point(280, 99);
+            this.cbOutOverCur.Location = new System.Drawing.Point(5, 127);
             this.cbOutOverCur.Name = "cbOutOverCur";
             this.cbOutOverCur.Size = new System.Drawing.Size(72, 16);
             this.cbOutOverCur.TabIndex = 551;
@@ -907,7 +758,7 @@
             // cbInOverCur
             // 
             this.cbInOverCur.AutoSize = true;
-            this.cbInOverCur.Location = new System.Drawing.Point(280, 69);
+            this.cbInOverCur.Location = new System.Drawing.Point(5, 109);
             this.cbInOverCur.Name = "cbInOverCur";
             this.cbInOverCur.Size = new System.Drawing.Size(72, 16);
             this.cbInOverCur.TabIndex = 550;
@@ -917,7 +768,7 @@
             // cbOutUnderVol
             // 
             this.cbOutUnderVol.AutoSize = true;
-            this.cbOutUnderVol.Location = new System.Drawing.Point(280, 46);
+            this.cbOutUnderVol.Location = new System.Drawing.Point(5, 83);
             this.cbOutUnderVol.Name = "cbOutUnderVol";
             this.cbOutUnderVol.Size = new System.Drawing.Size(72, 16);
             this.cbOutUnderVol.TabIndex = 549;
@@ -1168,7 +1019,7 @@
             this.panel4.Controls.Add(this.label53);
             this.panel4.Controls.Add(this.label14);
             this.panel4.Controls.Add(this.btnCurInfo);
-            this.panel4.Location = new System.Drawing.Point(816, 141);
+            this.panel4.Location = new System.Drawing.Point(814, 141);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(294, 235);
             this.panel4.TabIndex = 504;
@@ -1445,10 +1296,10 @@
             // 
             this.tvChargePile.Location = new System.Drawing.Point(2, 75);
             this.tvChargePile.Name = "tvChargePile";
-            treeNode2.Name = "chargePileGroup";
-            treeNode2.Text = "充电桩";
+            treeNode3.Name = "chargePileGroup";
+            treeNode3.Text = "充电桩";
             this.tvChargePile.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode2});
+            treeNode3});
             this.tvChargePile.Size = new System.Drawing.Size(146, 590);
             this.tvChargePile.TabIndex = 508;
             this.tvChargePile.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvChargePile_AfterSelect);
@@ -1461,12 +1312,71 @@
             this.rtbDisplay.TabIndex = 548;
             this.rtbDisplay.Text = "";
             // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(13, 4);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(53, 12);
+            this.label21.TabIndex = 561;
+            this.label21.Text = "故障告警";
+            // 
+            // panel5
+            // 
+            this.panel5.BackColor = System.Drawing.Color.White;
+            this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel5.Controls.Add(this.label21);
+            this.panel5.Controls.Add(this.cbInOverVol);
+            this.panel5.Controls.Add(this.cbInUnderVol);
+            this.panel5.Controls.Add(this.cbOutOverVol);
+            this.panel5.Controls.Add(this.cbOutUnderCur);
+            this.panel5.Controls.Add(this.cbOutUnderVol);
+            this.panel5.Controls.Add(this.cbInUnderCur);
+            this.panel5.Controls.Add(this.cbInOverCur);
+            this.panel5.Controls.Add(this.cbOutOverCur);
+            this.panel5.Location = new System.Drawing.Point(274, -1);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(82, 235);
+            this.panel5.TabIndex = 549;
+            // 
+            // lblSystemTime
+            // 
+            this.lblSystemTime.AutoSize = true;
+            this.lblSystemTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSystemTime.Location = new System.Drawing.Point(844, 31);
+            this.lblSystemTime.Name = "lblSystemTime";
+            this.lblSystemTime.Size = new System.Drawing.Size(67, 20);
+            this.lblSystemTime.TabIndex = 549;
+            this.lblSystemTime.Text = "label27";
+            this.lblSystemTime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // btnClear
+            // 
+            this.btnClear.Location = new System.Drawing.Point(441, 2);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(75, 35);
+            this.btnClear.TabIndex = 468;
+            this.btnClear.Text = "清空";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // btnPause
+            // 
+            this.btnPause.Location = new System.Drawing.Point(681, 2);
+            this.btnPause.Name = "btnPause";
+            this.btnPause.Size = new System.Drawing.Size(75, 35);
+            this.btnPause.TabIndex = 469;
+            this.btnPause.Text = "暂停";
+            this.btnPause.UseVisualStyleBackColor = true;
+            this.btnPause.Click += new System.EventHandler(this.btnPause_Click);
+            // 
             // MonitoringInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1116, 707);
+            this.Controls.Add(this.lblSystemTime);
             this.Controls.Add(this.rtbDisplay);
             this.Controls.Add(this.tvChargePile);
             this.Controls.Add(this.panel6);
@@ -1479,7 +1389,7 @@
             this.Name = "MonitoringInterface";
             this.RightToLeftLayout = true;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "充电桩";
+            this.Text = "充电桩模拟软件";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
@@ -1496,6 +1406,8 @@
             this.panel6.PerformLayout();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1507,7 +1419,6 @@
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.Button btnGetData;
         private System.Windows.Forms.Timer timeDealRevData;
         private Sunisoft.IrisSkin.SkinEngine skinEngine2;
@@ -1516,7 +1427,6 @@
         private System.Windows.Forms.Label labeltx;
         private System.Windows.Forms.PictureBox picBox1;
         private System.Windows.Forms.Timer TimSysTime;
-        private System.Windows.Forms.ToolStripLabel TS_LableSystemTime;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnPileNormal;
         private System.Windows.Forms.Button btnSetTime;
@@ -1546,19 +1456,7 @@
         private System.Windows.Forms.TextBox txtChargingPileAddress;
         private System.Windows.Forms.ToolStripDropDownButton toolStripButton_Config;
         private System.Windows.Forms.ToolStripMenuItem tsmAddCP;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem 串口设置ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton toolStripButton_Look;
-        private System.Windows.Forms.ToolStripButton toolStripButton_Alarm;
-        private System.Windows.Forms.ToolStripButton toolStripButton_UpDown;
-        private System.Windows.Forms.ToolStripButton toolStripButton_SHTV;
-        private System.Windows.Forms.ToolStripButton toolStripButton_User;
-        private System.Windows.Forms.ToolStripButton toolStripButton_FileMng;
-        private System.Windows.Forms.ToolStripButton toolStripButton_Card;
-        private System.Windows.Forms.ToolStripDropDownButton toolStripButton_Report;
-        private System.Windows.Forms.ToolStripMenuItem tsmi_ChargeRecordReport;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripButton toolStripButton_Curve;
         private System.Windows.Forms.ToolStripButton toolStripButton_About;
         private System.Windows.Forms.ToolStripButton TSBtnExist;
         private System.Windows.Forms.Panel panel6;
@@ -1636,6 +1534,11 @@
         private System.Windows.Forms.CheckBox cbOutUnderVol;
         private System.Windows.Forms.ComboBox cbCurState;
         private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Label lblSystemTime;
+        private System.Windows.Forms.Button btnPause;
+        private System.Windows.Forms.Button btnClear;
     }
 }
 
