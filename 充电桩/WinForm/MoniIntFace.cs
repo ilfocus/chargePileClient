@@ -79,6 +79,8 @@ namespace ChargingPile.WinForm
         private int[] iDataCnt = new int[100];
         private List<portRecod> iPortStore = new List<portRecod>();
         string strDisplay = "";
+
+        private bool rtbDisplayFlg = true;
         #endregion
         /// <summary>
         /// 对界面上故障点数据进行更新
@@ -126,6 +128,17 @@ namespace ChargingPile.WinForm
             //加载皮肤 
             skinEngine2.SkinFile = System.Windows.Forms.Application.StartupPath.Replace(@"\bin\Debug", "") + @"\skins\SteelBlue.ssk";
             skinEngine2.SkinAllForm = true;
+            ////////////////////////串口端口初始化////////////////////////////////////
+            try {
+                string[] szPorts = SerialPort.GetPortNames(); //获取当前可用的串口列表
+                //这里得到的可用的串口，是指电脑里面可用的串口。
+                frmSetComPara.combSerialPort.Items.AddRange(szPorts);
+                frmSetComPara.combSerialPort.SelectedIndex = 0;
+            } catch (Win32Exception win32ex) // 获取串口出错
+            {
+                MessageBox.Show(win32ex.ToString());
+            }
+            ////////////////////////////////////////////////////////////////////////
            // //zedGraph 初始化
            // zedGraphControl1.GraphPane.Title.Text = "充电桩实时曲线";
            // zedGraphControl1.GraphPane.XAxis.Title.Text = "时间";
@@ -139,13 +152,13 @@ namespace ChargingPile.WinForm
            // this.zedGraphControl1.Refresh();
            // ZedGraphTest();
             TimSysTime.Enabled = true;
-
+            //heartLedTime.Enabled = false;
             // 设置winForm中的默认值
             cbEmergencyBtn.SelectedIndex = 0;
             cbMeterState.SelectedIndex = 0;
             cbChargePlug.SelectedIndex = 0;
             cbOutState.SelectedIndex = 0;
-            cbOpen.SelectedIndex = 1;
+            //cbOpen.SelectedIndex = 1;
             cbCurState.SelectedIndex = 0;
             picBox1.Image = Resources.grey32;
             // 加入这行,容许跨线程访问控件
@@ -257,7 +270,7 @@ namespace ChargingPile.WinForm
                     myClientSocket.Close();
                     break;
                 }
-                //ThreadFunction();
+                Thread.Sleep(200);
             }
         }
 
@@ -331,9 +344,11 @@ namespace ChargingPile.WinForm
 
             // 连接之后，发送心跳包到服务器
             sendBaseDataSocket(0x20,clientSocket);
-            
+
+            heartLedTime.Enabled = true;
 
             Thread myThread = new Thread(clientReceiveData);
+            myThread.IsBackground = true;
             myThread.Start(clientSocket);
         }
         #endregion
@@ -354,7 +369,7 @@ namespace ChargingPile.WinForm
             return (UInt16)(bl ? 1 : 0);
         }
         private string chargeIntToString(UInt32 data) {
-            return ((data / 100).ToString() + "." + (data % 100).ToString());
+            return ((data / 100).ToString() + "." + String.Format("{0:00}", (data % 100)));
         }
         private bool addPortToArray(int port) {
             for (int i = 0; i < iPortStore.Count; i++) {
@@ -421,8 +436,8 @@ namespace ChargingPile.WinForm
                           // 帧尾
             bRequestCmd[14] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[15] = 0xed; 
-            //if (btnGetData.Text == "关闭监听") {
-            if (cbOpen.SelectedIndex == 1) {
+            if (btnGetData.Text == "关闭连接") {
+            //if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd,QUERY_MSG_NUM,0);
             }
             if (true == serialPort1.IsOpen) {
@@ -480,8 +495,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[14] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[15] = 0xed;
-            //if (btnGetData.Text == "关闭监听") {
-            if (cbOpen.SelectedIndex == 1) {
+            if (btnGetData.Text == "关闭连接") {
+            //if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
             }
             if (true == serialPort1.IsOpen) {
@@ -539,8 +554,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[14] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[15] = 0xed;
-            //if (btnGetData.Text == "关闭监听") {
-            if (cbOpen.SelectedIndex == 1) {
+            if (btnGetData.Text == "关闭连接") {
+            //if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
             }
             if (true == serialPort1.IsOpen) {
@@ -764,8 +779,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[49] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[50] = 0xed;
-            //if (btnGetData.Text == "关闭监听") {
-            if (cbOpen.SelectedIndex == 1) {
+            if (btnGetData.Text == "关闭连接") {
+            //if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
             }
             if (true == serialPort1.IsOpen) {
@@ -984,8 +999,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[53] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[54] = 0xed;
-            //if (btnGetData.Text == "关闭监听") {
-            if (cbOpen.SelectedIndex == 1) {
+            if (btnGetData.Text == "关闭连接") {
+            //if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
 
                 int port = ((System.Net.IPEndPoint)clientSocket.LocalEndPoint).Port;
@@ -1144,40 +1159,123 @@ namespace ChargingPile.WinForm
                 Console.WriteLine("voltage:" + port + "--value:" + valtage);
                 Console.WriteLine("current:" + port + "--value:" + current);
 
-                txtValtage.BeginInvoke(new Action(() => {
-                    txtValtage.Text = chargeIntToString(valtage);
-                }));
-                txtCurrent.Text = chargeIntToString(current);
-                txtTotalElect.Text = chargeIntToString(chargeTotalElect);
-                txtPointElect.Text = chargeIntToString(chargePointElect);
-                txtPeakElect.Text = chargeIntToString(chargePeakElect);
-                txtFlatElect.Text = chargeIntToString(chargeFlatElect);
-                txtValleyElect.Text = chargeIntToString(chargeValleyElect);
-                //(emergencyStopButton == 0) ? (cbEmergencyBtn.SelectedIndex = 0):(cbEmergencyBtn.SelectedIndex = 1);
-                cbEmergencyBtn.SelectedIndex = judgeByteIsZero(emergencyStopButton);
-                cbMeterState.SelectedIndex = judgeByteIsZero(electMeter);
-                cbChargePlug.SelectedIndex = judgeByteIsZero(chargePlug);
-                cbOutState.SelectedIndex = judgeByteIsZero(cpOutState);
-                cbCurState.SelectedIndex = judgeByteIsZero(currentState);
+
+
+
+                for (int i = 0; i < portAddress.Count; i++) {
+                    if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)
+                        && portAddress[i].port == port) {
+                            valtage = 22030;
+                        txtValtage.BeginInvoke(new Action(() => {
+                            txtValtage.Text = chargeIntToString(valtage);
+                            //txtValtage.Text = "220.30";
+                        }));
+                        txtCurrent.BeginInvoke(new Action(() => {
+                            txtCurrent.Text = chargeIntToString(current);
+                        }));
+
+                        txtTotalElect.BeginInvoke(new Action(() => {
+                            txtTotalElect.Text = chargeIntToString(chargeTotalElect);
+                        }));
+                        txtPointElect.BeginInvoke(new Action(() => {
+                            txtPointElect.Text = chargeIntToString(chargePointElect);
+                        }));
+                        txtPeakElect.BeginInvoke(new Action(() => {
+                            txtPeakElect.Text = chargeIntToString(chargePeakElect);
+                        }));
+                        txtFlatElect.BeginInvoke(new Action(() => {
+                            txtFlatElect.Text = chargeIntToString(chargeFlatElect);
+                        }));
+                        txtValleyElect.BeginInvoke(new Action(() => {
+                            txtValleyElect.Text = chargeIntToString(chargeValleyElect);
+                        }));
+
+
+                        cbEmergencyBtn.BeginInvoke(new Action(() => {
+                            cbEmergencyBtn.SelectedIndex = judgeByteIsZero(emergencyStopButton);
+                        }));
+                        cbMeterState.BeginInvoke(new Action(() => {
+                            cbMeterState.SelectedIndex = judgeByteIsZero(electMeter);
+                        }));
+                        cbChargePlug.BeginInvoke(new Action(() => {
+                            cbChargePlug.SelectedIndex = judgeByteIsZero(chargePlug);
+                        }));
+                        cbOutState.BeginInvoke(new Action(() => {
+                            cbOutState.SelectedIndex = judgeByteIsZero(cpOutState);
+                        }));
+                        cbCurState.BeginInvoke(new Action(() => {
+                            cbCurState.SelectedIndex = judgeByteIsZero(currentState);
+                        }));
+
+
+                        cbInOverVol.BeginInvoke(new Action(() => {
+                            cbInOverVol.Checked = checkBoxFault(faultState, 9);
+                        }));
+                        cbOutOverVol.BeginInvoke(new Action(() => {
+                            cbOutOverVol.Checked = checkBoxFault(faultState, 8);
+                        }));
+                        cbInUnderVol.BeginInvoke(new Action(() => {
+                            cbInUnderVol.Checked = checkBoxFault(faultState, 7);
+                        }));
+                        cbOutUnderVol.BeginInvoke(new Action(() => {
+                            cbOutUnderVol.Checked = checkBoxFault(faultState, 6);
+                        }));
+                        cbInOverCur.BeginInvoke(new Action(() => {
+                            cbInOverCur.Checked = checkBoxFault(faultState, 5);
+                        }));
+                        cbOutOverCur.BeginInvoke(new Action(() => {
+                            cbOutOverCur.Checked = checkBoxFault(faultState, 4);
+                        }));
+                        cbInUnderCur.BeginInvoke(new Action(() => {
+                            cbInUnderCur.Checked = checkBoxFault(faultState, 3);
+                        }));
+                        cbOutUnderCur.BeginInvoke(new Action(() => {
+                            cbOutUnderCur.Checked = checkBoxFault(faultState, 2);
+                        }));
+                        cbTempHigh.BeginInvoke(new Action(() => {
+                            cbTempHigh.Checked = checkBoxFault(faultState, 1);
+                        }));
+                        cbOutShort.BeginInvoke(new Action(() => {
+                            cbOutShort.Checked = checkBoxFault(faultState, 0);
+                        }));
+//                         cbEmergencyBtn.SelectedIndex = judgeByteIsZero(emergencyStopButton);
+//                         cbMeterState.SelectedIndex = judgeByteIsZero(electMeter);
+//                         cbChargePlug.SelectedIndex = judgeByteIsZero(chargePlug);
+//                         cbOutState.SelectedIndex = judgeByteIsZero(cpOutState);
+//                         cbCurState.SelectedIndex = judgeByteIsZero(currentState);
+// 
+//                         cbInOverVol.Checked = checkBoxFault(faultState, 9);
+//                         cbOutOverVol.Checked = checkBoxFault(faultState, 8);
+//                         cbInUnderVol.Checked = checkBoxFault(faultState, 7);
+//                         cbOutUnderVol.Checked = checkBoxFault(faultState, 6);
+//                         cbInOverCur.Checked = checkBoxFault(faultState, 5);
+//                         cbOutOverCur.Checked = checkBoxFault(faultState, 4);
+//                         cbInUnderCur.Checked = checkBoxFault(faultState, 3);
+//                         cbOutUnderCur.Checked = checkBoxFault(faultState, 2);
+//                         cbTempHigh.Checked = checkBoxFault(faultState, 1);
+//                         cbOutShort.Checked = checkBoxFault(faultState, 0);
+                        
+                    }
+                }
+
                 
-                cbInOverVol.Checked = checkBoxFault(faultState, 9);
-                cbOutOverVol.Checked = checkBoxFault(faultState, 8);
-                cbInUnderVol.Checked = checkBoxFault(faultState, 7);
-                cbOutUnderVol.Checked = checkBoxFault(faultState, 6);
-                cbInOverCur.Checked = checkBoxFault(faultState, 5);
-                cbOutOverCur.Checked = checkBoxFault(faultState, 4);
-                cbInUnderCur.Checked = checkBoxFault(faultState, 3);
-                cbOutUnderCur.Checked = checkBoxFault(faultState, 2);
-                cbTempHigh.Checked = checkBoxFault(faultState, 1);
-                cbOutShort.Checked = checkBoxFault(faultState, 0);
+
+
+                
             } else {
-                valtage = Convert.ToUInt32(txtValtage.Text);
-                current = Convert.ToUInt32(txtCurrent.Text);
-                chargePointElect = Convert.ToUInt32(txtPointElect.Text);
-                chargePeakElect = Convert.ToUInt32(txtPeakElect.Text);
-                chargeFlatElect = Convert.ToUInt32(txtFlatElect.Text);
-                chargeValleyElect = Convert.ToUInt32(txtValtage.Text);
-                chargeTotalElect = Convert.ToUInt32(txtTotalElect.Text);
+
+                try {
+                    valtage = Convert.ToUInt32(txtValtage.Text) * 100;
+                    current = Convert.ToUInt32(txtCurrent.Text) * 100;
+                    chargePointElect = Convert.ToUInt32(txtPointElect.Text) * 100;
+                    chargePeakElect = Convert.ToUInt32(txtPeakElect.Text) * 100;
+                    chargeFlatElect = Convert.ToUInt32(txtFlatElect.Text) * 100;
+                    chargeValleyElect = Convert.ToUInt32(txtValtage.Text) * 100;
+                    chargeTotalElect = Convert.ToUInt32(txtTotalElect.Text) * 100;
+                } catch (Exception ex) {
+                    MessageBox.Show("输入数据有误");
+                }
+                
 
                 emergencyStopButton = judgeStringIsEqual(cbEmergencyBtn.Text, "正常");
                 electMeter = judgeStringIsEqual(cbMeterState.Text, "通信正常");
@@ -1270,8 +1368,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[53] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[54] = 0xed;
-            //if (btnGetData.Text == "关闭监听") {
-            if (cbOpen.SelectedIndex == 1) {
+            if (btnGetData.Text == "关闭连接") {
+            //if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
 
                 int port = ((System.Net.IPEndPoint)clientSocket.LocalEndPoint).Port;
@@ -1281,51 +1379,34 @@ namespace ChargingPile.WinForm
                 temp.address = cpAddress;
                 string str = "";
                 string str1 = string.Empty;
-//                 for (int i = 0; i < bRequestCmd.Length; i++) {
-//                     str1 += Convert.ToString(bRequestCmd[i], 16) + " ";
-//                 }
-                // 把数组转成字符串（大写，带空格）
                 str1 += byteArrayToString(bRequestCmd);
                 temp.arrString = str1;
-
                 if (false == addPortAddress(cpAddress, iPortStore)) {
                     iPortStore.Add(temp);
                 }
-
-                //for (int i = 0; i < iPortStore.Count; i++) {
-                //    str += "chargePileAddress:" 
-                //            + iPortStore[i].address.ToString() 
-                //            + "Send:"
-                //            + iPortStore[i].arrString
-                //            + "\r\n";
-
-                //}
                 Console.WriteLine("---发送数据成功：---" + port);
-
                 strDisplay = str;
-
-                //tbDataTest.BeginInvoke(new Action(() => {
-                //    //tbDataTest.ForeColor = Color.Green;
-                //    for (int i = 0; i < iPortStore.Count; i++) {
-                //        tbDataTest.Text += string.Format("{0:0000}", iPortStore[i].address)
-                //                        + "-Send:"
-                //                        + iPortStore[i].arrString
-                //                        + "\r\n";
-                //    }
-                //}));
-                rtbDisplay.BeginInvoke(new Action(() => {
-                    for (int i = 0; i < iPortStore.Count; i++) {
-                        rtbDisplay.SelectedText += string.Format("{0:0000}", iPortStore[i].address)
-                                        + "-Send:"
-                                        + iPortStore[i].arrString
-                                        + "\r\n";
-                        rtbDisplay.SelectionColor = Color.Green;
-                        rtbDisplay.ScrollToCaret();
-                    }
-
-                }));
-
-
+                if (rtbDisplayFlg) {
+                    rtbDisplay.BeginInvoke(new Action(() => {
+                        for (int i = 0; i < iPortStore.Count; i++) {
+                            if (iPortStore[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)
+                                && iPortStore[i].port == port) {
+                                rtbDisplay.SelectedText += string.Format("{0:0000}", iPortStore[i].address)
+                                                                                    + "-Send:"
+                                                                                    + iPortStore[i].arrString
+                                                                                    + "\r\n";
+                                rtbDisplay.SelectionColor = Color.Green;
+                                rtbDisplay.ScrollToCaret();
+                            }
+                            
+                        }
+//                         rtbDisplay.SelectedText += string.Format("{0:0000}", cpAddress)
+//                                                 + "-Send:"
+//                                                 + str1 + "\r\n";
+//                         rtbDisplay.SelectionColor = Color.Green;
+//                         rtbDisplay.ScrollToCaret();
+                    }));
+                }
             }
 
             if (true == serialPort1.IsOpen) {
@@ -1378,8 +1459,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[15] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[16] = 0xed;
-            //if (btnGetData.Text == "关闭监听") {
-            if (cbOpen.SelectedIndex == 1) {
+            if (btnGetData.Text == "关闭连接") {
+            //if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
             }
             if (true == serialPort1.IsOpen) {
@@ -1430,8 +1511,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[15] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[16] = 0xed;
-            //if (btnGetData.Text == "关闭监听") {
-            if (cbOpen.SelectedIndex == 1) {
+            if (btnGetData.Text == "关闭连接") {
+            //if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
             }
             if (true == serialPort1.IsOpen) {
@@ -1482,8 +1563,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[15] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[16] = 0xed;
-            //if (btnGetData.Text == "关闭监听") {
-            if (cbOpen.SelectedIndex == 1) {
+            if (btnGetData.Text == "关闭连接") {
+            //if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
             }
             if (true == serialPort1.IsOpen) {
@@ -1716,8 +1797,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[70] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[71] = 0xed;
-            //if (btnGetData.Text == "关闭监听") {
-            if (cbOpen.SelectedIndex == 1) {
+            if (btnGetData.Text == "关闭连接") {
+            //if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
             }
             if (true == serialPort1.IsOpen) {
@@ -1948,8 +2029,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[70] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[71] = 0xed;
-            //if (btnGetData.Text == "关闭监听") {
-            if (cbOpen.SelectedIndex == 1) {
+            if (btnGetData.Text == "关闭连接") {
+            //if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
             }
             if (true == serialPort1.IsOpen) {
@@ -2057,27 +2138,76 @@ namespace ChargingPile.WinForm
                 chargeValleyCost = chargeValleyElect * chargeValleyPrice / 100;
 
                 chargeTotalPrice = chargePointCost + chargePeakCost + chargeFlatCost + chargeValleyCost;
+                int port = ((System.Net.IPEndPoint)clientSocket.LocalEndPoint).Port;
 
-                
+                for (int i = 0; i < portAddress.Count; i++) {
+                    if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)
+                        && portAddress[i].port == port) {
+
+                        txtCurTotalElect.BeginInvoke(new Action(() => {
+                            txtCurTotalElect.Text = chargeIntToString(chargeTotalElect);
+                        }));
+                        txtCurTotalCost.BeginInvoke(new Action(() => {
+                            txtCurTotalCost.Text = chargeIntToString(chargeTotalPrice);
+                        }));
+                        txtCurPointElect.BeginInvoke(new Action(() => {
+                            txtCurPointElect.Text = chargeIntToString(chargePointElect);
+                        }));
+                        txtCurPeakElect.BeginInvoke(new Action(() => {
+                            txtCurPeakElect.Text = chargeIntToString(chargePeakElect);
+                        }));
+                        txtCurFlatElect.BeginInvoke(new Action(() => {
+                            txtCurFlatElect.Text = chargeIntToString(chargeFlatElect);
+                        }));
+                        txtCurValleyElect.BeginInvoke(new Action(() => {
+                            txtCurValleyElect.Text = chargeIntToString(chargeValleyElect);
+                        }));
+                        txtCurPointPrice.BeginInvoke(new Action(() => {
+                            txtCurPointPrice.Text = chargeIntToString(chargePointPrice);
+                        }));
+                        txtCurPeakPrice.BeginInvoke(new Action(() => {
+                            txtCurPeakPrice.Text = chargeIntToString(chargePeakPrice);
+                        }));
+                        txtCurFlatPrice.BeginInvoke(new Action(() => {
+                            txtCurFlatPrice.Text = chargeIntToString(chargeFlatPrice);
+                        }));
+                        txtCurValleyPrice.BeginInvoke(new Action(() => {
+                            txtCurValleyPrice.Text = chargeIntToString(chargeValleyPrice);
+                        }));
+                        //  把随机数据显示在界面中
+                        txtCurPointCost.BeginInvoke(new Action(() => {
+                            txtCurPointCost.Text = chargeIntToString(chargePointCost);
+                        }));
+                        txtCurPeakCost.BeginInvoke(new Action(() => {
+                            txtCurPeakCost.Text = chargeIntToString(chargePeakCost);
+                        }));
+                        txtCurFlatCost.BeginInvoke(new Action(() => {
+                            txtCurFlatCost.Text = chargeIntToString(chargeFlatCost);
+                        }));
+                        txtCurValleyCost.BeginInvoke(new Action(() => {
+                            txtCurValleyCost.Text = chargeIntToString(chargeValleyCost);
+                        }));
+                    }
+                }
 
                 //  把随机数据显示在界面中
-                txtCurTotalElect.Text = chargeIntToString(chargeTotalElect);
-                txtCurTotalCost.Text = chargeIntToString(chargeTotalPrice);
-
-                txtCurPointElect.Text = chargeIntToString(chargePointElect);
-                txtCurPeakElect.Text = chargeIntToString(chargePeakElect);
-                txtCurFlatElect.Text = chargeIntToString(chargeFlatElect);
-                txtCurValleyElect.Text = chargeIntToString(chargeValleyElect);
-
-                txtCurPointPrice.Text = chargeIntToString(chargePointPrice);
-                txtCurPeakPrice.Text = chargeIntToString(chargePeakPrice);
-                txtCurFlatPrice.Text = chargeIntToString(chargeFlatPrice);
-                txtCurValleyPrice.Text = chargeIntToString(chargeValleyPrice);
-
-                txtCurPointCost.Text = chargeIntToString(chargePointCost);
-                txtCurPeakCost.Text = chargeIntToString(chargePeakCost);
-                txtCurFlatCost.Text = chargeIntToString(chargeFlatCost);
-                txtCurValleyCost.Text = chargeIntToString(chargeValleyCost);
+//                 txtCurTotalElect.Text = chargeIntToString(chargeTotalElect);
+//                 txtCurTotalCost.Text = chargeIntToString(chargeTotalPrice);
+// 
+//                 txtCurPointElect.Text = chargeIntToString(chargePointElect);
+//                 txtCurPeakElect.Text = chargeIntToString(chargePeakElect);
+//                 txtCurFlatElect.Text = chargeIntToString(chargeFlatElect);
+//                 txtCurValleyElect.Text = chargeIntToString(chargeValleyElect);
+// 
+//                 txtCurPointPrice.Text = chargeIntToString(chargePointPrice);
+//                 txtCurPeakPrice.Text = chargeIntToString(chargePeakPrice);
+//                 txtCurFlatPrice.Text = chargeIntToString(chargeFlatPrice);
+//                 txtCurValleyPrice.Text = chargeIntToString(chargeValleyPrice);
+// 
+//                 txtCurPointCost.Text = chargeIntToString(chargePointCost);
+//                 txtCurPeakCost.Text = chargeIntToString(chargePeakCost);
+//                 txtCurFlatCost.Text = chargeIntToString(chargeFlatCost);
+//                 txtCurValleyCost.Text = chargeIntToString(chargeValleyCost);
 
 
             } else {
@@ -2182,8 +2312,8 @@ namespace ChargingPile.WinForm
             // 帧尾
             bRequestCmd[70] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[71] = 0xed;
-            //if (btnGetData.Text == "关闭监听") {
-            if (cbOpen.SelectedIndex == 1) {
+            if (btnGetData.Text == "关闭连接") {
+            //if (cbOpen.SelectedIndex == 1) {
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
             }
             if (true == serialPort1.IsOpen) {
@@ -2369,9 +2499,10 @@ namespace ChargingPile.WinForm
             byte bccCheckData = dataCheck.GetBCC_Check(arr, 10, arr.Length - 2);
 
             string str = string.Empty;
-            for (int i = 0; i < arr.Length; i++) {
-                str += Convert.ToString(arr[i], 16) + " ";
-            }
+            //for (int i = 0; i < arr.Length; i++) {
+            //    str += Convert.ToString(arr[i], 16) + " ";
+            //}
+            str += byteArrayToString(arr);
             UInt32 addressH = (UInt32)((arr[2] << 24) | (arr[3] << 16)
                                     | (arr[4] << 8) | (arr[5]));
             UInt32 addressL = (UInt32)((arr[6] << 24) | (arr[7] << 16)
@@ -2386,16 +2517,28 @@ namespace ChargingPile.WinForm
             if (false == addPortAddress(cpAddress)) {
                 portAddress.Add(temp1);
             }
-            rtbDisplay.BeginInvoke(new Action(() => {
-                for (int i = 0; i < portAddress.Count; i++) {
-                    rtbDisplay.SelectedText += string.Format("{0:0000}", portAddress[i].address)
-                                            + "-Receive:"
-                                            + portAddress[i].arrString + "\r\n";
-                    rtbDisplay.SelectionColor = Color.Red;
-                    rtbDisplay.ScrollToCaret();
-                }
-            }));
-
+            if (rtbDisplayFlg) {
+                rtbDisplay.BeginInvoke(new Action(() => {
+                    for (int i = 0; i < portAddress.Count; i++) {
+                        if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)
+                            && portAddress[i].port == port) {
+                            rtbDisplay.SelectedText += string.Format("{0:0000}", portAddress[i].address)
+                                                + "-Receive:"
+                                                + portAddress[i].arrString + "\r\n";
+                            rtbDisplay.SelectionColor = Color.Red;
+                            rtbDisplay.ScrollToCaret();
+                        }
+                    }
+                }));
+             }   
+//                 rtbDisplay.BeginInvoke(new Action(() => {
+//                     rtbDisplay.SelectedText += string.Format("{0:0000}", cpAddress)
+//                                             + "-Receive:"
+//                                             + str + "\r\n";
+//                     rtbDisplay.SelectionColor = Color.Red;
+//                     rtbDisplay.ScrollToCaret();
+//                 }));
+            
             if ((bccCheckData == arr[length - 2]) && (0xED == arr[length - 1])) {
                 switch (arr[11]) {
                     case 0x11: {
@@ -2409,10 +2552,11 @@ namespace ChargingPile.WinForm
                         }
                     case 0x20: {  // 
                             Console.WriteLine("心跳帧响应");
-                            respondRequestCmd(arr[11], clientSocket);// 
+                            respondRequestCmd(arr[11], clientSocket,cpAddress);// 
                             // 响应状态00表示执行成功，01表示系统忙暂时不能执行
                             if (cpHeartFrameStateFlg) {
                                 heartLedTime.Enabled = true;
+                                
                             } else {
                                 heartLedTime.Enabled = false;
                                 picBox1.Image = Resources.red;
@@ -2423,7 +2567,7 @@ namespace ChargingPile.WinForm
                     case 0x21: {
                             // 解析参数信息，设置时间
                             // 回送响应信息
-                            respondRequestCmd(arr[11], clientSocket);
+                            respondRequestCmd(arr[11], clientSocket,cpAddress);
                             int yearInt = (int)(ConvertBCDToInt(arr[12]) * 100) + (int)ConvertBCDToInt(arr[13]);
                             string year = yearInt.ToString();
 
@@ -2441,7 +2585,7 @@ namespace ChargingPile.WinForm
                             break;
                         }
                     case 0x22: {
-                            respondRequestCmd(arr[11], clientSocket);
+                            respondRequestCmd(arr[11], clientSocket,cpAddress);
 
                             UInt32 pointPrice = (UInt32)((arr[12] << 24) | (arr[13] << 16)
                                                        | (arr[14] << 8) | (arr[15]));
@@ -2465,7 +2609,7 @@ namespace ChargingPile.WinForm
                             break;
                         }
                     case 0x24: {
-                            respondStartAndStopCmd(arr[11], arr[12], clientSocket);
+                            respondStartAndStopCmd(arr[11], arr[12], clientSocket,cpAddress);
                             if (bCPStartupResponeState == 0x01) {
                                 //txtCPStartup.Text = "charge pile busy";
                                 txtCPStartup.Text = "充电桩忙";
@@ -2507,7 +2651,7 @@ namespace ChargingPile.WinForm
                             break;
                         }
                     case 0x26: {
-                            respondRequestCmd(arr[11]);
+                            respondRequestCmd(arr[11],clientSocket,cpAddress);
                             break;
                         }
                     default: {
@@ -2552,8 +2696,10 @@ namespace ChargingPile.WinForm
             txtChargingPileAddress.Text = String.Format("{0:0000}", tv.SelectedNode.Index + 1);
 
             if (false == addNodeIndex(tv.SelectedNode.Index)) {
-                if (cbOpen.SelectedIndex == 1) {
+                if (btnGetData.Text == "关闭连接") {
+                //if (cbOpen.SelectedIndex == 1) {
                     socketClient();
+
                 }
                 nodeIndex.Add(tv.SelectedNode.Index);
             }
@@ -2797,32 +2943,31 @@ namespace ChargingPile.WinForm
             frmOnOffSet.Show();
         }
 
-        private void cbOpen_SelectedIndexChanged(object sender, EventArgs e) {
-
-            if (cbOpen.SelectedIndex == 0) {
-                Console.WriteLine("打开串口");
-                // 在此打开串口
-                serialPortInit();
-                // 此下部分关闭网络
-                receiveDataThreadFlg = false;
-            } else if (cbOpen.SelectedIndex == 1) {
-                Console.WriteLine("初始化---打开网络");
-                receiveDataThreadFlg = true;//关闭监听
-            } else {
-                picBox1.Image = Resources.grey32;
-            }
-
-
-        }
+//         private void cbOpen_SelectedIndexChanged(object sender, EventArgs e) {
+// 
+//             if (cbOpen.SelectedIndex == 0) {
+//                 Console.WriteLine("打开串口");
+//                 // 在此打开串口
+//                 serialPortInit();
+//                 // 此下部分关闭网络
+//                 receiveDataThreadFlg = false;
+//             } else if (cbOpen.SelectedIndex == 1) {
+//                 Console.WriteLine("初始化---打开网络");
+//                 receiveDataThreadFlg = true;//关闭连接
+//             } else {
+//                 picBox1.Image = Resources.grey32;
+//             }
+//         }
         private void btnGetData_Click(object sender, EventArgs e)//轮询任务启动
         {
-            if (btnGetData.Text == "打开监听") {
-                btnGetData.Text = "关闭监听";
-                // socketClient();
+            if (btnGetData.Text == "打开连接") {
+                btnGetData.Text = "关闭连接";
                 receiveDataThreadFlg = true;
             } else {
-                btnGetData.Text = "打开监听";
+                btnGetData.Text = "打开连接";
                 picBox1.Image = Resources.grey32;
+                heartFrameLed.ForeColor = Color.Gray;
+                heartLedTime.Enabled = false;
                 receiveDataThreadFlg = false;
             }
         }
@@ -2868,8 +3013,10 @@ namespace ChargingPile.WinForm
         private void btnPause_Click(object sender, EventArgs e) {
             if (btnPause.Text == "暂停") {
                 btnPause.Text = "恢复";
+                rtbDisplayFlg = false;
             } else {
                 btnPause.Text = "暂停";
+                rtbDisplayFlg = true;
             }
         }
     }

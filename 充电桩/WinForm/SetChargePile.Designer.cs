@@ -32,16 +32,15 @@
             this.txtSlaveNum = new System.Windows.Forms.TextBox();
             this.txtCPNum = new System.Windows.Forms.TextBox();
             this.lblMasterNum = new System.Windows.Forms.Label();
-            this.btnSetOK = new System.Windows.Forms.Button();
             this.panel33 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnQueckAdd = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.btnAdd = new System.Windows.Forms.Button();
-            this.btnQueckAdd = new System.Windows.Forms.Button();
             this.panel33.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -49,11 +48,11 @@
             // 
             // btnExit
             // 
-            this.btnExit.Location = new System.Drawing.Point(179, 221);
+            this.btnExit.Location = new System.Drawing.Point(106, 221);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(82, 29);
             this.btnExit.TabIndex = 521;
-            this.btnExit.Text = "取消";
+            this.btnExit.Text = "退出";
             this.btnExit.UseVisualStyleBackColor = true;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
@@ -80,15 +79,6 @@
             this.lblMasterNum.TabIndex = 510;
             this.lblMasterNum.Text = "充电桩数量:";
             // 
-            // btnSetOK
-            // 
-            this.btnSetOK.Location = new System.Drawing.Point(19, 221);
-            this.btnSetOK.Name = "btnSetOK";
-            this.btnSetOK.Size = new System.Drawing.Size(82, 29);
-            this.btnSetOK.TabIndex = 522;
-            this.btnSetOK.Text = "确定";
-            this.btnSetOK.UseVisualStyleBackColor = true;
-            // 
             // panel33
             // 
             this.panel33.BackColor = System.Drawing.Color.White;
@@ -110,6 +100,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(260, 59);
             this.panel1.TabIndex = 524;
+            // 
+            // btnQueckAdd
+            // 
+            this.btnQueckAdd.Location = new System.Drawing.Point(166, 16);
+            this.btnQueckAdd.Name = "btnQueckAdd";
+            this.btnQueckAdd.Size = new System.Drawing.Size(82, 29);
+            this.btnQueckAdd.TabIndex = 523;
+            this.btnQueckAdd.Text = "快速添加";
+            this.btnQueckAdd.UseVisualStyleBackColor = true;
+            this.btnQueckAdd.Click += new System.EventHandler(this.btnQueckAdd_Click);
             // 
             // label1
             // 
@@ -157,7 +157,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(71, 12);
             this.label2.TabIndex = 510;
-            this.label2.Text = "充电桩机号:";
+            this.label2.Text = "充电桩地址:";
             // 
             // btnAdd
             // 
@@ -167,16 +167,7 @@
             this.btnAdd.TabIndex = 518;
             this.btnAdd.Text = "添加";
             this.btnAdd.UseVisualStyleBackColor = true;
-            // 
-            // btnQueckAdd
-            // 
-            this.btnQueckAdd.Location = new System.Drawing.Point(166, 16);
-            this.btnQueckAdd.Name = "btnQueckAdd";
-            this.btnQueckAdd.Size = new System.Drawing.Size(82, 29);
-            this.btnQueckAdd.TabIndex = 523;
-            this.btnQueckAdd.Text = "快速添加";
-            this.btnQueckAdd.UseVisualStyleBackColor = true;
-            this.btnQueckAdd.Click += new System.EventHandler(this.btnQueckAdd_Click);
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // SetChargePile
             // 
@@ -184,7 +175,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
             this.Controls.Add(this.panel2);
-            this.Controls.Add(this.btnSetOK);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.txtCPNum);
             this.Controls.Add(this.panel33);
@@ -207,7 +197,6 @@
         private System.Windows.Forms.TextBox txtSlaveNum;
         private System.Windows.Forms.TextBox txtCPNum;
         private System.Windows.Forms.Label lblMasterNum;
-        private System.Windows.Forms.Button btnSetOK;
         private System.Windows.Forms.Panel panel33;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
