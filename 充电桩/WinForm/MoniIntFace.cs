@@ -1294,21 +1294,17 @@ namespace ChargingPile.WinForm
                         
                     }
                 }
-
-                
-
-
                 
             } else {
 
                 try {
-                    valtage = Convert.ToUInt32(txtValtage.Text) * 100;
-                    current = Convert.ToUInt32(txtCurrent.Text) * 100;
-                    chargePointElect = Convert.ToUInt32(txtPointElect.Text) * 100;
-                    chargePeakElect = Convert.ToUInt32(txtPeakElect.Text) * 100;
-                    chargeFlatElect = Convert.ToUInt32(txtFlatElect.Text) * 100;
-                    chargeValleyElect = Convert.ToUInt32(txtValtage.Text) * 100;
-                    chargeTotalElect = Convert.ToUInt32(txtTotalElect.Text) * 100;
+                    valtage = (UInt32)(Convert.ToDouble(txtValtage.Text) * 100);
+                    current = (UInt32)(Convert.ToDouble(txtCurrent.Text) * 100);
+                    chargePointElect = (UInt32)(Convert.ToDouble(txtPointElect.Text) * 100);
+                    chargePeakElect = (UInt32)(Convert.ToDouble(txtPeakElect.Text) * 100);
+                    chargeFlatElect = (UInt32)(Convert.ToDouble(txtFlatElect.Text) * 100);
+                    chargeValleyElect = (UInt32)(Convert.ToDouble(txtValtage.Text) * 100);
+                    chargeTotalElect = (UInt32)(Convert.ToDouble(txtTotalElect.Text) * 100);
                 } catch (Exception ex) {
                     MessageBox.Show("输入数据有误");
                 }
@@ -1396,12 +1392,12 @@ namespace ChargingPile.WinForm
             // 备用
             bRequestCmd[47] = chargeSurplusTime;                            // 备用 --- 充电剩余时间
             // 输出状态
-            bRequestCmd[48] = cpOutState;                                 // 输出状态
+            bRequestCmd[48] = cpOutState;                                   // 输出状态
 
-            bRequestCmd[49] = (byte)(faultState >> 8);                                 // 故障状态位
-            bRequestCmd[50] = (byte)faultState;                                 // 故障状态位
+            bRequestCmd[49] = (byte)(faultState >> 8);                      // 故障状态位
+            bRequestCmd[50] = (byte)faultState;                             // 故障状态位
             bRequestCmd[51] = currentState;                                 // 充电桩当前状态
-            bRequestCmd[52] = 0x00;                                 // 充电桩通信状态
+            bRequestCmd[52] = 0x00;                                         // 充电桩通信状态
             // 帧尾
             bRequestCmd[53] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
             bRequestCmd[54] = 0xed;
@@ -2243,23 +2239,29 @@ namespace ChargingPile.WinForm
 
             } else {
 
-                chargeTotalElect = Convert.ToUInt32(txtCurTotalElect.Text);
-                chargeTotalPrice = Convert.ToUInt32(txtCurTotalCost.Text);
+                try {
+                    chargeTotalElect = (UInt32)(Convert.ToDouble(txtCurTotalElect.Text) * 100);
+                    chargeTotalPrice = (UInt32)(Convert.ToDouble(txtCurTotalCost.Text) * 100);
 
-                chargePointElect = Convert.ToUInt32(txtCurPointElect.Text);
-                chargePeakElect = Convert.ToUInt32(txtCurPeakElect.Text);
-                chargeFlatElect = Convert.ToUInt32(txtCurFlatElect.Text);
-                chargeValleyElect = Convert.ToUInt32(txtCurValleyElect.Text);
+                    chargePointElect = (UInt32)(Convert.ToDouble(txtCurPointElect.Text) * 100);
+                    chargePeakElect = (UInt32)(Convert.ToDouble(txtCurPeakElect.Text) * 100);
+                    chargeFlatElect = (UInt32)(Convert.ToDouble(txtCurFlatElect.Text) * 100);
+                    chargeValleyElect = (UInt32)(Convert.ToDouble(txtCurValleyElect.Text) * 100);
 
-                chargePointPrice = Convert.ToUInt32(txtCurPointPrice.Text);
-                chargePeakPrice = Convert.ToUInt32(txtCurPeakPrice.Text);
-                chargeFlatPrice = Convert.ToUInt32(txtCurFlatPrice.Text);
-                chargeValleyPrice = Convert.ToUInt32(txtCurValleyPrice.Text);
+                    chargePointPrice = (UInt32)(Convert.ToDouble(txtCurPointPrice.Text) * 100);
+                    chargePeakPrice = (UInt32)(Convert.ToDouble(txtCurPeakPrice.Text) * 100);
+                    chargeFlatPrice = (UInt32)(Convert.ToDouble(txtCurFlatPrice.Text) * 100);
+                    chargeValleyPrice = (UInt32)(Convert.ToDouble(txtCurValleyPrice.Text) * 100);
 
-                chargePointCost = Convert.ToUInt32(txtCurPointCost.Text);
-                chargePeakCost = Convert.ToUInt32(txtCurPeakCost.Text);
-                chargeFlatCost = Convert.ToUInt32(txtCurFlatCost.Text);
-                chargeValleyCost = Convert.ToUInt32(txtCurValleyCost.Text);
+                    chargePointCost = (UInt32)(Convert.ToDouble(txtCurPointCost.Text) * 100);
+                    chargePeakCost = (UInt32)(Convert.ToDouble(txtCurPeakCost.Text) * 100);
+                    chargeFlatCost = (UInt32)(Convert.ToDouble(txtCurFlatCost.Text) * 100);
+                    chargeValleyCost = (UInt32)(Convert.ToDouble(txtCurValleyCost.Text) * 100);
+                } catch (Exception ex) {
+                    MessageBox.Show("输入数据在误！");
+                }
+
+                
 
             }
 
