@@ -27,7 +27,7 @@ namespace ChargingPile.WinForm
                 try {
                     cpNum = Convert.ToInt32(txtCPNum.Text);
                 } catch (Exception ex) {
-                    MessageBox.Show("输入错误，请重新输入！");
+                    MessageBox.Show("输入错误，请重新输入： {0}！",ex.Message);
                     return;
                 }
                 
@@ -51,7 +51,7 @@ namespace ChargingPile.WinForm
                 try {
                     addNum = Convert.ToInt32(txtSlaveNum.Text);
                 } catch (Exception ex) {
-                    MessageBox.Show("输入有误，请重新输入！");
+                    MessageBox.Show("输入有误，请重新输入！" + ex.Message);
                 }
                 str = String.Format("{0:0000}", addNum) + "号充电桩";
 

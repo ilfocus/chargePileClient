@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MonitoringInterface));
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("充电桩");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("充电桩");
             this.btnOpenPort = new System.Windows.Forms.Button();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -595,10 +595,11 @@
             // heartFrameLed
             // 
             this.heartFrameLed.AutoSize = true;
-            this.heartFrameLed.ForeColor = System.Drawing.Color.DarkGray;
-            this.heartFrameLed.Location = new System.Drawing.Point(416, 18);
+            this.heartFrameLed.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.heartFrameLed.ForeColor = System.Drawing.Color.LightGray;
+            this.heartFrameLed.Location = new System.Drawing.Point(416, 13);
             this.heartFrameLed.Name = "heartFrameLed";
-            this.heartFrameLed.Size = new System.Drawing.Size(17, 12);
+            this.heartFrameLed.Size = new System.Drawing.Size(31, 21);
             this.heartFrameLed.TabIndex = 42;
             this.heartFrameLed.Text = "●";
             // 
@@ -1331,10 +1332,10 @@
             // 
             this.tvChargePile.Location = new System.Drawing.Point(2, 75);
             this.tvChargePile.Name = "tvChargePile";
-            treeNode3.Name = "chargePileGroup";
-            treeNode3.Text = "充电桩";
+            treeNode4.Name = "chargePileGroup";
+            treeNode4.Text = "充电桩";
             this.tvChargePile.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3});
+            treeNode4});
             this.tvChargePile.Size = new System.Drawing.Size(146, 590);
             this.tvChargePile.TabIndex = 508;
             this.tvChargePile.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvChargePile_AfterSelect);

@@ -35,8 +35,8 @@ namespace ChargingPile.WinForm
         PointPairList curAList = new PointPairList();
         PointPairList curBList = new PointPairList();
 
-        LineItem curACurve;
-        LineItem curBCurve;
+       // LineItem curACurve;
+       // LineItem curBCurve;
 
         private Object thisLock = new Object();                 // 资源锁
         private Object stateLock = new Object();                // 状态显示资源锁
@@ -48,7 +48,7 @@ namespace ChargingPile.WinForm
         //SetChargePile frmOnOffSet = new SetChargePile();      // 定义开关机设置对象
 
         private byte[] byteArray = new byte[62];                // 因为串口接收数据会出现不连续
-        private bool bQueryMsgFlg = false;                      // 查询数据数据包发送标志
+        //private bool bQueryMsgFlg = false;                      // 查询数据数据包发送标志
         
         public MonitoringInterface()
         {
@@ -64,8 +64,8 @@ namespace ChargingPile.WinForm
         private static byte[] result = new byte[1024];
         private bool receiveDataThreadFlg = false;
 
-        static int count = 0;
-        static int count2 = 0;
+        //static int count = 0;
+        //static int count2 = 0;
 
         private byte bHeartFrameResponeState = 0x00;
         private byte bSetTimeResponeState = 0x00;
@@ -81,6 +81,10 @@ namespace ChargingPile.WinForm
         string strDisplay = "";
 
         private bool rtbDisplayFlg = true;
+
+        //private List<int> nodeIndex = new List<int>();
+        private List<CPHeartFrameDeal> cpNodeIndex = new List<CPHeartFrameDeal>();
+        private int heartTimeCnt = 0;
         #endregion
         /// <summary>
         /// 对界面上故障点数据进行更新
@@ -244,10 +248,10 @@ namespace ChargingPile.WinForm
                 try {
                     // 通过clientSocket接收数据
                     Console.WriteLine("---------begin------------------" + port);
-                    count2++;
+                    //count2++;
                     int receiveNumber = myClientSocket.Receive(result);
 
-                    count++;
+                    //count++;
                     byte[] tempArray = new byte[receiveNumber];
                     
                     for (int i = 0; i < receiveNumber; i++) {
@@ -335,7 +339,60 @@ namespace ChargingPile.WinForm
             //serialPort1.Write(bRequestCmd, 0, QUERY_MSG_NUM);
             clientSocket.Send(bRequestCmd,QUERY_MSG_NUM,0);
         }
+        private void sendBaseDataSocket(byte cmdCode, Socket socket, UInt64 cpAddress) {
 
+            const int QUERY_MSG_NUM = 16;
+            byte[] bRequestCmd = new byte[QUERY_MSG_NUM];     // 设置数组，并进行初始化，保存发送数据数组
+
+            CPDataCheck dataCheck = new CPDataCheck();
+            //UInt64 cpAddress = dataCheck.CHARGING_PILE_ADDRESS;
+            //if (txtChargingPileAddress.Text != "") {
+            //    cpAddress = Convert.ToUInt64(txtChargingPileAddress.Text);
+            //}
+            for (int i = 0; i < QUERY_MSG_NUM; i++) {
+                bRequestCmd[i] = 0x00;
+            }   // 要发送的数据初始化                      
+            bRequestCmd[0] = 0xff;             // 起始字符高位
+            bRequestCmd[1] = 0x5a;             // 起始字符低位
+            // 充电桩地址
+            bRequestCmd[2] = (byte)(cpAddress >> 56);
+            bRequestCmd[3] = (byte)(cpAddress >> 48);
+            bRequestCmd[4] = (byte)(cpAddress >> 40);
+            bRequestCmd[5] = (byte)(cpAddress >> 32);
+            bRequestCmd[6] = (byte)(cpAddress >> 24); ;
+            bRequestCmd[7] = (byte)(cpAddress >> 16); ;
+            bRequestCmd[8] = (byte)(cpAddress >> 8); ;
+            bRequestCmd[9] = (byte)(cpAddress); ;
+            //
+            bRequestCmd[10] = 0x05;               // 帧长度
+            bRequestCmd[11] = cmdCode;            // 命令码
+            bRequestCmd[12] = 0xAC;               // 响应帧标志
+
+            /* 参数详情
+             * 0x00 空闲
+             * 0x01 开始充电
+             * 0x02 充电结束
+             * 0x03 未知状态
+             * 0x04 未知状态
+             * 0x10 故障
+             * 0x11 故障1
+             * 0x12 故障2
+             */
+            bRequestCmd[13] = 0x00;               // 响应状态/参数
+            if (cmdCode == 0x20) {
+                bRequestCmd[13] = bHeartFrameResponeState;               // 响应状态
+            } else if (cmdCode == 0x21) {
+                bRequestCmd[13] = bSetTimeResponeState;
+            } else if (cmdCode == 0x22) {
+                bRequestCmd[13] = bSetRateResponeState;
+            }
+
+            // 帧尾
+            bRequestCmd[14] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
+            bRequestCmd[15] = 0xed;
+            //serialPort1.Write(bRequestCmd, 0, QUERY_MSG_NUM);
+            clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
+        }
         private void socketClient() {
             // 设定服务器IP地址
             IPAddress ip = IPAddress.Parse("127.0.0.1");
@@ -347,10 +404,27 @@ namespace ChargingPile.WinForm
                 picBox1.Image = Resources.red;
                 return;
             }
-            // 通过clientSocket接收数据
-
-            // 连接之后，发送心跳包到服务器
             sendBaseDataSocket(0x20,clientSocket);
+
+            heartLedTime.Enabled = true;
+            closeheartTime.Enabled = true;
+
+            Thread myThread = new Thread(clientReceiveData);
+            myThread.IsBackground = true;
+            myThread.Start(clientSocket);
+        }
+        private void socketClient(UInt64 cpAddress) {
+            // 设定服务器IP地址
+            IPAddress ip = IPAddress.Parse("127.0.0.1");
+            clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            try {
+                clientSocket.Connect(new IPEndPoint(ip, 8885)); //配置服务器IP与端口
+                picBox1.Image = Resources.green32;
+            } catch {
+                picBox1.Image = Resources.red;
+                return;
+            }
+            sendBaseDataSocket(0x20, clientSocket, cpAddress);
 
             heartLedTime.Enabled = true;
             closeheartTime.Enabled = true;
@@ -531,10 +605,10 @@ namespace ChargingPile.WinForm
             bRequestCmd[3] = (byte)(cpAddress >> 48);
             bRequestCmd[4] = (byte)(cpAddress >> 40);
             bRequestCmd[5] = (byte)(cpAddress >> 32);
-            bRequestCmd[6] = (byte)(cpAddress >> 24); ;
-            bRequestCmd[7] = (byte)(cpAddress >> 16); ;
-            bRequestCmd[8] = (byte)(cpAddress >> 8); ;
-            bRequestCmd[9] = (byte)(cpAddress); ;
+            bRequestCmd[6] = (byte)(cpAddress >> 24);
+            bRequestCmd[7] = (byte)(cpAddress >> 16);
+            bRequestCmd[8] = (byte)(cpAddress >> 8);
+            bRequestCmd[9] = (byte)(cpAddress);
             //
             bRequestCmd[10] = 0x05;               // 帧长度
             bRequestCmd[11] = cmdCode;            // 命令码
@@ -575,7 +649,7 @@ namespace ChargingPile.WinForm
                 temp.address = cpAddress;
                 temp.arrString = str1;
 
-                if (false == addPortAddress(cpAddress, iPortStore)) {
+                if (false == addPortAddress(cpAddress,port,iPortStore)) {
                     iPortStore.Add(temp);
                 }
                 Console.WriteLine("---发送数据成功：---" + port);
@@ -584,7 +658,7 @@ namespace ChargingPile.WinForm
                 if (rtbDisplayFlg) {
                     rtbDisplay.BeginInvoke(new Action(() => {
                         for (int i = 0; i < iPortStore.Count; i++) {
-                            if (iPortStore[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)
+                            if (iPortStore[i].address == Convert.ToUInt64(txtChargingPileAddress.Text) //) {
                                 && iPortStore[i].port == port) {
                                 rtbDisplay.SelectedText += string.Format("{0:0000}", iPortStore[i].address)
                                                                                     + "-Send:"
@@ -1306,7 +1380,7 @@ namespace ChargingPile.WinForm
                     chargeValleyElect = (UInt32)(Convert.ToDouble(txtValtage.Text) * 100);
                     chargeTotalElect = (UInt32)(Convert.ToDouble(txtTotalElect.Text) * 100);
                 } catch (Exception ex) {
-                    MessageBox.Show("输入数据有误");
+                    MessageBox.Show("输入数据有误" + ex.Message);
                 }
                 
 
@@ -1405,14 +1479,17 @@ namespace ChargingPile.WinForm
                 clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
 
                 int port = ((System.Net.IPEndPoint)clientSocket.LocalEndPoint).Port;
+                
                 portRecod temp = new portRecod();
                 temp.port = port;
                 temp.address = cpAddress;
+
                 string str = "";
                 string str1 = string.Empty;
                 str1 += byteArrayToString(bRequestCmd);
                 temp.arrString = str1;
-                if (false == addPortAddress(cpAddress, iPortStore)) {
+
+                if (false == addPortAddress(cpAddress,port,iPortStore)) {
                     iPortStore.Add(temp);
                 }
                 Console.WriteLine("---发送数据成功：---" + port);
@@ -1420,7 +1497,7 @@ namespace ChargingPile.WinForm
                 if (rtbDisplayFlg) {
                     rtbDisplay.BeginInvoke(new Action(() => {
                         for (int i = 0; i < iPortStore.Count; i++) {
-                            if (iPortStore[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)
+                            if (iPortStore[i].address == Convert.ToUInt64(txtChargingPileAddress.Text) //) {
                                 && iPortStore[i].port == port) {
                                 rtbDisplay.SelectedText += string.Format("{0:0000}", iPortStore[i].address)
                                                                                     + "-Send:"
@@ -2258,7 +2335,7 @@ namespace ChargingPile.WinForm
                     chargeFlatCost = (UInt32)(Convert.ToDouble(txtCurFlatCost.Text) * 100);
                     chargeValleyCost = (UInt32)(Convert.ToDouble(txtCurValleyCost.Text) * 100);
                 } catch (Exception ex) {
-                    MessageBox.Show("输入数据在误！");
+                    MessageBox.Show("输入数据在误！" + ex.Message);
                 }
 
                 
@@ -2360,7 +2437,7 @@ namespace ChargingPile.WinForm
                 temp.address = cpAddress;
                 temp.arrString = str1;
 
-                if (false == addPortAddress(cpAddress, iPortStore)) {
+                if (false == addPortAddress(cpAddress,port,iPortStore)) {
                     iPortStore.Add(temp);
                 }
                 Console.WriteLine("---发送数据成功：---" + port);
@@ -2369,8 +2446,8 @@ namespace ChargingPile.WinForm
                 if (rtbDisplayFlg) {
                     rtbDisplay.BeginInvoke(new Action(() => {
                         for (int i = 0; i < iPortStore.Count; i++) {
-                            if (iPortStore[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)
-                                && iPortStore[i].port == port) {
+                            if (iPortStore[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)// ) {
+                                 && iPortStore[i].port == port) {
                                 rtbDisplay.SelectedText += string.Format("{0:0000}", iPortStore[i].address)
                                                                                     + "-Send:"
                                                                                     + str1
@@ -2582,13 +2659,13 @@ namespace ChargingPile.WinForm
             temp1.address = cpAddress;
             temp1.arrString = str;
 
-            if (false == addPortAddress(cpAddress)) {
+            if (false == addPortAddress(cpAddress, port, portAddress)) {
                 portAddress.Add(temp1);
             }
             if (rtbDisplayFlg) {
                     rtbDisplay.BeginInvoke(new Action(() => {
                         for (int i = 0; i < portAddress.Count; i++) {
-                            if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)
+                            if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)  //){
                                 && portAddress[i].port == port) {
                                 rtbDisplay.SelectedText += string.Format("{0:0000}", portAddress[i].address)
                                                     + "-Receive:"
@@ -2615,6 +2692,13 @@ namespace ChargingPile.WinForm
                         Console.WriteLine("心跳帧响应");
                         respondRequestCmd(arr[11], clientSocket,cpAddress);// 
                         // 响应状态00表示执行成功，01表示系统忙暂时不能执行
+
+                        for (int i = 0; i < cpNodeIndex.Count; i++) {
+                            if (cpNodeIndex[i].address == cpAddress) {
+                                cpNodeIndex[i].count = 0;
+                            }
+                        }
+
                         if (cpHeartFrameStateFlg) {
                             heartLedTime.Enabled = true;
                         } else {
@@ -2740,7 +2824,18 @@ namespace ChargingPile.WinForm
         private List<portRecod> portAddress = new List<portRecod>();
         private bool addPortAddress(UInt64 address) {
             for (int i = 0; i < portAddress.Count; i++) {
-                if (address == portAddress[i].address) return true;
+                if (address == portAddress[i].address) {
+                    return true;
+                }  
+            }
+            return false;
+        }
+        private bool addPortAddress(UInt64 address,int port,List<portRecod> portAdd) {
+            for (int i = 0; i < portAdd.Count; i++) {
+                if (address == portAdd[i].address) {
+                    portAdd[i].port = port;
+                    return true;
+                }
             }
             return false;
         }
@@ -2763,24 +2858,27 @@ namespace ChargingPile.WinForm
         }
         #endregion
         #region 界面按钮点击
-        private List<int> nodeIndex = new List<int>();
+        
         private void tvChargePile_AfterSelect(object sender, TreeViewEventArgs e)
         {
             TreeView tv = (TreeView)sender;
             txtChargingPileAddress.Text = String.Format("{0:0000}", tv.SelectedNode.Index + 1);
 
-            if (false == addNodeIndex(tv.SelectedNode.Index)) {
-                if (btnGetData.Text == "关闭连接") {
-                //if (cbOpen.SelectedIndex == 1) {
-                    socketClient();
+            CPHeartFrameDeal cpHeart = new CPHeartFrameDeal();
+            cpHeart.address = (UInt64)(tv.SelectedNode.Index + 1);
+            cpHeart.count = 0;
 
+            if (false == addNodeIndex((UInt64)(tv.SelectedNode.Index + 1))) {
+                if (btnGetData.Text == "关闭连接") {
+                    socketClient();
                 }
-                nodeIndex.Add(tv.SelectedNode.Index);
+                cpNodeIndex.Add(cpHeart);
             }
         }
-        private bool addNodeIndex(int index) {
-            for (int i = 0; i < nodeIndex.Count; i++) {
-                if (index == nodeIndex[i]) return true;
+        private bool addNodeIndex(UInt64 index) {
+
+            for (int i = 0; i < cpNodeIndex.Count; i++) {
+                if (index == cpNodeIndex[i].address) return true;
             }
             return false;
         }
@@ -3049,6 +3147,7 @@ namespace ChargingPile.WinForm
         }
         #endregion
         #region 定时器
+        // 心跳包定时器
         private void heartLedTime_Tick(object sender, EventArgs e) {
             if (ledStateFlg) {
                 heartFrameLed.ForeColor = Color.Green;
@@ -3058,6 +3157,23 @@ namespace ChargingPile.WinForm
                 heartFrameLed.ForeColor = Color.Gray;
                 picBox1.Image = Resources.grey32;
                 ledStateFlg = true;
+            }
+            heartTimeCnt++;
+            if (heartTimeCnt > 10) {
+
+                // 每隔10S,取出 cpNodeIndex中的count++
+
+                for (int i = 0; i < cpNodeIndex.Count; i++ ) {
+
+                    cpNodeIndex[i].count++;
+
+                    if (cpNodeIndex[i].count >= 3) { // 大于三次，则重新发送heart包
+                        socketClient(cpNodeIndex[i].address);
+
+                        cpNodeIndex[i].count = 0;
+                    }
+                }
+                heartTimeCnt = 0;  // 定时10S程序
             }
             //heartFrameLed.ForeColor = Color.Green;
         }
