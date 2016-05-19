@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MonitoringInterface));
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("充电桩");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("充电桩");
             this.btnOpenPort = new System.Windows.Forms.Button();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -154,6 +154,7 @@
             this.tvChargePile = new System.Windows.Forms.TreeView();
             this.rtbDisplay = new System.Windows.Forms.RichTextBox();
             this.lblSystemTime = new System.Windows.Forms.Label();
+            this.label27 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picBox1)).BeginInit();
@@ -209,14 +210,14 @@
             // tsmAddCP
             // 
             this.tsmAddCP.Name = "tsmAddCP";
-            this.tsmAddCP.Size = new System.Drawing.Size(136, 22);
+            this.tsmAddCP.Size = new System.Drawing.Size(152, 22);
             this.tsmAddCP.Text = "充电桩配置";
             this.tsmAddCP.Click += new System.EventHandler(this.tsmAddCP_Click);
             // 
             // 串口设置ToolStripMenuItem
             // 
             this.串口设置ToolStripMenuItem.Name = "串口设置ToolStripMenuItem";
-            this.串口设置ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.串口设置ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.串口设置ToolStripMenuItem.Text = "串口设置";
             this.串口设置ToolStripMenuItem.Click += new System.EventHandler(this.串口设置ToolStripMenuItem_Click);
             // 
@@ -248,18 +249,19 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.label27);
             this.panel1.Controls.Add(this.btnPause);
             this.panel1.Controls.Add(this.btnClear);
             this.panel1.Controls.Add(this.labeltx);
             this.panel1.Controls.Add(this.picBox1);
             this.panel1.Location = new System.Drawing.Point(0, 669);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1110, 38);
+            this.panel1.Size = new System.Drawing.Size(1110, 48);
             this.panel1.TabIndex = 34;
             // 
             // btnPause
             // 
-            this.btnPause.Location = new System.Drawing.Point(681, 2);
+            this.btnPause.Location = new System.Drawing.Point(684, 5);
             this.btnPause.Name = "btnPause";
             this.btnPause.Size = new System.Drawing.Size(75, 35);
             this.btnPause.TabIndex = 469;
@@ -269,7 +271,7 @@
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(441, 2);
+            this.btnClear.Location = new System.Drawing.Point(441, 7);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(75, 35);
             this.btnClear.TabIndex = 468;
@@ -281,7 +283,7 @@
             // 
             this.labeltx.AutoSize = true;
             this.labeltx.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.labeltx.Location = new System.Drawing.Point(11, 8);
+            this.labeltx.Location = new System.Drawing.Point(11, 15);
             this.labeltx.Name = "labeltx";
             this.labeltx.Size = new System.Drawing.Size(89, 20);
             this.labeltx.TabIndex = 467;
@@ -290,7 +292,7 @@
             // picBox1
             // 
             this.picBox1.Image = global::ChargingPile.Properties.Resources.green32;
-            this.picBox1.Location = new System.Drawing.Point(106, 2);
+            this.picBox1.Location = new System.Drawing.Point(106, 9);
             this.picBox1.Name = "picBox1";
             this.picBox1.Size = new System.Drawing.Size(41, 31);
             this.picBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -587,6 +589,7 @@
             this.panel3.Controls.Add(this.label2);
             this.panel3.Controls.Add(this.btnGetData);
             this.panel3.Controls.Add(this.btnOpenPort);
+            this.panel3.ForeColor = System.Drawing.SystemColors.ControlText;
             this.panel3.Location = new System.Drawing.Point(154, 80);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(956, 55);
@@ -595,11 +598,11 @@
             // heartFrameLed
             // 
             this.heartFrameLed.AutoSize = true;
-            this.heartFrameLed.Font = new System.Drawing.Font("宋体", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.heartFrameLed.ForeColor = System.Drawing.Color.LightGray;
-            this.heartFrameLed.Location = new System.Drawing.Point(416, 13);
+            this.heartFrameLed.Font = new System.Drawing.Font("宋体", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.heartFrameLed.ForeColor = System.Drawing.Color.Gray;
+            this.heartFrameLed.Location = new System.Drawing.Point(412, 7);
             this.heartFrameLed.Name = "heartFrameLed";
-            this.heartFrameLed.Size = new System.Drawing.Size(31, 21);
+            this.heartFrameLed.Size = new System.Drawing.Size(42, 29);
             this.heartFrameLed.TabIndex = 42;
             this.heartFrameLed.Text = "●";
             // 
@@ -1332,10 +1335,10 @@
             // 
             this.tvChargePile.Location = new System.Drawing.Point(2, 75);
             this.tvChargePile.Name = "tvChargePile";
-            treeNode4.Name = "chargePileGroup";
-            treeNode4.Text = "充电桩";
+            treeNode8.Name = "chargePileGroup";
+            treeNode8.Text = "充电桩";
             this.tvChargePile.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode4});
+            treeNode8});
             this.tvChargePile.Size = new System.Drawing.Size(146, 590);
             this.tvChargePile.TabIndex = 508;
             this.tvChargePile.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvChargePile_AfterSelect);
@@ -1359,12 +1362,22 @@
             this.lblSystemTime.Text = "label27";
             this.lblSystemTime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label27.Location = new System.Drawing.Point(157, 5);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(101, 36);
+            this.label27.TabIndex = 470;
+            this.label27.Text = "绿色表示通讯正常\r\n\r\n灰色表示通讯断开";
+            // 
             // MonitoringInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(1116, 707);
+            this.ClientSize = new System.Drawing.Size(1116, 717);
             this.Controls.Add(this.lblSystemTime);
             this.Controls.Add(this.rtbDisplay);
             this.Controls.Add(this.tvChargePile);
@@ -1375,6 +1388,7 @@
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel4);
+            this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Name = "MonitoringInterface";
             this.RightToLeftLayout = true;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -1527,6 +1541,7 @@
         private System.Windows.Forms.Label lblSystemTime;
         private System.Windows.Forms.Button btnPause;
         private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Label label27;
     }
 }
 

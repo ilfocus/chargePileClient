@@ -166,6 +166,7 @@ namespace ChargingPile.WinForm
             //cbOpen.SelectedIndex = 1;
             cbCurState.SelectedIndex = 0;
             picBox1.Image = Resources.grey32;
+            heartFrameLed.ForeColor = Color.Gray;
             // 加入这行,容许跨线程访问控件
             Control.CheckForIllegalCrossThreadCalls = false;
 
@@ -406,7 +407,7 @@ namespace ChargingPile.WinForm
             }
             sendBaseDataSocket(0x20,clientSocket);
 
-            heartLedTime.Enabled = true;
+            //heartLedTime.Enabled = true;
             closeheartTime.Enabled = true;
 
             Thread myThread = new Thread(clientReceiveData);
@@ -419,14 +420,25 @@ namespace ChargingPile.WinForm
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try {
                 clientSocket.Connect(new IPEndPoint(ip, 8885)); //配置服务器IP与端口
-                picBox1.Image = Resources.green32;
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == cpAddress) {
+                        cpNodeIndex[i].comLedFlg = true;
+                        cpNodeIndex[i].heartFrameLedState = CPHeartFrameDeal.heartFrameState.heartFrameNomalGreen;
+                    }
+                }
             } catch {
-                picBox1.Image = Resources.red;
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == cpAddress) {
+                        cpNodeIndex[i].comLedFlg = false;
+                        cpNodeIndex[i].heartFrameLedState = CPHeartFrameDeal.heartFrameState.heartFrameBusyYellow;
+                    }
+                }
                 return;
             }
+
             sendBaseDataSocket(0x20, clientSocket, cpAddress);
 
-            heartLedTime.Enabled = true;
+            //heartLedTime.Enabled = true;
             closeheartTime.Enabled = true;
 
             Thread myThread = new Thread(clientReceiveData);
@@ -1036,18 +1048,22 @@ namespace ChargingPile.WinForm
                 chargePlug = judgeStringIsEqual(cbChargePlug.Text,"插好");
                 currentState = judgeStringIsEqual(cbOutState.Text,"有输出");
 
-                faultState = (UInt16)(boolleftShiftToUint16(cbInOverVol.Checked,9)
-                            | boolleftShiftToUint16(cbInOverVol.Checked,8)
-                            | boolleftShiftToUint16(cbInOverVol.Checked,7)
-                            | boolleftShiftToUint16(cbInOverVol.Checked,6)
-                            | boolleftShiftToUint16(cbInOverVol.Checked,5)
-                            | boolleftShiftToUint16(cbInOverVol.Checked,4)
-                            | boolleftShiftToUint16(cbInOverVol.Checked,3)
-                            | boolleftShiftToUint16(cbInOverVol.Checked,2)
-                            | boolleftShiftToUint16(cbInOverVol.Checked,1)
-                            | boolleftShiftToUint16(cbInOverVol.Checked,0));
+                
 
             }
+
+            faultState = (UInt16)(boolleftShiftToUint16(cbInOverVol.Checked, 9)
+                            | boolleftShiftToUint16(cbInOverVol.Checked, 8)
+                            | boolleftShiftToUint16(cbInOverVol.Checked, 7)
+                            | boolleftShiftToUint16(cbInOverVol.Checked, 6)
+                            | boolleftShiftToUint16(cbInOverVol.Checked, 5)
+                            | boolleftShiftToUint16(cbInOverVol.Checked, 4)
+                            | boolleftShiftToUint16(cbInOverVol.Checked, 3)
+                            | boolleftShiftToUint16(cbInOverVol.Checked, 2)
+                            | boolleftShiftToUint16(cbInOverVol.Checked, 1)
+                            | boolleftShiftToUint16(cbInOverVol.Checked, 0));
+
+
             bRequestCmd[14] = (byte)(valtage >> 24);               // 电压
             bRequestCmd[15] = (byte)(valtage >> 16);               // 电压
             bRequestCmd[16] = (byte)(valtage >> 8);               // 电压
@@ -1263,7 +1279,7 @@ namespace ChargingPile.WinForm
                 faultStateH = (byte)ran.Next(0, 4);
                 faultStateL = (byte)ran.Next(0, 256);
                 currentState = (byte)ran.Next(0, 6);
-                faultState = (UInt16)(((UInt16)faultStateH) << 8 | faultStateL);
+                //faultState = (UInt16)(((UInt16)faultStateH) << 8 | faultStateL);
 
 
                 int port = ((System.Net.IPEndPoint)clientSocket.LocalEndPoint).Port;
@@ -1271,8 +1287,13 @@ namespace ChargingPile.WinForm
                 Console.WriteLine("voltage:" + port + "--value:" + valtage);
                 Console.WriteLine("current:" + port + "--value:" + current);
 
+                portRecod temp1 = new portRecod();
+                temp1.port = port;
+                temp1.address = cpAddress;
 
-
+                if (false == addPortAddress(cpAddress, port, portAddress)) {
+                    portAddress.Add(temp1);
+                }
 
                 for (int i = 0; i < portAddress.Count; i++) {
                     if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)
@@ -1319,36 +1340,37 @@ namespace ChargingPile.WinForm
                         }));
 
 
-                        cbInOverVol.BeginInvoke(new Action(() => {
-                            cbInOverVol.Checked = checkBoxFault(faultState, 9);
-                        }));
-                        cbOutOverVol.BeginInvoke(new Action(() => {
-                            cbOutOverVol.Checked = checkBoxFault(faultState, 8);
-                        }));
-                        cbInUnderVol.BeginInvoke(new Action(() => {
-                            cbInUnderVol.Checked = checkBoxFault(faultState, 7);
-                        }));
-                        cbOutUnderVol.BeginInvoke(new Action(() => {
-                            cbOutUnderVol.Checked = checkBoxFault(faultState, 6);
-                        }));
-                        cbInOverCur.BeginInvoke(new Action(() => {
-                            cbInOverCur.Checked = checkBoxFault(faultState, 5);
-                        }));
-                        cbOutOverCur.BeginInvoke(new Action(() => {
-                            cbOutOverCur.Checked = checkBoxFault(faultState, 4);
-                        }));
-                        cbInUnderCur.BeginInvoke(new Action(() => {
-                            cbInUnderCur.Checked = checkBoxFault(faultState, 3);
-                        }));
-                        cbOutUnderCur.BeginInvoke(new Action(() => {
-                            cbOutUnderCur.Checked = checkBoxFault(faultState, 2);
-                        }));
-                        cbTempHigh.BeginInvoke(new Action(() => {
-                            cbTempHigh.Checked = checkBoxFault(faultState, 1);
-                        }));
-                        cbOutShort.BeginInvoke(new Action(() => {
-                            cbOutShort.Checked = checkBoxFault(faultState, 0);
-                        }));
+//                         cbInOverVol.BeginInvoke(new Action(() => {
+//                             cbInOverVol.Checked = checkBoxFault(faultState, 9);
+//                         }));
+//                         cbOutOverVol.BeginInvoke(new Action(() => {
+//                             cbOutOverVol.Checked = checkBoxFault(faultState, 8);
+//                         }));
+//                         cbInUnderVol.BeginInvoke(new Action(() => {
+//                             cbInUnderVol.Checked = checkBoxFault(faultState, 7);
+//                         }));
+//                         cbOutUnderVol.BeginInvoke(new Action(() => {
+//                             cbOutUnderVol.Checked = checkBoxFault(faultState, 6);
+//                         }));
+//                         cbInOverCur.BeginInvoke(new Action(() => {
+//                             cbInOverCur.Checked = checkBoxFault(faultState, 5);
+//                         }));
+//                         cbOutOverCur.BeginInvoke(new Action(() => {
+//                             cbOutOverCur.Checked = checkBoxFault(faultState, 4);
+//                         }));
+//                         cbInUnderCur.BeginInvoke(new Action(() => {
+//                             cbInUnderCur.Checked = checkBoxFault(faultState, 3);
+//                         }));
+//                         cbOutUnderCur.BeginInvoke(new Action(() => {
+//                             cbOutUnderCur.Checked = checkBoxFault(faultState, 2);
+//                         }));
+//                         cbTempHigh.BeginInvoke(new Action(() => {
+//                             cbTempHigh.Checked = checkBoxFault(faultState, 1);
+//                         }));
+//                         cbOutShort.BeginInvoke(new Action(() => {
+//                             cbOutShort.Checked = checkBoxFault(faultState, 0);
+//                         }));
+
 //                         cbEmergencyBtn.SelectedIndex = judgeByteIsZero(emergencyStopButton);
 //                         cbMeterState.SelectedIndex = judgeByteIsZero(electMeter);
 //                         cbChargePlug.SelectedIndex = judgeByteIsZero(chargePlug);
@@ -1389,8 +1411,7 @@ namespace ChargingPile.WinForm
                 chargePlug = judgeStringIsEqual(cbChargePlug.Text, "插好");
                 cpOutState = judgeStringIsEqual(cbOutState.Text, "有输出");
 
-                currentState = judgeStringIsEqual(cbOutState.Text, "有输出");
-                switch (cbOutState.Text) {
+                switch (cbCurState.Text) {
                     case "故障状态": { currentState = 0; break; }
                     case "空闲状态": { currentState = 1; break; }
                     case "充电状态": { currentState = 2; break; }
@@ -1399,19 +1420,19 @@ namespace ChargingPile.WinForm
                     case "维护状态": { currentState = 5; break; }
                     default: { currentState = 0; break; }
                 }
-
-                faultState = (UInt16)(boolleftShiftToUint16(cbInOverVol.Checked, 9)
-                            | boolleftShiftToUint16(cbInOverVol.Checked, 8)
-                            | boolleftShiftToUint16(cbInOverVol.Checked, 7)
-                            | boolleftShiftToUint16(cbInOverVol.Checked, 6)
-                            | boolleftShiftToUint16(cbInOverVol.Checked, 5)
-                            | boolleftShiftToUint16(cbInOverVol.Checked, 4)
-                            | boolleftShiftToUint16(cbInOverVol.Checked, 3)
-                            | boolleftShiftToUint16(cbInOverVol.Checked, 2)
-                            | boolleftShiftToUint16(cbInOverVol.Checked, 1)
-                            | boolleftShiftToUint16(cbInOverVol.Checked, 0));
-
             }
+
+            faultState = (UInt16)(boolleftShiftToUint16(cbInOverVol.Checked, 9)
+                            | boolleftShiftToUint16(cbOutOverVol.Checked, 8)
+                            | boolleftShiftToUint16(cbInUnderVol.Checked, 7)
+                            | boolleftShiftToUint16(cbOutUnderVol.Checked, 6)
+                            | boolleftShiftToUint16(cbInOverCur.Checked, 5)
+                            | boolleftShiftToUint16(cbOutOverCur.Checked, 4)
+                            | boolleftShiftToUint16(cbInUnderCur.Checked, 3)
+                            | boolleftShiftToUint16(cbOutUnderCur.Checked, 2)
+                            | boolleftShiftToUint16(cbTempHigh.Checked, 1)
+                            | boolleftShiftToUint16(cbOutShort.Checked, 0));
+
             bRequestCmd[14] = (byte)(valtage >> 24);               // 电压
             bRequestCmd[15] = (byte)(valtage >> 16);               // 电压
             bRequestCmd[16] = (byte)(valtage >> 8);               // 电压
@@ -2243,7 +2264,13 @@ namespace ChargingPile.WinForm
 
                 chargeTotalPrice = chargePointCost + chargePeakCost + chargeFlatCost + chargeValleyCost;
                 int port = ((System.Net.IPEndPoint)clientSocket.LocalEndPoint).Port;
+                portRecod temp1 = new portRecod();
+                temp1.port = port;
+                temp1.address = cpAddress;
 
+                if (false == addPortAddress(cpAddress, port, portAddress)) {
+                    portAddress.Add(temp1);
+                }
                 for (int i = 0; i < portAddress.Count; i++) {
                     if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)
                         && portAddress[i].port == port) {
@@ -2516,14 +2543,10 @@ namespace ChargingPile.WinForm
                         // 响应状态00表示执行成功，01表示系统忙暂时不能执行
 
                         if (cpHeartFrameStateFlg) {
-                            heartLedTime.Enabled = true;
+                            //heartFrameLed.ForeColor = Color.LightGreen;
                         } else {
-                            heartLedTime.Enabled = false;
-                            picBox1.Image = Resources.red;
-                            heartFrameLed.ForeColor = Color.Red;
+                            //heartFrameLed.ForeColor = Color.Red;
                         }
-
-                        
                         //closeheartTime.Enabled = true;
                         break;
                     }
@@ -2693,69 +2716,80 @@ namespace ChargingPile.WinForm
                         respondRequestCmd(arr[11], clientSocket,cpAddress);// 
                         // 响应状态00表示执行成功，01表示系统忙暂时不能执行
 
-                        for (int i = 0; i < cpNodeIndex.Count; i++) {
-                            if (cpNodeIndex[i].address == cpAddress) {
-                                cpNodeIndex[i].count = 0;
+                        if (cpHeartFrameStateFlg) {   // 心跳包，繁忙标志-不忙
+                            for (int i = 0; i < cpNodeIndex.Count; i++) {
+                                if (cpNodeIndex[i].address == cpAddress) {
+                                    cpNodeIndex[i].heartFrameLedState = CPHeartFrameDeal.heartFrameState.heartFrameNomalGreen;
+                                    cpNodeIndex[i].count = 0;  // 心跳帧失联控制
+                                }
+                            }
+                        } else {  // 忙
+                            for (int i = 0; i < cpNodeIndex.Count; i++) {
+                                if (cpNodeIndex[i].address == cpAddress) {
+                                    cpNodeIndex[i].heartFrameLedState = CPHeartFrameDeal.heartFrameState.heartFrameBusyYellow;
+                                    cpNodeIndex[i].count = 0;  // 心跳帧失联控制
+                                }
                             }
                         }
 
-                        if (cpHeartFrameStateFlg) {
-                            heartLedTime.Enabled = true;
-                        } else {
-                            heartLedTime.Enabled = false;
-                            picBox1.Image = Resources.red;
-                            heartFrameLed.ForeColor = Color.Red;
-                        }
-                        heartFrameCnt = 0;
+
+                        // 心跳包，检测
+                        heartFrameCnt = 0;  
                         break;
                     }
                     case 0x21: {
                         // 解析参数信息，设置时间
                         // 回送响应信息
                         respondRequestCmd(arr[11], clientSocket,cpAddress);
-                        int yearInt = (int)(ConvertBCDToInt(arr[12]) * 100) + (int)ConvertBCDToInt(arr[13]);
-                        string year = yearInt.ToString();
 
-                        string month = ConvertBCDToInt(arr[14]).ToString();
-                        string day = ConvertBCDToInt(arr[15]).ToString();
-                        string hour = ConvertBCDToInt(arr[16]).ToString();
-                        string minute = ConvertBCDToInt(arr[17]).ToString();
-                        string second = ConvertBCDToInt(arr[18]).ToString();
 
-                        txtChargePileTime.BeginInvoke(new Action(() => {
-                            txtChargePileTime.Text = year + "/" + month + "/" + day + " " 
-                                                    + hour + ":" + minute + ":" + second;
-                        }));
-                            
+
+                        if (bSetTimeResponeState == 0x00) {
+                            int yearInt = (int)(ConvertBCDToInt(arr[12]) * 100) + (int)ConvertBCDToInt(arr[13]);
+                            string year = yearInt.ToString();
+
+                            string month = ConvertBCDToInt(arr[14]).ToString();
+                            string day = ConvertBCDToInt(arr[15]).ToString();
+                            string hour = ConvertBCDToInt(arr[16]).ToString();
+                            string minute = ConvertBCDToInt(arr[17]).ToString();
+                            string second = ConvertBCDToInt(arr[18]).ToString();
+
+                            txtChargePileTime.BeginInvoke(new Action(() => {
+                                txtChargePileTime.Text = year + "/" + month + "/" + day + " "
+                                                        + hour + ":" + minute + ":" + second;
+                            }));
+                        }
                         break;
                     }
                     case 0x22: {
                         respondRequestCmd(arr[11], clientSocket,cpAddress);
 
-                        UInt32 pointPrice = (UInt32)((arr[12] << 24) | (arr[13] << 16)
+                        if (bSetRateResponeState == 0x00) {
+                            UInt32 pointPrice = (UInt32)((arr[12] << 24) | (arr[13] << 16)
                                                     | (arr[14] << 8) | (arr[15]));
-                        UInt32 peakPrice = (UInt32)((arr[16] << 24) | (arr[17] << 16)
-                                                    | (arr[18] << 8) | (arr[19]));
-                        UInt32 flatPrice = (UInt32)((arr[20] << 24) | (arr[21] << 16)
-                                                    | (arr[22] << 8) | (arr[23]));
-                        UInt32 valleyPrice = (UInt32)((arr[24] << 24) | (arr[25] << 16)
-                                                    | (arr[26] << 8) | (arr[27]));
-                        try {
-                            txtRatePointPrice.BeginInvoke(new Action(() => {
-                                txtRatePointPrice.Text = chargeIntToString(pointPrice);
-                            }));
-                            txtRatePeakPrice.BeginInvoke(new Action(() => {
-                                txtRatePeakPrice.Text = chargeIntToString(peakPrice);
-                            }));
-                            txtRateFlatPrice.BeginInvoke(new Action(() => {
-                                txtRateFlatPrice.Text = chargeIntToString(flatPrice);
-                            }));
-                            txtRateValleyPrice.BeginInvoke(new Action(() => {
-                                txtRateValleyPrice.Text = chargeIntToString(valleyPrice);
-                            }));
-                        } catch (Exception ex) {
-                            Console.WriteLine(ex.Message);
-                            Console.WriteLine("txtRatePointPrice  解析数据出错！！！");
+                            UInt32 peakPrice = (UInt32)((arr[16] << 24) | (arr[17] << 16)
+                                                        | (arr[18] << 8) | (arr[19]));
+                            UInt32 flatPrice = (UInt32)((arr[20] << 24) | (arr[21] << 16)
+                                                        | (arr[22] << 8) | (arr[23]));
+                            UInt32 valleyPrice = (UInt32)((arr[24] << 24) | (arr[25] << 16)
+                                                        | (arr[26] << 8) | (arr[27]));
+                            try {
+                                txtRatePointPrice.BeginInvoke(new Action(() => {
+                                    txtRatePointPrice.Text = chargeIntToString(pointPrice);
+                                }));
+                                txtRatePeakPrice.BeginInvoke(new Action(() => {
+                                    txtRatePeakPrice.Text = chargeIntToString(peakPrice);
+                                }));
+                                txtRateFlatPrice.BeginInvoke(new Action(() => {
+                                    txtRateFlatPrice.Text = chargeIntToString(flatPrice);
+                                }));
+                                txtRateValleyPrice.BeginInvoke(new Action(() => {
+                                    txtRateValleyPrice.Text = chargeIntToString(valleyPrice);
+                                }));
+                            } catch (Exception ex) {
+                                Console.WriteLine(ex.Message);
+                                Console.WriteLine("txtRatePointPrice  解析数据出错！！！");
+                            }
                         }
                             
                         break;
@@ -2769,7 +2803,6 @@ namespace ChargingPile.WinForm
                     case 0x24: {
                         respondStartAndStopCmd(arr[11], arr[12], clientSocket,cpAddress);
                         if (bCPStartupResponeState == 0x01) {
-                            //txtCPStartup.Text = "charge pile busy";
                             txtCPStartup.Text = "充电桩忙";
                             break;
                         }
@@ -2869,10 +2902,10 @@ namespace ChargingPile.WinForm
             cpHeart.count = 0;
 
             if (false == addNodeIndex((UInt64)(tv.SelectedNode.Index + 1))) {
+                cpNodeIndex.Add(cpHeart); 
                 if (btnGetData.Text == "关闭连接") {
-                    socketClient();
+                    socketClient(cpHeart.address);
                 }
-                cpNodeIndex.Add(cpHeart);
             }
         }
         private bool addNodeIndex(UInt64 index) {
@@ -2887,6 +2920,51 @@ namespace ChargingPile.WinForm
             DateTime dt = DateTime.Now;
             //TS_LableSystemTime.Text = dt.ToString();
             lblSystemTime.Text = dt.ToString();
+
+            // 断线重连
+            heartTimeCnt++;
+            if (heartTimeCnt > 10) {
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    cpNodeIndex[i].count++;
+                    if (cpNodeIndex[i].count >= 3) { // 大于三次，则重新发送heart包
+                        socketClient(cpNodeIndex[i].address);
+                        receiveDataThreadFlg = true;
+                        cpNodeIndex[i].count = 0;
+                    }
+                }
+                heartTimeCnt = 0;  // 定时10S程序
+            }
+
+            // 处理 通讯灯任务
+
+            for (int i = 0; i < cpNodeIndex.Count; i++) {
+                if (cpNodeIndex[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)) {
+                    if (cpNodeIndex[i].comLedFlg) {
+                        picBox1.Image = Resources.green32;
+                    } else {
+                        picBox1.Image = Resources.grey32;
+                    }
+
+                    switch (cpNodeIndex[i].heartFrameLedState) {
+                        case CPHeartFrameDeal.heartFrameState.comBreakGray: {
+                                heartFrameLed.ForeColor = Color.LightGray;
+                                heartLedTime.Enabled = false;
+                                break;
+                            }
+                        case CPHeartFrameDeal.heartFrameState.heartFrameNomalGreen: {
+                                //heartFrameLed.ForeColor = Color.ForestGreen;
+                                heartLedTime.Enabled = true;
+                                break;
+                            }
+                        case CPHeartFrameDeal.heartFrameState.heartFrameBusyYellow: {
+                                heartFrameLed.ForeColor = Color.Goldenrod;
+                                heartLedTime.Enabled = false;
+                                break;
+                            }
+                        default: { break; };
+                    }
+                }
+            }
         }
         
         static bool cpHeartFrameStateFlg = true;
@@ -2896,12 +2974,25 @@ namespace ChargingPile.WinForm
                 btnPileNormal.Text = "充电桩繁忙";
                 bHeartFrameResponeState = 0x01;
                 cpHeartFrameStateFlg = false;
+
+                for (int i = 0; i < cpNodeIndex.Count; i++ ) {
+                    if (cpNodeIndex[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)) {
+                        cpNodeIndex[i].heartFrameLedState = CPHeartFrameDeal.heartFrameState.heartFrameBusyYellow;
+                    }
+                }
+                //heartFrameLed.ForeColor = Color.LightGreen;
                 return;
             }
             if (btnPileNormal.Text == "充电桩繁忙") {
                 btnPileNormal.Text = "充电桩正常";
                 bHeartFrameResponeState = 0x00;
                 cpHeartFrameStateFlg = true;
+                //heartFrameLed.ForeColor = Color.Red;
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)) {
+                        cpNodeIndex[i].heartFrameLedState = CPHeartFrameDeal.heartFrameState.heartFrameNomalGreen;
+                    }
+                }
             }
             return;
         }
@@ -3139,6 +3230,7 @@ namespace ChargingPile.WinForm
                 receiveDataThreadFlg = true;
             } else {
                 btnGetData.Text = "打开连接";
+                // 链接关闭，这个指示属性失效
                 picBox1.Image = Resources.grey32;
                 heartFrameLed.ForeColor = Color.Gray;
                 heartLedTime.Enabled = false;
@@ -3150,32 +3242,12 @@ namespace ChargingPile.WinForm
         // 心跳包定时器
         private void heartLedTime_Tick(object sender, EventArgs e) {
             if (ledStateFlg) {
-                heartFrameLed.ForeColor = Color.Green;
-                picBox1.Image = Resources.green32;
+                heartFrameLed.ForeColor = Color.ForestGreen;
                 ledStateFlg = false;
             } else {
-                heartFrameLed.ForeColor = Color.Gray;
-                picBox1.Image = Resources.grey32;
+                heartFrameLed.ForeColor = Color.LightGray;
                 ledStateFlg = true;
             }
-            heartTimeCnt++;
-            if (heartTimeCnt > 10) {
-
-                // 每隔10S,取出 cpNodeIndex中的count++
-
-                for (int i = 0; i < cpNodeIndex.Count; i++ ) {
-
-                    cpNodeIndex[i].count++;
-
-                    if (cpNodeIndex[i].count >= 3) { // 大于三次，则重新发送heart包
-                        socketClient(cpNodeIndex[i].address);
-
-                        cpNodeIndex[i].count = 0;
-                    }
-                }
-                heartTimeCnt = 0;  // 定时10S程序
-            }
-            //heartFrameLed.ForeColor = Color.Green;
         }
         private int heartFrameCnt = 0;
         private void closeheartTime_Tick(object sender, EventArgs e) {

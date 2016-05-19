@@ -20,7 +20,16 @@ namespace ChargingPile.WinForm
         private void btnExit_Click(object sender, EventArgs e) {
             this.Close();
         }
-
+        private bool isAddNodeRepeat(string str,TreeNodeCollection tree) {
+            foreach (TreeNode node in tree) {
+                foreach (TreeNode node1 in node.Nodes) {
+                    if (node1.Text == str) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
         private void btnQueckAdd_Click(object sender, EventArgs e) {
             int cpNum = 20;
             if (txtCPNum.Text != "") {
@@ -35,8 +44,11 @@ namespace ChargingPile.WinForm
                 MessageBox.Show("充电桩数量不能为空！");
                 return;
             }
-            for (int j = 1; j < cpNum; j++) {
+            for (int j = 1; j < cpNum + 1; j++) {
                 string str = String.Format("{0:0000}",j) + "号充电桩";
+                if (isAddNodeRepeat(str, interFace.tvChargePile.Nodes)) {
+                    continue;
+                }
                 TreeNode node2 = new TreeNode(str);
                 foreach (TreeNode node in interFace.tvChargePile.Nodes) {
                     node.Nodes.Add(node2);
@@ -44,6 +56,7 @@ namespace ChargingPile.WinForm
             }
             interFace.tvChargePile.ExpandAll();
         }
+
         private void btnAdd_Click(object sender, EventArgs e) {
             int addNum = 0;
             string str = "";
@@ -55,15 +68,20 @@ namespace ChargingPile.WinForm
                 }
                 str = String.Format("{0:0000}", addNum) + "号充电桩";
 
-                foreach (TreeNode node in interFace.tvChargePile.Nodes) {
-                    foreach (TreeNode node1 in node.Nodes) {
-                        Console.WriteLine(node1.Text);
-                        if (node1.Text == str) {
-                            MessageBox.Show("重复添加");
-                            return;
-                        }
-                    }
+                if (isAddNodeRepeat(str, interFace.tvChargePile.Nodes)) {
+                    MessageBox.Show("重复添加");
+                    return;
                 }
+
+                //foreach (TreeNode node in interFace.tvChargePile.Nodes) {
+                //    foreach (TreeNode node1 in node.Nodes) {
+                //        Console.WriteLine(node1.Text);
+                //        if (node1.Text == str) {
+                //            MessageBox.Show("重复添加");
+                //            return;
+                //        }
+                //    }
+                //}
             } else {
                 MessageBox.Show("充电桩地址不能为空！");
                 return;
