@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MonitoringInterface));
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("充电桩");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("充电桩");
             this.btnOpenPort = new System.Windows.Forms.Button();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -41,6 +41,7 @@
             this.toolStripButton_About = new System.Windows.Forms.ToolStripButton();
             this.TSBtnExist = new System.Windows.Forms.ToolStripButton();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label27 = new System.Windows.Forms.Label();
             this.btnPause = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
             this.labeltx = new System.Windows.Forms.Label();
@@ -154,7 +155,6 @@
             this.tvChargePile = new System.Windows.Forms.TreeView();
             this.rtbDisplay = new System.Windows.Forms.RichTextBox();
             this.lblSystemTime = new System.Windows.Forms.Label();
-            this.label27 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picBox1)).BeginInit();
@@ -210,14 +210,14 @@
             // tsmAddCP
             // 
             this.tsmAddCP.Name = "tsmAddCP";
-            this.tsmAddCP.Size = new System.Drawing.Size(152, 22);
+            this.tsmAddCP.Size = new System.Drawing.Size(136, 22);
             this.tsmAddCP.Text = "充电桩配置";
             this.tsmAddCP.Click += new System.EventHandler(this.tsmAddCP_Click);
             // 
             // 串口设置ToolStripMenuItem
             // 
             this.串口设置ToolStripMenuItem.Name = "串口设置ToolStripMenuItem";
-            this.串口设置ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.串口设置ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.串口设置ToolStripMenuItem.Text = "串口设置";
             this.串口设置ToolStripMenuItem.Click += new System.EventHandler(this.串口设置ToolStripMenuItem_Click);
             // 
@@ -258,6 +258,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1110, 48);
             this.panel1.TabIndex = 34;
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label27.Location = new System.Drawing.Point(157, 5);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(101, 36);
+            this.label27.TabIndex = 470;
+            this.label27.Text = "绿色表示通讯正常\r\n\r\n灰色表示通讯断开";
             // 
             // btnPause
             // 
@@ -1335,10 +1345,10 @@
             // 
             this.tvChargePile.Location = new System.Drawing.Point(2, 75);
             this.tvChargePile.Name = "tvChargePile";
-            treeNode8.Name = "chargePileGroup";
-            treeNode8.Text = "充电桩";
+            treeNode1.Name = "chargePileGroup";
+            treeNode1.Text = "充电桩";
             this.tvChargePile.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode8});
+            treeNode1});
             this.tvChargePile.Size = new System.Drawing.Size(146, 590);
             this.tvChargePile.TabIndex = 508;
             this.tvChargePile.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvChargePile_AfterSelect);
@@ -1361,16 +1371,6 @@
             this.lblSystemTime.TabIndex = 549;
             this.lblSystemTime.Text = "label27";
             this.lblSystemTime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label27.Location = new System.Drawing.Point(157, 5);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(101, 36);
-            this.label27.TabIndex = 470;
-            this.label27.Text = "绿色表示通讯正常\r\n\r\n灰色表示通讯断开";
             // 
             // MonitoringInterface
             // 
