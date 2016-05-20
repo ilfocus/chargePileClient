@@ -142,6 +142,12 @@ namespace ChargingPile.WinForm
             {
                 MessageBox.Show(win32ex.ToString());
             }
+            frmSetComPara.combBaudRate.Text = "9600";
+            frmSetComPara.combDataBit.Text = "8";
+            frmSetComPara.combStopBits.Text = "1";
+            frmSetComPara.SerialParity.Text = "None";
+            frmSetComPara.combSerialPort.Text = "COM3";
+            serialPort1.Encoding = Encoding.GetEncoding("gb2312");//接收发送转换编码
             ////////////////////////////////////////////////////////////////////////
            // //zedGraph 初始化
            // zedGraphControl1.GraphPane.Title.Text = "充电桩实时曲线";
@@ -189,7 +195,7 @@ namespace ChargingPile.WinForm
         }
 
         private void serialPortInit() {
-            serialPort1.PortName = "COM1";
+            serialPort1.PortName = "COM3";
             serialPort1.BaudRate = int.Parse(frmSetComPara.combBaudRate.Text);
             serialPort1.DataBits = int.Parse(frmSetComPara.combDataBit.Text);
             string szStopBits = frmSetComPara.combStopBits.SelectedItem.ToString();
@@ -478,8 +484,8 @@ namespace ChargingPile.WinForm
             }
             return strB.ToString();
         }
-        private void respondRequestCmd(byte cmdCode)
-        {
+        
+        private void respondRequestCmd(byte cmdCode) {
             const int QUERY_MSG_NUM = 16;
             byte[] bRequestCmd = new byte[QUERY_MSG_NUM];     // 设置数组，并进行初始化，保存发送数据数组
 
@@ -488,8 +494,7 @@ namespace ChargingPile.WinForm
             if (txtChargingPileAddress.Text != "") {
                 cpAddress = Convert.ToUInt64(txtChargingPileAddress.Text);
             }
-            for (int i = 0; i < QUERY_MSG_NUM; i++)
-            {
+            for (int i = 0; i < QUERY_MSG_NUM; i++) {
                 bRequestCmd[i] = 0x00;
             }   // 要发送的数据初始化                      
             bRequestCmd[0] = 0xff;             // 起始字符高位
@@ -672,11 +677,12 @@ namespace ChargingPile.WinForm
                         for (int i = 0; i < iPortStore.Count; i++) {
                             if (iPortStore[i].address == Convert.ToUInt64(txtChargingPileAddress.Text) //) {
                                 && iPortStore[i].port == port) {
+                                rtbDisplay.SelectionColor = Color.Blue;
                                 rtbDisplay.SelectedText += string.Format("{0:0000}", iPortStore[i].address)
                                                                                     + "-Send:"
                                                                                     + str1
                                                                                     + "\r\n";
-                                rtbDisplay.SelectionColor = Color.Green;
+                                
                                 rtbDisplay.ScrollToCaret();
                             }
                         }
@@ -687,10 +693,9 @@ namespace ChargingPile.WinForm
                 serialPort1.Write(bRequestCmd, 0, QUERY_MSG_NUM);
             }
         }
-        
         private void respondCP_StateCmd(byte cmdCode)
         {
-            const int QUERY_MSG_NUM = 51;
+            const int QUERY_MSG_NUM = 55;
             byte[] bRequestCmd = new byte[QUERY_MSG_NUM];     // 设置数组，并进行初始化，保存发送数据数组
 
             CPDataCheck dataCheck = new CPDataCheck();
@@ -714,7 +719,7 @@ namespace ChargingPile.WinForm
             bRequestCmd[8] = (byte)(cpAddress >> 8); ;
             bRequestCmd[9] = (byte)(cpAddress);
             //
-            bRequestCmd[10] = 0x28;               // 帧长度
+            bRequestCmd[10] = 0x2c;               // 帧长度
             bRequestCmd[11] = cmdCode;            // 命令码
             bRequestCmd[12] = 0xAC;               // 响应帧标志
 
@@ -751,66 +756,78 @@ namespace ChargingPile.WinForm
             byte emergencyStopButton = 0;
             byte electMeter = 0;
             byte chargePlug = 0;
-            byte currentState = 0;
 
+            byte cpOutState = 0;
+            UInt16 faultState = 0;
+            byte faultStateH = 0;
+            byte faultStateL = 0;
+            byte currentState = 0;
 
             if (btnSetData.Text == "设置数据") {
                 Random ran = new Random();
-                valtage = (UInt32)ran.Next(18000, 26000);// 180 - 220V
+                valtage = (UInt32)ran.Next(18000, 75000);// 180 - 220V
                 current = (UInt32)ran.Next(100, 10000);  // 1A - 100A
                 // 充电时的尖电量  
-                chargePointElect = (UInt32)ran.Next(0, 100000);
+                chargePointElect = (UInt32)ran.Next(0, 2500);
                 // 充电时的峰电量
-                chargePeakElect = (UInt32)ran.Next(0, 100000);
+                chargePeakElect = (UInt32)ran.Next(0, 2500);
                 // 充电时的平电量
-                chargeFlatElect = (UInt32)ran.Next(0, 100000);
+                chargeFlatElect = (UInt32)ran.Next(0, 2500);
                 // 充电时的谷电量
-                chargeValleyElect = (UInt32)ran.Next(0, 100000);
+                chargeValleyElect = (UInt32)ran.Next(0, 2500);
                 // 充电时的总电量
                 chargeTotalElect = chargePointElect + chargePeakElect + chargeFlatElect + chargeValleyElect;
-                
+
                 emergencyStopButton = (byte)ran.Next(0, 2);
                 electMeter = (byte)ran.Next(0, 2); ;
                 chargePlug = (byte)ran.Next(0, 2); ;
-                currentState = (byte)ran.Next(0, 2);
+                cpOutState = (byte)ran.Next(0, 2);
+
+                faultStateH = (byte)ran.Next(0, 4);
+                faultStateL = (byte)ran.Next(0, 256);
+                currentState = (byte)ran.Next(0, 6);
 
                 // 把随机数据显示在界面中
 
-                //Thread myThread = new Thread()
-                txtValtage.Text = chargeIntToString(valtage);
-                //ThreadCPState(chargeIntToString(valtage));
-                txtCurrent.Text = chargeIntToString(current);
+                txtValtage.BeginInvoke(new Action(() => {
+                    txtValtage.Text = chargeIntToString(valtage);
+                }));
+                txtCurrent.BeginInvoke(new Action(() => {
+                    txtCurrent.Text = chargeIntToString(current);
+                }));
 
-                txtTotalElect.Text = chargeIntToString(chargeTotalElect);
+                txtTotalElect.BeginInvoke(new Action(() => {
+                    txtTotalElect.Text = chargeIntToString(chargeTotalElect);
+                }));
+                txtPointElect.BeginInvoke(new Action(() => {
+                    txtPointElect.Text = chargeIntToString(chargePointElect);
+                }));
+                txtPeakElect.BeginInvoke(new Action(() => {
+                    txtPeakElect.Text = chargeIntToString(chargePeakElect);
+                }));
+                txtFlatElect.BeginInvoke(new Action(() => {
+                    txtFlatElect.Text = chargeIntToString(chargeFlatElect);
+                }));
+                txtValleyElect.BeginInvoke(new Action(() => {
+                    txtValleyElect.Text = chargeIntToString(chargeValleyElect);
+                }));
 
-                txtPointElect.Text = chargeIntToString(chargePointElect);
-                txtPeakElect.Text = chargeIntToString(chargePeakElect);
-                txtFlatElect.Text = chargeIntToString(chargeFlatElect);
-                txtValleyElect.Text = chargeIntToString(chargeValleyElect);
 
-                if (emergencyStopButton == 0) {
-                    cbEmergencyBtn.SelectedIndex = 0;
-                } else {
-                    cbEmergencyBtn.SelectedIndex = 1;
-                }
-
-                if (electMeter == 0) {
-                    cbMeterState.SelectedIndex = 0;
-                } else {
-                    cbMeterState.SelectedIndex = 1;
-                }
-
-                if (chargePlug == 0) {
-                    cbChargePlug.SelectedIndex = 0;
-                } else {
-                    cbChargePlug.SelectedIndex = 1;
-                }
-
-                if (currentState == 0) {
-                    cbOutState.SelectedIndex = 0;
-                } else {
-                    cbOutState.SelectedIndex = 1;
-                }
+                cbEmergencyBtn.BeginInvoke(new Action(() => {
+                    cbEmergencyBtn.SelectedIndex = judgeByteIsZero(emergencyStopButton);
+                }));
+                cbMeterState.BeginInvoke(new Action(() => {
+                    cbMeterState.SelectedIndex = judgeByteIsZero(electMeter);
+                }));
+                cbChargePlug.BeginInvoke(new Action(() => {
+                    cbChargePlug.SelectedIndex = judgeByteIsZero(chargePlug);
+                }));
+                cbOutState.BeginInvoke(new Action(() => {
+                    cbOutState.SelectedIndex = judgeByteIsZero(cpOutState);
+                }));
+                cbCurState.BeginInvoke(new Action(() => {
+                    cbCurState.SelectedIndex = (int)currentState;
+                })); 
 
             } else {
                 valtage = Convert.ToUInt32(txtValtage.Text);
@@ -898,14 +915,22 @@ namespace ChargingPile.WinForm
             bRequestCmd[46] = chargePlug;                                   // 充电插头
             // 备用
             bRequestCmd[47] = chargeSurplusTime;                           // 备用 --- 充电剩余时间
-            // 当前状态
-            bRequestCmd[48] = currentState;                                 // 当前状态
+
+            // 输出状态
+            bRequestCmd[48] = cpOutState;                                   // 输出状态
+
+            bRequestCmd[49] = (byte)(faultState >> 8);                      // 故障状态位
+            bRequestCmd[50] = (byte)faultState;                             // 故障状态位
+            bRequestCmd[51] = currentState;                                 // 充电桩当前状态
+            bRequestCmd[52] = 0x00;                                         // 充电桩通信状态
             // 帧尾
-            bRequestCmd[49] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
-            bRequestCmd[50] = 0xed;
+            bRequestCmd[53] = dataCheck.GetBCC_Check(bRequestCmd, 10, bRequestCmd.Length - 2); // bcc校验
+            bRequestCmd[54] = 0xed;
+
+
             if (btnGetData.Text == "关闭连接") {
             //if (cbOpen.SelectedIndex == 1) {
-                clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
+                //clientSocket.Send(bRequestCmd, QUERY_MSG_NUM, 0);
             }
             if (true == serialPort1.IsOpen) {
                 serialPort1.Write(bRequestCmd, 0, QUERY_MSG_NUM);
@@ -1206,9 +1231,9 @@ namespace ChargingPile.WinForm
             bRequestCmd[3] = (byte)(cpAddress >> 48);
             bRequestCmd[4] = (byte)(cpAddress >> 40);
             bRequestCmd[5] = (byte)(cpAddress >> 32);
-            bRequestCmd[6] = (byte)(cpAddress >> 24); ;
-            bRequestCmd[7] = (byte)(cpAddress >> 16); ;
-            bRequestCmd[8] = (byte)(cpAddress >> 8); ;
+            bRequestCmd[6] = (byte)(cpAddress >> 24);
+            bRequestCmd[7] = (byte)(cpAddress >> 16);
+            bRequestCmd[8] = (byte)(cpAddress >> 8);
             bRequestCmd[9] = (byte)(cpAddress);
             //
             bRequestCmd[10] = 0x2c;               // 帧长度
@@ -1255,8 +1280,21 @@ namespace ChargingPile.WinForm
             byte faultStateL = 0;
             byte currentState = 0;
 
+            bool isSetDataFlg = false;
 
-            if (btnSetData.Text == "设置数据") {
+            for (int i = 0; i < cpNodeIndex.Count; i++) {
+                if (cpNodeIndex[i].address == cpAddress) {
+
+                    if (cpNodeIndex[i].isSetupCpStateData) {
+                        isSetDataFlg = true;
+                    } else {
+                        isSetDataFlg = false;
+                    }
+                }
+            }
+
+            //if (btnSetData.Text == "设置数据") {
+            if (false == isSetDataFlg) { // 不是设置数据，即是产生随机数据
                 Random ran = new Random();
                 valtage = (UInt32)ran.Next(18000, 75000);// 180 - 220V
                 current = (UInt32)ran.Next(100, 10000);  // 1A - 100A
@@ -1283,22 +1321,23 @@ namespace ChargingPile.WinForm
 
 
                 int port = ((System.Net.IPEndPoint)clientSocket.LocalEndPoint).Port;
-
-                Console.WriteLine("voltage:" + port + "--value:" + valtage);
-                Console.WriteLine("current:" + port + "--value:" + current);
-
+                //Console.WriteLine("voltage:" + port + "--value:" + valtage);
+                //Console.WriteLine("current:" + port + "--value:" + current);
                 portRecod temp1 = new portRecod();
                 temp1.port = port;
                 temp1.address = cpAddress;
-
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == temp1.address) {
+                        temp1.isSetupCpStateData = cpNodeIndex[i].isSetupCpStateData;
+                    }
+                }
                 if (false == addPortAddress(cpAddress, port, portAddress)) {
                     portAddress.Add(temp1);
                 }
-
                 for (int i = 0; i < portAddress.Count; i++) {
-                    if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)
-                        && portAddress[i].port == port) {
-                        
+                     if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)
+                         && portAddress[i].port == port && portAddress[i].isSetupCpStateData == false) {
+
                         txtValtage.BeginInvoke(new Action(() => {
                             txtValtage.Text = chargeIntToString(valtage);
                         }));
@@ -1336,58 +1375,8 @@ namespace ChargingPile.WinForm
                             cbOutState.SelectedIndex = judgeByteIsZero(cpOutState);
                         }));
                         cbCurState.BeginInvoke(new Action(() => {
-                            cbCurState.SelectedIndex = judgeByteIsZero(currentState);
-                        }));
-
-
-//                         cbInOverVol.BeginInvoke(new Action(() => {
-//                             cbInOverVol.Checked = checkBoxFault(faultState, 9);
-//                         }));
-//                         cbOutOverVol.BeginInvoke(new Action(() => {
-//                             cbOutOverVol.Checked = checkBoxFault(faultState, 8);
-//                         }));
-//                         cbInUnderVol.BeginInvoke(new Action(() => {
-//                             cbInUnderVol.Checked = checkBoxFault(faultState, 7);
-//                         }));
-//                         cbOutUnderVol.BeginInvoke(new Action(() => {
-//                             cbOutUnderVol.Checked = checkBoxFault(faultState, 6);
-//                         }));
-//                         cbInOverCur.BeginInvoke(new Action(() => {
-//                             cbInOverCur.Checked = checkBoxFault(faultState, 5);
-//                         }));
-//                         cbOutOverCur.BeginInvoke(new Action(() => {
-//                             cbOutOverCur.Checked = checkBoxFault(faultState, 4);
-//                         }));
-//                         cbInUnderCur.BeginInvoke(new Action(() => {
-//                             cbInUnderCur.Checked = checkBoxFault(faultState, 3);
-//                         }));
-//                         cbOutUnderCur.BeginInvoke(new Action(() => {
-//                             cbOutUnderCur.Checked = checkBoxFault(faultState, 2);
-//                         }));
-//                         cbTempHigh.BeginInvoke(new Action(() => {
-//                             cbTempHigh.Checked = checkBoxFault(faultState, 1);
-//                         }));
-//                         cbOutShort.BeginInvoke(new Action(() => {
-//                             cbOutShort.Checked = checkBoxFault(faultState, 0);
-//                         }));
-
-//                         cbEmergencyBtn.SelectedIndex = judgeByteIsZero(emergencyStopButton);
-//                         cbMeterState.SelectedIndex = judgeByteIsZero(electMeter);
-//                         cbChargePlug.SelectedIndex = judgeByteIsZero(chargePlug);
-//                         cbOutState.SelectedIndex = judgeByteIsZero(cpOutState);
-//                         cbCurState.SelectedIndex = judgeByteIsZero(currentState);
-// 
-//                         cbInOverVol.Checked = checkBoxFault(faultState, 9);
-//                         cbOutOverVol.Checked = checkBoxFault(faultState, 8);
-//                         cbInUnderVol.Checked = checkBoxFault(faultState, 7);
-//                         cbOutUnderVol.Checked = checkBoxFault(faultState, 6);
-//                         cbInOverCur.Checked = checkBoxFault(faultState, 5);
-//                         cbOutOverCur.Checked = checkBoxFault(faultState, 4);
-//                         cbInUnderCur.Checked = checkBoxFault(faultState, 3);
-//                         cbOutUnderCur.Checked = checkBoxFault(faultState, 2);
-//                         cbTempHigh.Checked = checkBoxFault(faultState, 1);
-//                         cbOutShort.Checked = checkBoxFault(faultState, 0);
-                        
+                            cbCurState.SelectedIndex = (int)currentState;
+                        }));   
                     }
                 }
                 
@@ -1520,11 +1509,12 @@ namespace ChargingPile.WinForm
                         for (int i = 0; i < iPortStore.Count; i++) {
                             if (iPortStore[i].address == Convert.ToUInt64(txtChargingPileAddress.Text) //) {
                                 && iPortStore[i].port == port) {
+                                rtbDisplay.SelectionColor = Color.Blue;
                                 rtbDisplay.SelectedText += string.Format("{0:0000}", iPortStore[i].address)
                                                                                     + "-Send:"
                                                                                     + str1
                                                                                     + "\r\n";
-                                rtbDisplay.SelectionColor = Color.Green;
+                                
                                 rtbDisplay.ScrollToCaret();
                             }
                         }
@@ -2232,8 +2222,20 @@ namespace ChargingPile.WinForm
             // 谷时段费用
             UInt32 chargeValleyCost = 0;
 
+            bool isSetDataFlg = false;
 
-            if (btnSetCurInfo.Text == "设置数据") {
+            for (int i = 0; i < cpNodeIndex.Count; i++) {
+                if (cpNodeIndex[i].address == cpAddress) {
+
+                    if (cpNodeIndex[i].isSetupCpCurInfoData) {
+                        isSetDataFlg = true;
+                    } else {
+                        isSetDataFlg = false;
+                    }
+                }
+            }
+            if (false == isSetDataFlg) { // 不是设置数据，即是产生随机数据
+            //if (btnSetCurInfo.Text == "设置数据") {
                 // 数据随机
                 Random ran = new Random();
 
@@ -2267,13 +2269,17 @@ namespace ChargingPile.WinForm
                 portRecod temp1 = new portRecod();
                 temp1.port = port;
                 temp1.address = cpAddress;
-
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == temp1.address) {
+                        temp1.isSetupCpCurInfoData = cpNodeIndex[i].isSetupCpCurInfoData;
+                    }
+                }
                 if (false == addPortAddress(cpAddress, port, portAddress)) {
                     portAddress.Add(temp1);
                 }
                 for (int i = 0; i < portAddress.Count; i++) {
                     if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)
-                        && portAddress[i].port == port) {
+                        && portAddress[i].port == port && portAddress[i].isSetupCpCurInfoData == false) {
 
                         txtCurTotalElect.BeginInvoke(new Action(() => {
                             txtCurTotalElect.Text = chargeIntToString(chargeTotalElect);
@@ -2475,11 +2481,12 @@ namespace ChargingPile.WinForm
                         for (int i = 0; i < iPortStore.Count; i++) {
                             if (iPortStore[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)// ) {
                                  && iPortStore[i].port == port) {
+                                rtbDisplay.SelectionColor = Color.Blue;
                                 rtbDisplay.SelectedText += string.Format("{0:0000}", iPortStore[i].address)
                                                                                     + "-Send:"
                                                                                     + str1
                                                                                     + "\r\n";
-                                rtbDisplay.SelectionColor = Color.Green;
+                                
                                 rtbDisplay.ScrollToCaret();
                             }
                         }
@@ -2690,10 +2697,11 @@ namespace ChargingPile.WinForm
                         for (int i = 0; i < portAddress.Count; i++) {
                             if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)  //){
                                 && portAddress[i].port == port) {
+                                rtbDisplay.SelectionColor = Color.Red;
                                 rtbDisplay.SelectedText += string.Format("{0:0000}", portAddress[i].address)
                                                     + "-Receive:"
                                                     + str + "\r\n";
-                                rtbDisplay.SelectionColor = Color.Red;
+                                
                                 rtbDisplay.ScrollToCaret();
                             }
                         }
@@ -2835,6 +2843,11 @@ namespace ChargingPile.WinForm
                                     break;
                                 }
                         }
+                        for (int i = 0; i < cpNodeIndex.Count; i++) {
+                            if (cpNodeIndex[i].address == cpAddress) {
+                                cpNodeIndex[i].cpStartupState = txtCPStartup.Text;
+                            }
+                        }
                         break;
                     }
                     case 0x25: {
@@ -2901,12 +2914,53 @@ namespace ChargingPile.WinForm
             cpHeart.address = (UInt64)(tv.SelectedNode.Index + 1);
             cpHeart.count = 0;
 
+
+            // 第一次点击
             if (false == addNodeIndex((UInt64)(tv.SelectedNode.Index + 1))) {
-                cpNodeIndex.Add(cpHeart); 
+                cpNodeIndex.Add(cpHeart);
+                cpHeart.cpStartupState = "";
+                cpHeart.isSetupCpStateData = false;
+                cpHeart.isSetupCpCurInfoData = false;
+
+                cpHeart.isHeartFrameBusy = false;
+                cpHeart.isSetTimeBusy = false;
+                cpHeart.isSetRateBusy = false;
+                cpHeart.isCpStartBusy = false;
+                cpHeart.isGetCpStateBusy = false;
+                cpHeart.isGetCpCurInfoBusy = false;
+
+                btnSetData.Text = (cpHeart.isSetupCpStateData) ? "随机数据" : "设置数据";
+                btnSetCurInfo.Text = (cpHeart.isSetupCpCurInfoData) ? "随机数据" : "设置数据";
+
+                btnPileNormal.Text = (cpHeart.isHeartFrameBusy) ? "充电桩繁忙" : "充电桩正常";
+                btnSetTime.Text = (cpHeart.isSetTimeBusy) ? "充电桩繁忙" : "充电桩正常";
+                btnSetRate.Text = (cpHeart.isSetRateBusy) ? "充电桩繁忙" : "充电桩正常";
+                btnStartup.Text = (cpHeart.isCpStartBusy) ? "充电桩繁忙" : "充电桩正常";
+                btnCPState.Text = (cpHeart.isGetCpStateBusy) ? "充电桩繁忙" : "充电桩正常";
+                btnCurInfo.Text = (cpHeart.isGetCpCurInfoBusy) ? "充电桩繁忙" : "充电桩正常";
+
                 if (btnGetData.Text == "关闭连接") {
                     socketClient(cpHeart.address);
                 }
+            } else {
+                // 下次点击
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == (UInt64)(tv.SelectedNode.Index + 1)) {
+                        txtCPStartup.Text = cpNodeIndex[i].cpStartupState;
+
+                        btnSetData.Text = (cpNodeIndex[i].isSetupCpStateData) ? "随机数据" : "设置数据";
+                        btnSetCurInfo.Text = (cpNodeIndex[i].isSetupCpCurInfoData) ? "随机数据" : "设置数据";
+
+                        btnPileNormal.Text = (cpNodeIndex[i].isHeartFrameBusy) ? "充电桩繁忙" : "充电桩正常";
+                        btnSetTime.Text = (cpNodeIndex[i].isSetTimeBusy) ? "充电桩繁忙" : "充电桩正常";
+                        btnSetRate.Text = (cpNodeIndex[i].isSetRateBusy) ? "充电桩繁忙" : "充电桩正常";
+                        btnStartup.Text = (cpNodeIndex[i].isCpStartBusy) ? "充电桩繁忙" : "充电桩正常";
+                        btnCPState.Text = (cpNodeIndex[i].isGetCpStateBusy) ? "充电桩繁忙" : "充电桩正常";
+                        btnCurInfo.Text = (cpNodeIndex[i].isGetCpCurInfoBusy) ? "充电桩繁忙" : "充电桩正常";
+                    }
+                }
             }
+
         }
         private bool addNodeIndex(UInt64 index) {
 
@@ -2978,6 +3032,7 @@ namespace ChargingPile.WinForm
                 for (int i = 0; i < cpNodeIndex.Count; i++ ) {
                     if (cpNodeIndex[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)) {
                         cpNodeIndex[i].heartFrameLedState = CPHeartFrameDeal.heartFrameState.heartFrameBusyYellow;
+                        cpNodeIndex[i].isHeartFrameBusy = true;
                     }
                 }
                 //heartFrameLed.ForeColor = Color.LightGreen;
@@ -2991,6 +3046,7 @@ namespace ChargingPile.WinForm
                 for (int i = 0; i < cpNodeIndex.Count; i++) {
                     if (cpNodeIndex[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)) {
                         cpNodeIndex[i].heartFrameLedState = CPHeartFrameDeal.heartFrameState.heartFrameNomalGreen;
+                        cpNodeIndex[i].isHeartFrameBusy = false;
                     }
                 }
             }
@@ -3001,11 +3057,21 @@ namespace ChargingPile.WinForm
             if (btnSetTime.Text == "充电桩正常") {
                 btnSetTime.Text = "充电桩繁忙";
                 bSetTimeResponeState = 0x01;
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)) {
+                        cpNodeIndex[i].isSetTimeBusy = true;
+                    }
+                }
                 return;
             }
             if (btnSetTime.Text == "充电桩繁忙") {
                 btnSetTime.Text = "充电桩正常";
                 bSetTimeResponeState = 0x00;
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)) {
+                        cpNodeIndex[i].isSetTimeBusy = false;
+                    }
+                }
             }
             return;
         }
@@ -3014,11 +3080,21 @@ namespace ChargingPile.WinForm
             if (btnSetRate.Text == "充电桩正常") {
                 btnSetRate.Text = "充电桩繁忙";
                 bSetRateResponeState = 0x01;
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)) {
+                        cpNodeIndex[i].isSetRateBusy = true;
+                    }
+                }
                 return;
             }
             if (btnSetRate.Text == "充电桩繁忙") {
                 btnSetRate.Text = "充电桩正常";
                 bSetRateResponeState = 0x00;
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)) {
+                        cpNodeIndex[i].isSetRateBusy = false;
+                    }
+                }
             }
             return;
         }
@@ -3027,11 +3103,21 @@ namespace ChargingPile.WinForm
             if (btnCPState.Text == "充电桩正常") {
                 btnCPState.Text = "充电桩繁忙";
                 bGetCPStateResponeState = 0x01;
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)) {
+                        cpNodeIndex[i].isGetCpStateBusy = true;
+                    }
+                }
                 return;
             }
             if (btnCPState.Text == "充电桩繁忙") {
                 btnCPState.Text = "充电桩正常";
                 bGetCPStateResponeState = 0x00;
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)) {
+                        cpNodeIndex[i].isGetCpStateBusy = false;
+                    }
+                }
             }
             return;
         }
@@ -3040,11 +3126,21 @@ namespace ChargingPile.WinForm
             if (btnStartup.Text == "充电桩正常") {
                 btnStartup.Text = "充电桩繁忙";
                 bCPStartupResponeState = 0x01;
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)) {
+                        cpNodeIndex[i].isCpStartBusy = true;
+                    }
+                }
                 return;
             }
             if (btnStartup.Text == "充电桩繁忙") {
                 btnStartup.Text = "充电桩正常";
                 bCPStartupResponeState = 0x00;
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)) {
+                        cpNodeIndex[i].isCpStartBusy = false;
+                    }
+                }
             }
             return;
         }
@@ -3053,11 +3149,21 @@ namespace ChargingPile.WinForm
             if (btnCurInfo.Text == "充电桩正常") {
                 btnCurInfo.Text = "充电桩繁忙";
                 bCurInfoResponeState = 0x01;
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)) {
+                        cpNodeIndex[i].isGetCpCurInfoBusy = true;
+                    }
+                }
                 return;
             }
             if (btnCurInfo.Text == "充电桩繁忙") {
                 btnCurInfo.Text = "充电桩正常";
                 bCurInfoResponeState = 0x00;
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)) {
+                        cpNodeIndex[i].isGetCpCurInfoBusy = false;
+                    }
+                }
             }
             return;
         }
@@ -3072,9 +3178,14 @@ namespace ChargingPile.WinForm
         }
 
         private void btnSetData_Click(object sender, EventArgs e) {
+            UInt64 address = Convert.ToUInt64(txtChargingPileAddress.Text);
             if (btnSetData.Text == "设置数据") {
                 btnSetData.Text = "随机数据";
-
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == address) {
+                        cpNodeIndex[i].isSetupCpStateData = true;
+                    }
+                }
                 if (txtValtage.Text == "") {
                     MessageBox.Show("电压数据不能为空请重新设置！");
                     btnSetData.Text = "设置数据";
@@ -3114,13 +3225,26 @@ namespace ChargingPile.WinForm
             }
             if (btnSetData.Text == "随机数据") {
                 btnSetData.Text = "设置数据";
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == address) {
+
+                        cpNodeIndex[i].isSetupCpStateData = false;
+                    }
+                }
             }
         }
 
         private void btnSetCurInfo_Click(object sender, EventArgs e) {
+            UInt64 address = Convert.ToUInt64(txtChargingPileAddress.Text);
             if (btnSetCurInfo.Text == "设置数据") {
                 btnSetCurInfo.Text = "随机数据";
+                
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == address) {
 
+                        cpNodeIndex[i].isSetupCpCurInfoData = true;
+                    }
+                }
                 if (txtCurTotalElect.Text == "") {
                     MessageBox.Show("总电量不能为空请重新设置！");
                     btnSetCurInfo.Text = "设置数据";
@@ -3200,6 +3324,11 @@ namespace ChargingPile.WinForm
             }
             if (btnSetCurInfo.Text == "随机数据") {
                 btnSetCurInfo.Text = "设置数据";
+                for (int i = 0; i < cpNodeIndex.Count; i++) {
+                    if (cpNodeIndex[i].address == address) {
+                        cpNodeIndex[i].isSetupCpCurInfoData = false;
+                    }
+                }
             }
         }
         
