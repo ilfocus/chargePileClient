@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MonitoringInterface));
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("充电桩");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("充电桩");
             this.btnOpenPort = new System.Windows.Forms.Button();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -41,6 +41,8 @@
             this.toolStripButton_About = new System.Windows.Forms.ToolStripButton();
             this.TSBtnExist = new System.Windows.Forms.ToolStripButton();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnPause = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
             this.labeltx = new System.Windows.Forms.Label();
             this.picBox1 = new System.Windows.Forms.PictureBox();
             this.btnGetData = new System.Windows.Forms.Button();
@@ -74,23 +76,14 @@
             this.txtRatePointPrice = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.cbOpen = new System.Windows.Forms.ComboBox();
             this.heartFrameLed = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txtChargingPileAddress = new System.Windows.Forms.TextBox();
             this.panel6 = new System.Windows.Forms.Panel();
             this.cbCurState = new System.Windows.Forms.ComboBox();
             this.label19 = new System.Windows.Forms.Label();
-            this.cbInUnderVol = new System.Windows.Forms.CheckBox();
             this.cbOutShort = new System.Windows.Forms.CheckBox();
-            this.cbOutOverVol = new System.Windows.Forms.CheckBox();
-            this.cbInOverVol = new System.Windows.Forms.CheckBox();
             this.cbTempHigh = new System.Windows.Forms.CheckBox();
-            this.cbOutUnderCur = new System.Windows.Forms.CheckBox();
-            this.cbInUnderCur = new System.Windows.Forms.CheckBox();
-            this.cbOutOverCur = new System.Windows.Forms.CheckBox();
-            this.cbInOverCur = new System.Windows.Forms.CheckBox();
-            this.cbOutUnderVol = new System.Windows.Forms.CheckBox();
             this.cbOutState = new System.Windows.Forms.ComboBox();
             this.cbChargePlug = new System.Windows.Forms.ComboBox();
             this.cbMeterState = new System.Windows.Forms.ComboBox();
@@ -114,6 +107,16 @@
             this.txtValtage = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.btnSetData = new System.Windows.Forms.Button();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.label21 = new System.Windows.Forms.Label();
+            this.cbInOverVol = new System.Windows.Forms.CheckBox();
+            this.cbInUnderVol = new System.Windows.Forms.CheckBox();
+            this.cbOutOverVol = new System.Windows.Forms.CheckBox();
+            this.cbOutUnderCur = new System.Windows.Forms.CheckBox();
+            this.cbOutUnderVol = new System.Windows.Forms.CheckBox();
+            this.cbInUnderCur = new System.Windows.Forms.CheckBox();
+            this.cbInOverCur = new System.Windows.Forms.CheckBox();
+            this.cbOutOverCur = new System.Windows.Forms.CheckBox();
             this.panel4 = new System.Windows.Forms.Panel();
             this.btnSetCurInfo = new System.Windows.Forms.Button();
             this.txtCurValleyCost = new System.Windows.Forms.TextBox();
@@ -150,11 +153,8 @@
             this.ChargeTimeTimer = new System.Windows.Forms.Timer(this.components);
             this.tvChargePile = new System.Windows.Forms.TreeView();
             this.rtbDisplay = new System.Windows.Forms.RichTextBox();
-            this.label21 = new System.Windows.Forms.Label();
-            this.panel5 = new System.Windows.Forms.Panel();
             this.lblSystemTime = new System.Windows.Forms.Label();
-            this.btnClear = new System.Windows.Forms.Button();
-            this.btnPause = new System.Windows.Forms.Button();
+            this.label27 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picBox1)).BeginInit();
@@ -162,13 +162,13 @@
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel6.SuspendLayout();
-            this.panel4.SuspendLayout();
             this.panel5.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnOpenPort
             // 
-            this.btnOpenPort.Location = new System.Drawing.Point(515, 8);
+            this.btnOpenPort.Location = new System.Drawing.Point(578, 8);
             this.btnOpenPort.Name = "btnOpenPort";
             this.btnOpenPort.Size = new System.Drawing.Size(67, 27);
             this.btnOpenPort.TabIndex = 28;
@@ -249,20 +249,41 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.label27);
             this.panel1.Controls.Add(this.btnPause);
             this.panel1.Controls.Add(this.btnClear);
             this.panel1.Controls.Add(this.labeltx);
             this.panel1.Controls.Add(this.picBox1);
             this.panel1.Location = new System.Drawing.Point(0, 669);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1110, 38);
+            this.panel1.Size = new System.Drawing.Size(1110, 48);
             this.panel1.TabIndex = 34;
+            // 
+            // btnPause
+            // 
+            this.btnPause.Location = new System.Drawing.Point(684, 5);
+            this.btnPause.Name = "btnPause";
+            this.btnPause.Size = new System.Drawing.Size(75, 35);
+            this.btnPause.TabIndex = 469;
+            this.btnPause.Text = "暂停";
+            this.btnPause.UseVisualStyleBackColor = true;
+            this.btnPause.Click += new System.EventHandler(this.btnPause_Click);
+            // 
+            // btnClear
+            // 
+            this.btnClear.Location = new System.Drawing.Point(441, 7);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(75, 35);
+            this.btnClear.TabIndex = 468;
+            this.btnClear.Text = "清空";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // labeltx
             // 
             this.labeltx.AutoSize = true;
             this.labeltx.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.labeltx.Location = new System.Drawing.Point(11, 8);
+            this.labeltx.Location = new System.Drawing.Point(11, 15);
             this.labeltx.Name = "labeltx";
             this.labeltx.Size = new System.Drawing.Size(89, 20);
             this.labeltx.TabIndex = 467;
@@ -271,7 +292,7 @@
             // picBox1
             // 
             this.picBox1.Image = global::ChargingPile.Properties.Resources.green32;
-            this.picBox1.Location = new System.Drawing.Point(106, 2);
+            this.picBox1.Location = new System.Drawing.Point(106, 9);
             this.picBox1.Name = "picBox1";
             this.picBox1.Size = new System.Drawing.Size(41, 31);
             this.picBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -280,7 +301,7 @@
             // 
             // btnGetData
             // 
-            this.btnGetData.Location = new System.Drawing.Point(445, 8);
+            this.btnGetData.Location = new System.Drawing.Point(482, 8);
             this.btnGetData.Name = "btnGetData";
             this.btnGetData.Size = new System.Drawing.Size(64, 27);
             this.btnGetData.TabIndex = 457;
@@ -558,7 +579,6 @@
             // 
             this.panel3.BackColor = System.Drawing.Color.White;
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3.Controls.Add(this.cbOpen);
             this.panel3.Controls.Add(this.heartFrameLed);
             this.panel3.Controls.Add(this.txtCPStartup);
             this.panel3.Controls.Add(this.label4);
@@ -569,30 +589,20 @@
             this.panel3.Controls.Add(this.label2);
             this.panel3.Controls.Add(this.btnGetData);
             this.panel3.Controls.Add(this.btnOpenPort);
+            this.panel3.ForeColor = System.Drawing.SystemColors.ControlText;
             this.panel3.Location = new System.Drawing.Point(154, 80);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(956, 55);
             this.panel3.TabIndex = 503;
             // 
-            // cbOpen
-            // 
-            this.cbOpen.FormattingEnabled = true;
-            this.cbOpen.Items.AddRange(new object[] {
-            "打开串口",
-            "打开网络"});
-            this.cbOpen.Location = new System.Drawing.Point(588, 12);
-            this.cbOpen.Name = "cbOpen";
-            this.cbOpen.Size = new System.Drawing.Size(71, 20);
-            this.cbOpen.TabIndex = 546;
-            this.cbOpen.SelectedIndexChanged += new System.EventHandler(this.cbOpen_SelectedIndexChanged);
-            // 
             // heartFrameLed
             // 
             this.heartFrameLed.AutoSize = true;
-            this.heartFrameLed.ForeColor = System.Drawing.Color.DarkGray;
-            this.heartFrameLed.Location = new System.Drawing.Point(416, 18);
+            this.heartFrameLed.Font = new System.Drawing.Font("宋体", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.heartFrameLed.ForeColor = System.Drawing.Color.Gray;
+            this.heartFrameLed.Location = new System.Drawing.Point(412, 7);
             this.heartFrameLed.Name = "heartFrameLed";
-            this.heartFrameLed.Size = new System.Drawing.Size(17, 12);
+            this.heartFrameLed.Size = new System.Drawing.Size(42, 29);
             this.heartFrameLed.TabIndex = 42;
             this.heartFrameLed.Text = "●";
             // 
@@ -675,16 +685,6 @@
             this.label19.TabIndex = 559;
             this.label19.Text = "当前状态:";
             // 
-            // cbInUnderVol
-            // 
-            this.cbInUnderVol.AutoSize = true;
-            this.cbInUnderVol.Location = new System.Drawing.Point(5, 65);
-            this.cbInUnderVol.Name = "cbInUnderVol";
-            this.cbInUnderVol.Size = new System.Drawing.Size(72, 16);
-            this.cbInUnderVol.TabIndex = 558;
-            this.cbInUnderVol.Text = "输入欠压";
-            this.cbInUnderVol.UseVisualStyleBackColor = true;
-            // 
             // cbOutShort
             // 
             this.cbOutShort.AutoSize = true;
@@ -695,26 +695,6 @@
             this.cbOutShort.Text = "输出短路";
             this.cbOutShort.UseVisualStyleBackColor = true;
             // 
-            // cbOutOverVol
-            // 
-            this.cbOutOverVol.AutoSize = true;
-            this.cbOutOverVol.Location = new System.Drawing.Point(5, 40);
-            this.cbOutOverVol.Name = "cbOutOverVol";
-            this.cbOutOverVol.Size = new System.Drawing.Size(72, 16);
-            this.cbOutOverVol.TabIndex = 556;
-            this.cbOutOverVol.Text = "输出过压";
-            this.cbOutOverVol.UseVisualStyleBackColor = true;
-            // 
-            // cbInOverVol
-            // 
-            this.cbInOverVol.AutoSize = true;
-            this.cbInOverVol.Location = new System.Drawing.Point(5, 22);
-            this.cbInOverVol.Name = "cbInOverVol";
-            this.cbInOverVol.Size = new System.Drawing.Size(72, 16);
-            this.cbInOverVol.TabIndex = 555;
-            this.cbInOverVol.Text = "输入过压";
-            this.cbInOverVol.UseVisualStyleBackColor = true;
-            // 
             // cbTempHigh
             // 
             this.cbTempHigh.AutoSize = true;
@@ -724,56 +704,6 @@
             this.cbTempHigh.TabIndex = 554;
             this.cbTempHigh.Text = "温度过高";
             this.cbTempHigh.UseVisualStyleBackColor = true;
-            // 
-            // cbOutUnderCur
-            // 
-            this.cbOutUnderCur.AutoSize = true;
-            this.cbOutUnderCur.Location = new System.Drawing.Point(5, 172);
-            this.cbOutUnderCur.Name = "cbOutUnderCur";
-            this.cbOutUnderCur.Size = new System.Drawing.Size(72, 16);
-            this.cbOutUnderCur.TabIndex = 553;
-            this.cbOutUnderCur.Text = "输出欠流";
-            this.cbOutUnderCur.UseVisualStyleBackColor = true;
-            // 
-            // cbInUnderCur
-            // 
-            this.cbInUnderCur.AutoSize = true;
-            this.cbInUnderCur.Location = new System.Drawing.Point(5, 154);
-            this.cbInUnderCur.Name = "cbInUnderCur";
-            this.cbInUnderCur.Size = new System.Drawing.Size(72, 16);
-            this.cbInUnderCur.TabIndex = 552;
-            this.cbInUnderCur.Text = "输入欠流";
-            this.cbInUnderCur.UseVisualStyleBackColor = true;
-            // 
-            // cbOutOverCur
-            // 
-            this.cbOutOverCur.AutoSize = true;
-            this.cbOutOverCur.Location = new System.Drawing.Point(5, 127);
-            this.cbOutOverCur.Name = "cbOutOverCur";
-            this.cbOutOverCur.Size = new System.Drawing.Size(72, 16);
-            this.cbOutOverCur.TabIndex = 551;
-            this.cbOutOverCur.Text = "输出过流";
-            this.cbOutOverCur.UseVisualStyleBackColor = true;
-            // 
-            // cbInOverCur
-            // 
-            this.cbInOverCur.AutoSize = true;
-            this.cbInOverCur.Location = new System.Drawing.Point(5, 109);
-            this.cbInOverCur.Name = "cbInOverCur";
-            this.cbInOverCur.Size = new System.Drawing.Size(72, 16);
-            this.cbInOverCur.TabIndex = 550;
-            this.cbInOverCur.Text = "输入过流";
-            this.cbInOverCur.UseVisualStyleBackColor = true;
-            // 
-            // cbOutUnderVol
-            // 
-            this.cbOutUnderVol.AutoSize = true;
-            this.cbOutUnderVol.Location = new System.Drawing.Point(5, 83);
-            this.cbOutUnderVol.Name = "cbOutUnderVol";
-            this.cbOutUnderVol.Size = new System.Drawing.Size(72, 16);
-            this.cbOutUnderVol.TabIndex = 549;
-            this.cbOutUnderVol.Text = "输出欠压";
-            this.cbOutUnderVol.UseVisualStyleBackColor = true;
             // 
             // cbOutState
             // 
@@ -983,6 +913,113 @@
             this.btnSetData.Text = "设置数据";
             this.btnSetData.UseVisualStyleBackColor = true;
             this.btnSetData.Click += new System.EventHandler(this.btnSetData_Click);
+            // 
+            // panel5
+            // 
+            this.panel5.BackColor = System.Drawing.Color.White;
+            this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel5.Controls.Add(this.label21);
+            this.panel5.Controls.Add(this.cbInOverVol);
+            this.panel5.Controls.Add(this.cbInUnderVol);
+            this.panel5.Controls.Add(this.cbOutOverVol);
+            this.panel5.Controls.Add(this.cbOutUnderCur);
+            this.panel5.Controls.Add(this.cbOutUnderVol);
+            this.panel5.Controls.Add(this.cbInUnderCur);
+            this.panel5.Controls.Add(this.cbInOverCur);
+            this.panel5.Controls.Add(this.cbOutOverCur);
+            this.panel5.Location = new System.Drawing.Point(274, -1);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(82, 235);
+            this.panel5.TabIndex = 549;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(13, 4);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(53, 12);
+            this.label21.TabIndex = 561;
+            this.label21.Text = "故障告警";
+            // 
+            // cbInOverVol
+            // 
+            this.cbInOverVol.AutoSize = true;
+            this.cbInOverVol.Location = new System.Drawing.Point(5, 22);
+            this.cbInOverVol.Name = "cbInOverVol";
+            this.cbInOverVol.Size = new System.Drawing.Size(72, 16);
+            this.cbInOverVol.TabIndex = 555;
+            this.cbInOverVol.Text = "输入过压";
+            this.cbInOverVol.UseVisualStyleBackColor = true;
+            // 
+            // cbInUnderVol
+            // 
+            this.cbInUnderVol.AutoSize = true;
+            this.cbInUnderVol.Location = new System.Drawing.Point(5, 65);
+            this.cbInUnderVol.Name = "cbInUnderVol";
+            this.cbInUnderVol.Size = new System.Drawing.Size(72, 16);
+            this.cbInUnderVol.TabIndex = 558;
+            this.cbInUnderVol.Text = "输入欠压";
+            this.cbInUnderVol.UseVisualStyleBackColor = true;
+            // 
+            // cbOutOverVol
+            // 
+            this.cbOutOverVol.AutoSize = true;
+            this.cbOutOverVol.Location = new System.Drawing.Point(5, 40);
+            this.cbOutOverVol.Name = "cbOutOverVol";
+            this.cbOutOverVol.Size = new System.Drawing.Size(72, 16);
+            this.cbOutOverVol.TabIndex = 556;
+            this.cbOutOverVol.Text = "输出过压";
+            this.cbOutOverVol.UseVisualStyleBackColor = true;
+            // 
+            // cbOutUnderCur
+            // 
+            this.cbOutUnderCur.AutoSize = true;
+            this.cbOutUnderCur.Location = new System.Drawing.Point(5, 172);
+            this.cbOutUnderCur.Name = "cbOutUnderCur";
+            this.cbOutUnderCur.Size = new System.Drawing.Size(72, 16);
+            this.cbOutUnderCur.TabIndex = 553;
+            this.cbOutUnderCur.Text = "输出欠流";
+            this.cbOutUnderCur.UseVisualStyleBackColor = true;
+            // 
+            // cbOutUnderVol
+            // 
+            this.cbOutUnderVol.AutoSize = true;
+            this.cbOutUnderVol.Location = new System.Drawing.Point(5, 83);
+            this.cbOutUnderVol.Name = "cbOutUnderVol";
+            this.cbOutUnderVol.Size = new System.Drawing.Size(72, 16);
+            this.cbOutUnderVol.TabIndex = 549;
+            this.cbOutUnderVol.Text = "输出欠压";
+            this.cbOutUnderVol.UseVisualStyleBackColor = true;
+            // 
+            // cbInUnderCur
+            // 
+            this.cbInUnderCur.AutoSize = true;
+            this.cbInUnderCur.Location = new System.Drawing.Point(5, 154);
+            this.cbInUnderCur.Name = "cbInUnderCur";
+            this.cbInUnderCur.Size = new System.Drawing.Size(72, 16);
+            this.cbInUnderCur.TabIndex = 552;
+            this.cbInUnderCur.Text = "输入欠流";
+            this.cbInUnderCur.UseVisualStyleBackColor = true;
+            // 
+            // cbInOverCur
+            // 
+            this.cbInOverCur.AutoSize = true;
+            this.cbInOverCur.Location = new System.Drawing.Point(5, 109);
+            this.cbInOverCur.Name = "cbInOverCur";
+            this.cbInOverCur.Size = new System.Drawing.Size(72, 16);
+            this.cbInOverCur.TabIndex = 550;
+            this.cbInOverCur.Text = "输入过流";
+            this.cbInOverCur.UseVisualStyleBackColor = true;
+            // 
+            // cbOutOverCur
+            // 
+            this.cbOutOverCur.AutoSize = true;
+            this.cbOutOverCur.Location = new System.Drawing.Point(5, 127);
+            this.cbOutOverCur.Name = "cbOutOverCur";
+            this.cbOutOverCur.Size = new System.Drawing.Size(72, 16);
+            this.cbOutOverCur.TabIndex = 551;
+            this.cbOutOverCur.Text = "输出过流";
+            this.cbOutOverCur.UseVisualStyleBackColor = true;
             // 
             // panel4
             // 
@@ -1279,16 +1316,18 @@
             // 
             // closeheartTime
             // 
-            this.closeheartTime.Interval = 9500;
+            this.closeheartTime.Interval = 1000;
             this.closeheartTime.Tick += new System.EventHandler(this.closeheartTime_Tick);
             // 
             // ChargeSocTime
             // 
+            this.ChargeSocTime.Enabled = true;
             this.ChargeSocTime.Interval = 60000;
             this.ChargeSocTime.Tick += new System.EventHandler(this.ChargeSocTime_Tick);
             // 
             // ChargeTimeTimer
             // 
+            this.ChargeTimeTimer.Enabled = true;
             this.ChargeTimeTimer.Interval = 60000;
             this.ChargeTimeTimer.Tick += new System.EventHandler(this.ChargeTimeTimer_Tick);
             // 
@@ -1296,10 +1335,10 @@
             // 
             this.tvChargePile.Location = new System.Drawing.Point(2, 75);
             this.tvChargePile.Name = "tvChargePile";
-            treeNode3.Name = "chargePileGroup";
-            treeNode3.Text = "充电桩";
+            treeNode8.Name = "chargePileGroup";
+            treeNode8.Text = "充电桩";
             this.tvChargePile.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3});
+            treeNode8});
             this.tvChargePile.Size = new System.Drawing.Size(146, 590);
             this.tvChargePile.TabIndex = 508;
             this.tvChargePile.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvChargePile_AfterSelect);
@@ -1312,33 +1351,6 @@
             this.rtbDisplay.TabIndex = 548;
             this.rtbDisplay.Text = "";
             // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(13, 4);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(53, 12);
-            this.label21.TabIndex = 561;
-            this.label21.Text = "故障告警";
-            // 
-            // panel5
-            // 
-            this.panel5.BackColor = System.Drawing.Color.White;
-            this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel5.Controls.Add(this.label21);
-            this.panel5.Controls.Add(this.cbInOverVol);
-            this.panel5.Controls.Add(this.cbInUnderVol);
-            this.panel5.Controls.Add(this.cbOutOverVol);
-            this.panel5.Controls.Add(this.cbOutUnderCur);
-            this.panel5.Controls.Add(this.cbOutUnderVol);
-            this.panel5.Controls.Add(this.cbInUnderCur);
-            this.panel5.Controls.Add(this.cbInOverCur);
-            this.panel5.Controls.Add(this.cbOutOverCur);
-            this.panel5.Location = new System.Drawing.Point(274, -1);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(82, 235);
-            this.panel5.TabIndex = 549;
-            // 
             // lblSystemTime
             // 
             this.lblSystemTime.AutoSize = true;
@@ -1350,32 +1362,22 @@
             this.lblSystemTime.Text = "label27";
             this.lblSystemTime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // btnClear
+            // label27
             // 
-            this.btnClear.Location = new System.Drawing.Point(441, 2);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(75, 35);
-            this.btnClear.TabIndex = 468;
-            this.btnClear.Text = "清空";
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
-            // 
-            // btnPause
-            // 
-            this.btnPause.Location = new System.Drawing.Point(681, 2);
-            this.btnPause.Name = "btnPause";
-            this.btnPause.Size = new System.Drawing.Size(75, 35);
-            this.btnPause.TabIndex = 469;
-            this.btnPause.Text = "暂停";
-            this.btnPause.UseVisualStyleBackColor = true;
-            this.btnPause.Click += new System.EventHandler(this.btnPause_Click);
+            this.label27.AutoSize = true;
+            this.label27.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label27.Location = new System.Drawing.Point(157, 5);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(101, 36);
+            this.label27.TabIndex = 470;
+            this.label27.Text = "绿色表示通讯正常\r\n\r\n灰色表示通讯断开";
             // 
             // MonitoringInterface
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(1116, 707);
+            this.ClientSize = new System.Drawing.Size(1116, 717);
             this.Controls.Add(this.lblSystemTime);
             this.Controls.Add(this.rtbDisplay);
             this.Controls.Add(this.tvChargePile);
@@ -1386,6 +1388,7 @@
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel4);
+            this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Name = "MonitoringInterface";
             this.RightToLeftLayout = true;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -1404,10 +1407,10 @@
             this.panel3.PerformLayout();
             this.panel6.ResumeLayout(false);
             this.panel6.PerformLayout();
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1520,7 +1523,6 @@
         private System.Windows.Forms.Timer ChargeSocTime;
         private System.Windows.Forms.Timer ChargeTimeTimer;
         public System.Windows.Forms.TreeView tvChargePile;
-        private System.Windows.Forms.ComboBox cbOpen;
         private System.Windows.Forms.RichTextBox rtbDisplay;
         private System.Windows.Forms.CheckBox cbInUnderVol;
         private System.Windows.Forms.CheckBox cbOutShort;
@@ -1539,6 +1541,7 @@
         private System.Windows.Forms.Label lblSystemTime;
         private System.Windows.Forms.Button btnPause;
         private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Label label27;
     }
 }
 

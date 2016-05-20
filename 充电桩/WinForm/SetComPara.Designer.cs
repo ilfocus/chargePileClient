@@ -168,7 +168,7 @@
             this.BtnSCP_OK.Name = "BtnSCP_OK";
             this.BtnSCP_OK.Size = new System.Drawing.Size(63, 27);
             this.BtnSCP_OK.TabIndex = 31;
-            this.BtnSCP_OK.Text = "OK";
+            this.BtnSCP_OK.Text = "确定";
             this.BtnSCP_OK.UseVisualStyleBackColor = true;
             this.BtnSCP_OK.Click += new System.EventHandler(this.BtnSCP_OK_Click);
             // 
@@ -178,7 +178,7 @@
             this.BtnSCP_Cancel.Name = "BtnSCP_Cancel";
             this.BtnSCP_Cancel.Size = new System.Drawing.Size(63, 27);
             this.BtnSCP_Cancel.TabIndex = 32;
-            this.BtnSCP_Cancel.Text = "Cancel";
+            this.BtnSCP_Cancel.Text = "取消";
             this.BtnSCP_Cancel.UseVisualStyleBackColor = true;
             this.BtnSCP_Cancel.Click += new System.EventHandler(this.BtnSCP_Cancel_Click);
             // 
@@ -188,7 +188,7 @@
             this.BtnSCP_Apply.Name = "BtnSCP_Apply";
             this.BtnSCP_Apply.Size = new System.Drawing.Size(63, 27);
             this.BtnSCP_Apply.TabIndex = 33;
-            this.BtnSCP_Apply.Text = "Apply";
+            this.BtnSCP_Apply.Text = "应用";
             this.BtnSCP_Apply.UseVisualStyleBackColor = true;
             this.BtnSCP_Apply.Click += new System.EventHandler(this.BtnSCP_Apply_Click);
             // 
@@ -212,7 +212,7 @@
             this.Controls.Add(this.label1);
             this.Name = "SetComPara";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "SetComPara";
+            this.Text = "串口设置";
             this.Load += new System.EventHandler(this.SetComPara_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

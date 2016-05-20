@@ -113,3 +113,5 @@ Y:\chargePile\chargePileClient\充电桩\obj\Debug\GenerateResource.read.1.tlog
 Y:\chargePile\chargePileClient\充电桩\obj\Debug\GenerateResource.write.1.tlog
 Y:\chargePile\chargePileClient\充电桩\obj\Debug\ChargeingPile.exe
 Y:\chargePile\chargePileClient\充电桩\obj\Debug\ChargeingPile.pdb
+E:\充电桩\ChargePile\chargePileClient\充电桩\bin\Debug\ChargeingPile.exe.config
+E:\充电桩\ChargePile\chargePileClient\充电桩\obj\Debug\ChargingPile.csprojResolveAssemblyReference.cache

@@ -10,6 +10,16 @@ namespace ChargingPile
         public int count = 0;
         public UInt64 address = 0;
         public string arrString = "";
+        private bool _isSetupCpStateData = false;
+        private bool _isSetupCpCurInfoData = false;
+        public bool isSetupCpStateData {
+            get { return _isSetupCpStateData; }
+            set { _isSetupCpStateData = value; }
+        }
+        public bool isSetupCpCurInfoData {
+            get { return _isSetupCpCurInfoData; }
+            set { _isSetupCpCurInfoData = value; }
+        }
     }
     public partial class SubDevice
     {
