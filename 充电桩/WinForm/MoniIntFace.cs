@@ -2336,22 +2336,18 @@ namespace ChargingPile.WinForm
 
                 chargeTotalElect = chargePointElect + chargePeakElect + chargeFlatElect + chargeValleyElect;
 
-//                 if (txtRatePointPrice.Text != "") {
-//                     chargePointPrice = (UInt32)(Convert.ToDouble(txtRatePointPrice.Text) * 100);
-//                     chargePeakPrice = (UInt32)(Convert.ToDouble(txtRatePeakPrice.Text) * 100);
-//                     chargeFlatPrice = (UInt32)(Convert.ToDouble(txtRateFlatPrice.Text) * 100);
-//                     chargeValleyPrice = (UInt32)(Convert.ToDouble(txtRateValleyPrice.Text) * 100);
-// 
-//                 } else {
-//                     chargePointPrice = (UInt32)ran.Next(120, 130);
-//                     chargePeakPrice = (UInt32)ran.Next(100, 110);
-//                     chargeFlatPrice = (UInt32)ran.Next(70, 80);
-//                     chargeValleyPrice = (UInt32)ran.Next(30, 40);
-//                 }
-                chargePointPrice = (UInt32)ran.Next(120, 130);
-                chargePeakPrice = (UInt32)ran.Next(100, 110);
-                chargeFlatPrice = (UInt32)ran.Next(70, 80);
-                chargeValleyPrice = (UInt32)ran.Next(30, 40);
+                if (txtRatePointPrice.Text != "") {
+                    chargePointPrice = (UInt32)(Convert.ToDouble(txtRatePointPrice.Text) * 100);
+                    chargePeakPrice = (UInt32)(Convert.ToDouble(txtRatePeakPrice.Text) * 100);
+                    chargeFlatPrice = (UInt32)(Convert.ToDouble(txtRateFlatPrice.Text) * 100);
+                    chargeValleyPrice = (UInt32)(Convert.ToDouble(txtRateValleyPrice.Text) * 100);
+
+                } else {
+                    chargePointPrice = (UInt32)ran.Next(120, 130);
+                    chargePeakPrice = (UInt32)ran.Next(100, 110);
+                    chargeFlatPrice = (UInt32)ran.Next(70, 80);
+                    chargeValleyPrice = (UInt32)ran.Next(30, 40);
+                }
 
                 chargePointCost = chargePointElect * chargePointPrice / 100;
                 chargePeakCost = chargePeakElect * chargePeakPrice / 100;
@@ -2364,19 +2360,19 @@ namespace ChargingPile.WinForm
                     if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)
                         && portAddress[i].port == port && portAddress[i].isSetupCpCurInfoData == false) {
 
-                        if (txtRatePointPrice.Text != "") {
-
-                            chargePointPrice = (UInt32)(Convert.ToDouble(txtRatePointPrice.Text) * 100);
-                            chargePeakPrice = (UInt32)(Convert.ToDouble(txtRatePeakPrice.Text) * 100);
-                            chargeFlatPrice = (UInt32)(Convert.ToDouble(txtRateFlatPrice.Text) * 100);
-                            chargeValleyPrice = (UInt32)(Convert.ToDouble(txtRateValleyPrice.Text) * 100);
-
-                            chargePointCost = chargePointElect * chargePointPrice / 100;
-                            chargePeakCost = chargePeakElect * chargePeakPrice / 100;
-                            chargeFlatCost = chargeFlatElect * chargeFlatPrice / 100;
-                            chargeValleyCost = chargeValleyElect * chargeValleyPrice / 100;
-
-                        }
+//                         if (txtRatePointPrice.Text != "") {
+// 
+//                             chargePointPrice = (UInt32)(Convert.ToDouble(txtRatePointPrice.Text) * 100);
+//                             chargePeakPrice = (UInt32)(Convert.ToDouble(txtRatePeakPrice.Text) * 100);
+//                             chargeFlatPrice = (UInt32)(Convert.ToDouble(txtRateFlatPrice.Text) * 100);
+//                             chargeValleyPrice = (UInt32)(Convert.ToDouble(txtRateValleyPrice.Text) * 100);
+// 
+//                             chargePointCost = chargePointElect * chargePointPrice / 100;
+//                             chargePeakCost = chargePeakElect * chargePeakPrice / 100;
+//                             chargeFlatCost = chargeFlatElect * chargeFlatPrice / 100;
+//                             chargeValleyCost = chargeValleyElect * chargeValleyPrice / 100;
+// 
+//                         }
 
 
                         txtCurTotalElect.BeginInvoke(new Action(() => {
@@ -2881,54 +2877,74 @@ namespace ChargingPile.WinForm
                     case 0x21: {
                         // 解析参数信息，设置时间
                         // 回送响应信息
-                        respondRequestCmd(arr[11], clientSocket,cpAddress); 
-                        for (int i = 0; i < portAddress.Count; i++) {
-                            if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)  //){
-                                && portAddress[i].port == port) {
-                                // 这样设置的时候只会界面上对应地址的机号
-                            for (int j = 0; j < cpNodeIndex.Count; j++) {
-                                if (cpNodeIndex[j].address == portAddress[i].address) {
+                        respondRequestCmd(arr[11], clientSocket,cpAddress);
 
-                                    if (false == cpNodeIndex[j].isSetTimeBusy) {
-                                        int yearInt = (int)(ConvertBCDToInt(arr[12]) * 100) + (int)ConvertBCDToInt(arr[13]);
-                                        string year = yearInt.ToString();
+                        for (int i = 0; i < cpNodeIndex.Count; i++) {
+                            if (false == cpNodeIndex[i].isSetTimeBusy) {
+                                int yearInt = (int)(ConvertBCDToInt(arr[12]) * 100) + (int)ConvertBCDToInt(arr[13]);
+                                string year = yearInt.ToString();
 
-                                        string month = ConvertBCDToInt(arr[14]).ToString();
-                                        string day = ConvertBCDToInt(arr[15]).ToString();
-                                        string hour = ConvertBCDToInt(arr[16]).ToString();
-                                        string minute = ConvertBCDToInt(arr[17]).ToString();
-                                        string second = ConvertBCDToInt(arr[18]).ToString();
+                                string month = ConvertBCDToInt(arr[14]).ToString();
+                                string day = ConvertBCDToInt(arr[15]).ToString();
+                                string hour = ConvertBCDToInt(arr[16]).ToString();
+                                string minute = ConvertBCDToInt(arr[17]).ToString();
+                                string second = ConvertBCDToInt(arr[18]).ToString();
 
-                                        txtChargePileTime.BeginInvoke(new Action(() => {
-                                            txtChargePileTime.Text = year + "/" + month + "/" + day + " "
-                                                                    + hour + ":" + minute + ":" + second;
-                                        }));
+                                txtChargePileTime.BeginInvoke(new Action(() => {
+                                    txtChargePileTime.Text = year + "/" + month + "/" + day + " "
+                                                            + hour + ":" + minute + ":" + second;
+                                }));
 
-                                        cpNodeIndex[j].Year = year;
-                                        cpNodeIndex[j].Month = month;
-                                        cpNodeIndex[j].Day = day;
-                                        cpNodeIndex[j].Hour = hour;
-                                        cpNodeIndex[j].Minute = minute;
-                                        cpNodeIndex[j].Second = second;
-                                    }
-
-                                }
+                                cpNodeIndex[i].Year = year;
+                                cpNodeIndex[i].Month = month;
+                                cpNodeIndex[i].Day = day;
+                                cpNodeIndex[i].Hour = hour;
+                                cpNodeIndex[i].Minute = minute;
+                                cpNodeIndex[i].Second = second;
                             }
                         }
-                    }
+//                         for (int i = 0; i < portAddress.Count; i++) {
+//                             if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)  //){
+//                                 && portAddress[i].port == port) {
+//                                 // 这样设置的时候只会界面上对应地址的机号
+//                             for (int j = 0; j < cpNodeIndex.Count; j++) {
+//                                 if (cpNodeIndex[j].address == portAddress[i].address) {
+// 
+//                                     if (false == cpNodeIndex[j].isSetTimeBusy) {
+//                                         int yearInt = (int)(ConvertBCDToInt(arr[12]) * 100) + (int)ConvertBCDToInt(arr[13]);
+//                                         string year = yearInt.ToString();
+// 
+//                                         string month = ConvertBCDToInt(arr[14]).ToString();
+//                                         string day = ConvertBCDToInt(arr[15]).ToString();
+//                                         string hour = ConvertBCDToInt(arr[16]).ToString();
+//                                         string minute = ConvertBCDToInt(arr[17]).ToString();
+//                                         string second = ConvertBCDToInt(arr[18]).ToString();
+// 
+//                                         txtChargePileTime.BeginInvoke(new Action(() => {
+//                                             txtChargePileTime.Text = year + "/" + month + "/" + day + " "
+//                                                                     + hour + ":" + minute + ":" + second;
+//                                         }));
+// 
+//                                         cpNodeIndex[j].Year = year;
+//                                         cpNodeIndex[j].Month = month;
+//                                         cpNodeIndex[j].Day = day;
+//                                         cpNodeIndex[j].Hour = hour;
+//                                         cpNodeIndex[j].Minute = minute;
+//                                         cpNodeIndex[j].Second = second;
+//                                     }
+// 
+//                                 }
+//                             }
+//                         }
+//                     }
                     break;
                     }
                     case 0x22: {
                         respondRequestCmd(arr[11], clientSocket,cpAddress);
+                        for (int j = 0; j < cpNodeIndex.Count; j++) {
+                            //if (cpNodeIndex[j].address == cpAddress) {
 
-                        for (int i = 0; i < portAddress.Count; i++) {
-                            if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)  //){
-                                && portAddress[i].port == port) {
-                                    
-                            for (int j = 0; j < cpNodeIndex.Count; j++) {
-                                if (cpNodeIndex[j].address == portAddress[i].address) {
-                                    
-                                    if (false == cpNodeIndex[j].isSetRateBusy ) {
+                                if (false == cpNodeIndex[j].isSetRateBusy) {
 
                                     UInt32 pointPrice = (UInt32)((arr[12] << 24) | (arr[13] << 16)
                                                         | (arr[14] << 8) | (arr[15]));
@@ -2960,10 +2976,51 @@ namespace ChargingPile.WinForm
                                     cpNodeIndex[j].FlatPrice = flatPrice;
                                     cpNodeIndex[j].ValleyPrice = valleyPrice;
                                 }
-                                }
-                            }
+                            //}
                         }
-                    }
+//                         for (int i = 0; i < portAddress.Count; i++) {
+//                             if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)  //){
+//                                 && portAddress[i].port == port) {
+//                                     
+//                             for (int j = 0; j < cpNodeIndex.Count; j++) {
+//                                 if (cpNodeIndex[j].address == portAddress[i].address) {
+//                                     
+//                                     if (false == cpNodeIndex[j].isSetRateBusy ) {
+// 
+//                                     UInt32 pointPrice = (UInt32)((arr[12] << 24) | (arr[13] << 16)
+//                                                         | (arr[14] << 8) | (arr[15]));
+//                                     UInt32 peakPrice = (UInt32)((arr[16] << 24) | (arr[17] << 16)
+//                                                                 | (arr[18] << 8) | (arr[19]));
+//                                     UInt32 flatPrice = (UInt32)((arr[20] << 24) | (arr[21] << 16)
+//                                                                 | (arr[22] << 8) | (arr[23]));
+//                                     UInt32 valleyPrice = (UInt32)((arr[24] << 24) | (arr[25] << 16)
+//                                                                 | (arr[26] << 8) | (arr[27]));
+//                                     try {
+//                                         txtRatePointPrice.BeginInvoke(new Action(() => {
+//                                             txtRatePointPrice.Text = chargeIntToString(pointPrice);
+//                                         }));
+//                                         txtRatePeakPrice.BeginInvoke(new Action(() => {
+//                                             txtRatePeakPrice.Text = chargeIntToString(peakPrice);
+//                                         }));
+//                                         txtRateFlatPrice.BeginInvoke(new Action(() => {
+//                                             txtRateFlatPrice.Text = chargeIntToString(flatPrice);
+//                                         }));
+//                                         txtRateValleyPrice.BeginInvoke(new Action(() => {
+//                                             txtRateValleyPrice.Text = chargeIntToString(valleyPrice);
+//                                         }));
+//                                     } catch (Exception ex) {
+//                                         Console.WriteLine(ex.Message);
+//                                         Console.WriteLine("txtRatePointPrice  解析数据出错！！！");
+//                                     }
+//                                     cpNodeIndex[j].PointPrice = pointPrice;
+//                                     cpNodeIndex[j].PeakPrice = peakPrice;
+//                                     cpNodeIndex[j].FlatPrice = flatPrice;
+//                                     cpNodeIndex[j].ValleyPrice = valleyPrice;
+//                                 }
+//                                 }
+//                             }
+//                         }
+//                     }
                             
                         break;
                     }
