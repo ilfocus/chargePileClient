@@ -2782,23 +2782,24 @@ namespace ChargingPile.WinForm
                         respondRequestCmd(arr[11], clientSocket,cpAddress);// 
                         // 响应状态00表示执行成功，01表示系统忙暂时不能执行
 
-                        if (cpHeartFrameStateFlg) {   // 心跳包，繁忙标志-不忙
-                            for (int i = 0; i < cpNodeIndex.Count; i++) {
-                                if (cpNodeIndex[i].address == cpAddress) {
-                                    cpNodeIndex[i].heartFrameLedState = CPHeartFrameDeal.heartFrameState.heartFrameNomalGreen;
-                                    cpNodeIndex[i].count = 0;  // 心跳帧失联控制
-                                }
-                            }
-                        } else {  // 忙
-                            for (int i = 0; i < cpNodeIndex.Count; i++) {
-                                if (cpNodeIndex[i].address == cpAddress) {
-                                    cpNodeIndex[i].heartFrameLedState = CPHeartFrameDeal.heartFrameState.heartFrameBusyYellow;
-                                    cpNodeIndex[i].count = 0;  // 心跳帧失联控制
+                        for (int i = 0; i < portAddress.Count; i++) {
+                            if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)  //){
+                                && portAddress[i].port == port) {
+                                // 这样设置的时候只会界面上对应地址的机号
+                                for (int j = 0; j < cpNodeIndex.Count; j++) {
+                                    if (cpNodeIndex[j].address == portAddress[i].address) {
+
+                                        if (false == cpNodeIndex[j].isHeartFrameBusy) {
+                                            cpNodeIndex[j].heartFrameLedState = CPHeartFrameDeal.heartFrameState.heartFrameNomalGreen;
+                                            cpNodeIndex[j].count = 0;  // 心跳帧失联控制
+                                        } else {
+                                            cpNodeIndex[j].heartFrameLedState = CPHeartFrameDeal.heartFrameState.heartFrameBusyYellow;
+                                            cpNodeIndex[j].count = 0;  // 心跳帧失联控制
+                                        }
+                                    }
                                 }
                             }
                         }
-
-
                         // 心跳包，检测
                         heartFrameCnt = 0;  
                         break;
@@ -2806,92 +2807,90 @@ namespace ChargingPile.WinForm
                     case 0x21: {
                         // 解析参数信息，设置时间
                         // 回送响应信息
-                        respondRequestCmd(arr[11], clientSocket,cpAddress);
-                        
+                        respondRequestCmd(arr[11], clientSocket,cpAddress); 
+                        for (int i = 0; i < portAddress.Count; i++) {
+                            if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)  //){
+                                && portAddress[i].port == port) {
+                                // 这样设置的时候只会界面上对应地址的机号
+                            for (int j = 0; j < cpNodeIndex.Count; j++) {
+                                if (cpNodeIndex[j].address == portAddress[i].address) {
 
+                                    if (false == cpNodeIndex[j].isSetTimeBusy) {
+                                        int yearInt = (int)(ConvertBCDToInt(arr[12]) * 100) + (int)ConvertBCDToInt(arr[13]);
+                                        string year = yearInt.ToString();
 
-                        if (bSetTimeResponeState == 0x00) {
-                            int yearInt = (int)(ConvertBCDToInt(arr[12]) * 100) + (int)ConvertBCDToInt(arr[13]);
-                            string year = yearInt.ToString();
+                                        string month = ConvertBCDToInt(arr[14]).ToString();
+                                        string day = ConvertBCDToInt(arr[15]).ToString();
+                                        string hour = ConvertBCDToInt(arr[16]).ToString();
+                                        string minute = ConvertBCDToInt(arr[17]).ToString();
+                                        string second = ConvertBCDToInt(arr[18]).ToString();
 
-                            string month = ConvertBCDToInt(arr[14]).ToString();
-                            string day = ConvertBCDToInt(arr[15]).ToString();
-                            string hour = ConvertBCDToInt(arr[16]).ToString();
-                            string minute = ConvertBCDToInt(arr[17]).ToString();
-                            string second = ConvertBCDToInt(arr[18]).ToString();
+                                        txtChargePileTime.BeginInvoke(new Action(() => {
+                                            txtChargePileTime.Text = year + "/" + month + "/" + day + " "
+                                                                    + hour + ":" + minute + ":" + second;
+                                        }));
 
-                            txtChargePileTime.BeginInvoke(new Action(() => {
-                                txtChargePileTime.Text = year + "/" + month + "/" + day + " "
-                                                        + hour + ":" + minute + ":" + second;
-                            }));
-
-                            for (int i = 0; i < portAddress.Count; i++) {
-                                if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)  //){
-                                    && portAddress[i].port == port) {
-
-                                    for (int j = 0; j < cpNodeIndex.Count; j++) {
-                                        if (cpNodeIndex[j].address == portAddress[i].address) {
-                                            cpNodeIndex[j].Year = year;
-                                            cpNodeIndex[j].Month = month;
-                                            cpNodeIndex[j].Day = day;
-                                            cpNodeIndex[j].Hour = hour;
-                                            cpNodeIndex[j].Minute = minute;
-                                            cpNodeIndex[j].Second = second;
-
-                                        }
+                                        cpNodeIndex[j].Year = year;
+                                        cpNodeIndex[j].Month = month;
+                                        cpNodeIndex[j].Day = day;
+                                        cpNodeIndex[j].Hour = hour;
+                                        cpNodeIndex[j].Minute = minute;
+                                        cpNodeIndex[j].Second = second;
                                     }
+
                                 }
                             }
                         }
-                        break;
+                    }
+                    break;
                     }
                     case 0x22: {
                         respondRequestCmd(arr[11], clientSocket,cpAddress);
 
-                        if (bSetRateResponeState == 0x00) {
-                            UInt32 pointPrice = (UInt32)((arr[12] << 24) | (arr[13] << 16)
-                                                    | (arr[14] << 8) | (arr[15]));
-                            UInt32 peakPrice = (UInt32)((arr[16] << 24) | (arr[17] << 16)
-                                                        | (arr[18] << 8) | (arr[19]));
-                            UInt32 flatPrice = (UInt32)((arr[20] << 24) | (arr[21] << 16)
-                                                        | (arr[22] << 8) | (arr[23]));
-                            UInt32 valleyPrice = (UInt32)((arr[24] << 24) | (arr[25] << 16)
-                                                        | (arr[26] << 8) | (arr[27]));
-                            try {
-                                txtRatePointPrice.BeginInvoke(new Action(() => {
-                                    txtRatePointPrice.Text = chargeIntToString(pointPrice);
-                                }));
-                                txtRatePeakPrice.BeginInvoke(new Action(() => {
-                                    txtRatePeakPrice.Text = chargeIntToString(peakPrice);
-                                }));
-                                txtRateFlatPrice.BeginInvoke(new Action(() => {
-                                    txtRateFlatPrice.Text = chargeIntToString(flatPrice);
-                                }));
-                                txtRateValleyPrice.BeginInvoke(new Action(() => {
-                                    txtRateValleyPrice.Text = chargeIntToString(valleyPrice);
-                                }));
-                            } catch (Exception ex) {
-                                Console.WriteLine(ex.Message);
-                                Console.WriteLine("txtRatePointPrice  解析数据出错！！！");
-                            }
+                        for (int i = 0; i < portAddress.Count; i++) {
+                            if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)  //){
+                                && portAddress[i].port == port) {
+                                    
+                            for (int j = 0; j < cpNodeIndex.Count; j++) {
+                                if (cpNodeIndex[j].address == portAddress[i].address) {
+                                    
+                                    if (false == cpNodeIndex[j].isSetRateBusy ) {
 
-                            for (int i = 0; i < portAddress.Count; i++) {
-                                if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)  //){
-                                    && portAddress[i].port == port) {
-
-                                    for (int j = 0; j < cpNodeIndex.Count; j++) {
-                                        if (cpNodeIndex[j].address == portAddress[i].address) {
-
-                                            cpNodeIndex[j].PointPrice = pointPrice;
-                                            cpNodeIndex[j].PeakPrice = peakPrice;
-                                            cpNodeIndex[j].FlatPrice = flatPrice;
-                                            cpNodeIndex[j].ValleyPrice = valleyPrice;
-
-                                        }
+                                    UInt32 pointPrice = (UInt32)((arr[12] << 24) | (arr[13] << 16)
+                                                        | (arr[14] << 8) | (arr[15]));
+                                    UInt32 peakPrice = (UInt32)((arr[16] << 24) | (arr[17] << 16)
+                                                                | (arr[18] << 8) | (arr[19]));
+                                    UInt32 flatPrice = (UInt32)((arr[20] << 24) | (arr[21] << 16)
+                                                                | (arr[22] << 8) | (arr[23]));
+                                    UInt32 valleyPrice = (UInt32)((arr[24] << 24) | (arr[25] << 16)
+                                                                | (arr[26] << 8) | (arr[27]));
+                                    try {
+                                        txtRatePointPrice.BeginInvoke(new Action(() => {
+                                            txtRatePointPrice.Text = chargeIntToString(pointPrice);
+                                        }));
+                                        txtRatePeakPrice.BeginInvoke(new Action(() => {
+                                            txtRatePeakPrice.Text = chargeIntToString(peakPrice);
+                                        }));
+                                        txtRateFlatPrice.BeginInvoke(new Action(() => {
+                                            txtRateFlatPrice.Text = chargeIntToString(flatPrice);
+                                        }));
+                                        txtRateValleyPrice.BeginInvoke(new Action(() => {
+                                            txtRateValleyPrice.Text = chargeIntToString(valleyPrice);
+                                        }));
+                                    } catch (Exception ex) {
+                                        Console.WriteLine(ex.Message);
+                                        Console.WriteLine("txtRatePointPrice  解析数据出错！！！");
                                     }
+
+                                    cpNodeIndex[j].PointPrice = pointPrice;
+                                    cpNodeIndex[j].PeakPrice = peakPrice;
+                                    cpNodeIndex[j].FlatPrice = flatPrice;
+                                    cpNodeIndex[j].ValleyPrice = valleyPrice;
+                                }
                                 }
                             }
                         }
+                    }
                             
                         break;
                     }
@@ -2903,42 +2902,33 @@ namespace ChargingPile.WinForm
                     }
                     case 0x24: {
                         respondStartAndStopCmd(arr[11], arr[12], clientSocket,cpAddress);
-                        if (bCPStartupResponeState == 0x01) {
-                            txtCPStartup.Text = "充电桩忙";
-                            break;
-                        }
-                        switch (arr[12]) {
-                            case 0x01: {
-                                // start charge
-                                //txtCPStartup.Text = "start charge";
-                                txtCPStartup.Text = "开始充电";
-                                break;
-                            }
-                            case 0x02: {
-                                // pause charge
-                                //txtCPStartup.Text = "pause charge";
-                                txtCPStartup.Text = "暂停充电";
-                                break;
-                            }
-                            case 0x03: {
-                                // stop charge
-                                //txtCPStartup.Text = "stop charge";
-                                txtCPStartup.Text = "停止充电";
-                                break;
-                            }
-                            case 0x22: {
-                                // recover charge
-                                //txtCPStartup.Text = "recover charge";
-                                txtCPStartup.Text = "恢复充电";
-                                break;
-                            }
-                            default: {
-                                    break;
+                        for (int i = 0; i < portAddress.Count; i++) {
+                            if (portAddress[i].address == Convert.ToUInt64(txtChargingPileAddress.Text)  //){
+                                && portAddress[i].port == port) {
+                                // 这样设置的时候只会界面上对应地址的机号
+                                for (int j = 0; j < cpNodeIndex.Count; j++) {
+                                    if (cpNodeIndex[j].address == portAddress[i].address) {
+                                        if (false == cpNodeIndex[j].isCpStartBusy) {
+
+                                            int cpState = (int)arr[12];
+                                            txtCPStartup.BeginInvoke(new Action(() => {
+                                                switch (cpState) {
+                                                    case 0x01: { txtCPStartup.Text = "开始充电"; break; }
+                                                    case 0x02: { txtCPStartup.Text = "暂停充电"; break; }
+                                                    case 0x03: { txtCPStartup.Text = "停止充电"; break; }
+                                                    case 0x22: { txtCPStartup.Text = "恢复充电"; break; }
+                                                    default: { break; }
+                                                }
+                                                cpNodeIndex[j].cpStartupState = txtCPStartup.Text;
+                                            }));
+                                            cpNodeIndex[j].CpRunState = cpState;
+                                        } else {
+                                            txtCPStartup.BeginInvoke(new Action(() => {
+                                                txtCPStartup.Text = "充电桩忙";
+                                            }));
+                                        }
+                                    }
                                 }
-                        }
-                        for (int i = 0; i < cpNodeIndex.Count; i++) {
-                            if (cpNodeIndex[i].address == cpAddress) {
-                                cpNodeIndex[i].cpStartupState = txtCPStartup.Text;
                             }
                         }
                         break;
@@ -3021,6 +3011,9 @@ namespace ChargingPile.WinForm
                 cpHeart.isCpStartBusy = false;
                 cpHeart.isGetCpStateBusy = false;
                 cpHeart.isGetCpCurInfoBusy = false;
+
+                // 充电桩启停控制
+                txtCPStartup.Text = "";
 
                 // 充电桩界面状态初始
                 txtValtage.Text = "";
@@ -3157,14 +3150,34 @@ namespace ChargingPile.WinForm
 
                         ///////////////////////// 当前时间 ////////////////////////////////////////
 
-                        txtChargePileTime.Text = cpNodeIndex[i].Year + "/" + cpNodeIndex[i].Month + "/" + cpNodeIndex[i].Day + " "
-                                                        + cpNodeIndex[i].Hour + ":" + cpNodeIndex[i].Minute + ":" + cpNodeIndex[i].Second;
-
+                        if (cpNodeIndex[i].Year == ""
+                            || cpNodeIndex[i].Month == ""
+                            || cpNodeIndex[i].Day == ""
+                            || cpNodeIndex[i].Hour == ""
+                            || cpNodeIndex[i].Minute == ""
+                            || cpNodeIndex[i].Second == "") {
+                            txtChargePileTime.Text = "";
+                        } else {
+                            txtChargePileTime.Text = cpNodeIndex[i].Year + "/" + cpNodeIndex[i].Month + "/" + cpNodeIndex[i].Day + " "
+                                                            + cpNodeIndex[i].Hour + ":" + cpNodeIndex[i].Minute + ":" + cpNodeIndex[i].Second;
+                        }
                         ///////////////////////// 费率  ///////////////////////////////////////////
-                        txtRatePointPrice.Text = chargeIntToString(cpNodeIndex[i].PointPrice);
-                        txtRatePeakPrice.Text = chargeIntToString(cpNodeIndex[i].PeakPrice);
-                        txtRateFlatPrice.Text = chargeIntToString(cpNodeIndex[i].FlatPrice);
-                        txtRateValleyPrice.Text = chargeIntToString(cpNodeIndex[i].ValleyPrice);
+                        if (   cpNodeIndex[i].PointPrice == 0
+                            || cpNodeIndex[i].PeakPrice == 0
+                            || cpNodeIndex[i].FlatPrice == 0
+                            || cpNodeIndex[i].ValleyPrice == 0) {
+                            txtRatePointPrice.Text = "";
+                            txtRatePeakPrice.Text = "";
+                            txtRateFlatPrice.Text = "";
+                            txtRateValleyPrice.Text = "";
+                        } else {
+                            txtRatePointPrice.Text = chargeIntToString(cpNodeIndex[i].PointPrice);
+                            txtRatePeakPrice.Text = chargeIntToString(cpNodeIndex[i].PeakPrice);
+                            txtRateFlatPrice.Text = chargeIntToString(cpNodeIndex[i].FlatPrice);
+                            txtRateValleyPrice.Text = chargeIntToString(cpNodeIndex[i].ValleyPrice);
+                        }
+                        ////////////////////////// 启停控制 ///////////////////////////////////////
+                        txtCPStartup.Text = cpNodeIndex[i].cpStartupState;
                     }
                 }
             }

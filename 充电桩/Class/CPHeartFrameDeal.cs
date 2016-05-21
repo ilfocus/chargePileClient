@@ -223,6 +223,13 @@ namespace ChargingPile.Class {
             get { return _valleyPrice; }
             set { _valleyPrice = value; }
         }
+        //////////  启停控制  ////////////
+        private int _cpRunState = 0;
+
+        public int CpRunState {
+            get { return _cpRunState; }
+            set { _cpRunState = value; }
+        }
 
         public enum heartFrameState {
             comBreakGray,
