@@ -2861,15 +2861,20 @@ namespace ChargingPile.WinForm
 
                                         if (false == cpNodeIndex[j].isHeartFrameBusy) {
                                             cpNodeIndex[j].heartFrameLedState = CPHeartFrameDeal.heartFrameState.heartFrameNomalGreen;
-                                            cpNodeIndex[j].count = 0;  // 心跳帧失联控制
+                                            
                                         } else {
                                             cpNodeIndex[j].heartFrameLedState = CPHeartFrameDeal.heartFrameState.heartFrameBusyYellow;
-                                            cpNodeIndex[j].count = 0;  // 心跳帧失联控制
+                                            
                                         }
                                     }
                                 }
                             }
                         }
+
+                        for (int i = 0; i < cpNodeIndex.Count; i++) {
+                            cpNodeIndex[i].count = 0;  // 心跳帧失联控制
+                        }
+
                         // 心跳包，检测
                         heartFrameCnt = 0;  
                         break;
