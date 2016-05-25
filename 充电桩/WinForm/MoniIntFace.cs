@@ -196,7 +196,7 @@ namespace ChargingPile.WinForm
         }
 
         private void serialPortInit() {
-            serialPort1.PortName = "COM3";
+            serialPort1.PortName = "COM2";
             serialPort1.BaudRate = int.Parse(frmSetComPara.combBaudRate.Text);
             serialPort1.DataBits = int.Parse(frmSetComPara.combDataBit.Text);
             string szStopBits = frmSetComPara.combStopBits.SelectedItem.ToString();
